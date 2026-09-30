@@ -745,3 +745,97 @@
         transform: none;
     }
 }
+
+
+/* =====================================================================
+   12) ADMIN PANELI
+   ---------------------------------------------------------------------
+   Musteri temasini ezmiyoruz: yeni siniflar (admin-*) ekliyoruz.
+   Login, dashboard ve navbar yalnizca bu blokla sekillenir; .kafe-hero
+   gibi musteri kurallarina dokunulmaz.
+   ===================================================================== */
+.admin-govde {
+    background:
+        radial-gradient(circle at 12% 0%, rgba(201, 138, 63, .12), transparent 42%),
+        var(--kafe-sut);
+}
+
+.admin-navbar .admin-rozet {
+    display: inline-block;
+    margin-left: .15rem;
+    padding: .12rem .5rem;
+    border-radius: 999px;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    background: rgba(201, 138, 63, .2);
+    color: var(--kafe-karamel-ac);
+    border: 1px solid rgba(201, 138, 63, .4);
+}
+
+.admin-kullanici {
+    color: rgba(255, 255, 255, .78);
+}
+
+.admin-icerik {
+    padding-bottom: 2rem;
+}
+
+.admin-giris-kart {
+    box-shadow: var(--kafe-golge-buyuk);
+}
+
+.admin-ozet-kart {
+    background: var(--kafe-kagit);
+    border: 1px solid var(--kafe-kum);
+    border-radius: var(--kafe-yuvarlak);
+    padding: 1.1rem 1.15rem;
+    box-shadow: var(--kafe-golge-kucuk);
+    height: 100%;
+}
+
+.admin-ozet-onay { border-top: 4px solid #2f7d4f; }
+.admin-ozet-iptal { border-top: 4px solid #b02a2a; }
+.admin-ozet-tamam { border-top: 4px solid #6c757d; }
+
+.admin-ozet-etiket {
+    margin: 0;
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--kafe-soluk);
+}
+
+.admin-ozet-sayi {
+    margin: .35rem 0 0;
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--kafe-espresso);
+    line-height: 1.1;
+}
+
+.admin-bar {
+    height: 8px;
+    background: var(--kafe-kum);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.admin-bar span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--kafe-kahve), var(--kafe-karamel));
+    border-radius: 999px;
+}
+
+.admin-footer {
+    margin-top: auto;
+}
+
+@media (max-width: 575.98px) {
+    .admin-ozet-sayi {
+        font-size: 1.45rem;
+    }
+}
