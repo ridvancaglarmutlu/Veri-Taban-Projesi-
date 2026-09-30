@@ -1,100 +1,128 @@
 # Kafe Masa Rezervasyon Sistemi
 
-Saf PHP (PDO) + MySQL + Bootstrap 5 ile geli?tirilen, XAMPP �zerinde �al??an masa rezervasyon uygulamas?.
+Saf PHP (PDO) + MySQL + Bootstrap 5 ile geliştirilen, XAMPP üzerinde çalışan masa rezervasyon uygulaması.
 
-## Kullan?lan Teknolojiler
+## Kullanılan Teknolojiler
 
 | Katman | Teknoloji |
 | --- | --- |
 | Frontend | HTML5, CSS3, Vanilla JavaScript (fetch API), Bootstrap 5 |
 | Backend | Saf PHP 8 (framework yok), PDO + prepared statements |
-| Veritaban? | MySQL 8 / MariaDB 10.4+ (phpMyAdmin uyumlu) |
-| G�venlik | Prepared statements, `htmlspecialchars`, CSRF token, session y�netimi |
+| Veritabanı | MySQL 8 / MariaDB 10.4+ (phpMyAdmin uyumlu) |
+| Güvenlik | Prepared statements, `htmlspecialchars`, CSRF token, session yönetimi |
 
-## Klas�r Mimarisi
+## Klasör Mimarisi
 
 ```
 kafe-rezervasyon/
-??? app/                        # �EK?RDEK � taray?c?dan eri?ilemez (.htaccess ile kapal?)
-?   ??? .htaccess               # Require all denied
-?   ??? config.php              # DB bilgileri, saat aral?klar? gibi sabitler        [Ad?m 2]
-?   ??? db.php                  # PDO ba?lant?s? (Database s?n?f?, singleton)        [Ad?m 2]
-?   ??? helpers.php             # e(), csrf_token(), flash(), redirect(), validasyon [Ad?m 2]
-?   ??? bootstrap.php           # Her iste?in ba??nda �a?r?lan tek giri? noktas?     [Ad?m 2]
-?   ??? Auth.php                # Admin giri?/�?k?? ve oturum kontrol�               [Ad?m 4]
-?   ??? MasaRepository.php      # Masa CRUD + m�sait masa sorgusu                   [Ad?m 3]
-?   ??? RezervasyonRepository.php # �ak??ma kontrol�, kay?t, filtreleme             [Ad?m 3]
-?
-??? partials/                   # Tekrar kullan?lan HTML par�alar?
-?   ??? header.php              # M�?teri taraf? <head> + navbar                     [Ad?m 3]
-?   ??? footer.php
-?   ??? admin-header.php        # Admin paneli kabu?u (sidebar + navbar)             [Ad?m 4]
-?   ??? admin-footer.php
-?
-??? api/                        # JavaScript'in �a??rd??? JSON u� noktalar?
-?   ??? musait-masalar.php      # Tarih + saat + ki?i say?s? ? m�sait masa listesi   [Ad?m 3]
-?
-??? admin/                      # Y�netim paneli (session ile korumal?)
-?   ??? login.php               # Giri? formu                                        [Ad?m 4]
-?   ??? logout.php
-?   ??? index.php               # Dashboard: g�nl�k �zet, doluluk oran?              [Ad?m 4]
-?   ??? masalar.php             # Masa y�netimi (liste + ekle/d�zenle/sil)           [Ad?m 4]
-?   ??? rezervasyonlar.php      # Rezervasyon listesi + filtre + durum butonlar?     [Ad?m 4]
-?
-??? assets/                     # Statik dosyalar
-?   ??? css/style.css           # Bootstrap �zerine �zel tema                        [Ad?m 3]
-?   ??? js/app.js               # Dinamik masa listeleme (fetch)                     [Ad?m 3]
-?
-??? index.php                   # M�?teri ana sayfas? + rezervasyon formu            [Ad?m 3]
-??? rezervasyon-sorgula.php     # Kod/telefon ile sorgulama ve iptal                 [Ad?m 3]
-??? database.sql                # Veritaban? ?emas? + �rnek veriler                  [Ad?m 1 ?]
+├── app/                        # ÇEKİRDEK — tarayıcıdan erişilemez (.htaccess ile kapalı)
+│   ├── .htaccess               # Require all denied
+│   ├── config.php              # DB bilgileri, saat aralıkları gibi sabitler        ✔ hazır
+│   ├── db.php                  # PDO bağlantısı (Database sınıfı, singleton)        ✔ hazır
+│   ├── helpers.php             # e(), csrf_token(), flash(), redirect(), validasyon ✔ hazır
+│   ├── bootstrap.php           # Her isteğin başında çağrılan tek giriş noktası     ✔ hazır
+│   ├── Auth.php                # Admin giriş/çıkış ve oturum kontrolü               [Adım 4]
+│   ├── MasaRepository.php      # Masa CRUD + müsait masa sorgusu                    [Adım 3]
+│   └── RezervasyonRepository.php # Çakışma kontrolü, kayıt, filtreleme              [Adım 3]
+│
+├── partials/                   # Tekrar kullanılan HTML parçaları
+│   ├── header.php              # Müşteri tarafı <head> + navbar                     [Adım 3]
+│   ├── footer.php
+│   ├── admin-header.php        # Admin paneli kabuğu (sidebar + navbar)             [Adım 4]
+│   └── admin-footer.php
+│
+├── api/                        # JavaScript'in çağırdığı JSON uç noktaları
+│   └── musait-masalar.php      # Tarih + saat + kişi sayısı → müsait masa listesi   [Adım 3]
+│
+├── admin/                      # Yönetim paneli (session ile korumalı)
+│   ├── login.php               # Giriş formu                                        [Adım 4]
+│   ├── logout.php
+│   ├── index.php               # Dashboard: günlük özet, doluluk oranı              [Adım 4]
+│   ├── masalar.php             # Masa yönetimi (liste + ekle/düzenle/sil)           [Adım 4]
+│   └── rezervasyonlar.php      # Rezervasyon listesi + filtre + durum butonları     [Adım 4]
+│
+├── assets/                     # Statik dosyalar
+│   ├── css/style.css           # Bootstrap üzerine özel tema                        [Adım 3]
+│   └── js/app.js               # Dinamik masa listeleme (fetch)                     [Adım 3]
+│
+├── index.php                   # Müşteri ana sayfası + rezervasyon formu            [Adım 3]
+├── rezervasyon-sorgula.php     # Kod/telefon ile sorgulama ve iptal                 [Adım 3]
+└── database.sql                # Veritabanı şeması + örnek veriler                  ✔ hazır
 ```
 
-### Bu mimari neden b�yle?
+### Bu mimari neden böyle?
 
-- **`app/` web k�k�n�n d???nda mant??? tutar.** Veritaban? ?ifresi i�eren dosyan?n taray?c?dan
-  okunabilmesi klasik bir g�venlik hatas?d?r. PHP dosyalar? normalde yorumlan?p �al??t??? i�in
-  i�eri?i g�r�nmez; ancak PHP mod�l� devre d??? kald???nda (yanl?? yap?land?rma, `.php.bak`
-  uzant?l? yedekler) d�z metin olarak sunulur. `.htaccess` + `bootstrap.php` sabiti kontrol�
-  iki ayr? savunma katman? sa?lar.
-- **Repository s?n?flar? SQL'i tek yerde toplar.** �ak??ma kontrol� gibi kritik sorgu tek bir
-  metotta durur; sayfalar?n i�ine da??lm?? SQL'de bir yeri d�zeltip di?erini unutma riski olur.
-- **`api/` klas�r� HTML �reten sayfalardan ayr?d?r.** JSON d�nen u� noktalar ile sayfa render
-  eden dosyalar? kar??t?rmamak, ileride mobil uygulama eklenirse ayn? u�lar? kullanmay? sa?lar.
-- **`partials/` tekrar? �nler.** Navbar'? 8 dosyada ayr? ayr? g�ncellemek istemeyiz.
+- **`app/` web kökünün dışında mantığı tutar.** Veritabanı şifresi içeren dosyanın tarayıcıdan
+  okunabilmesi klasik bir güvenlik hatasıdır. PHP dosyaları normalde yorumlanıp çalıştığı için
+  içeriği görünmez; ancak PHP modülü devre dışı kaldığında (yanlış yapılandırma, `.php.bak`
+  uzantılı yedekler) düz metin olarak sunulur. `.htaccess` + `bootstrap.php` sabiti kontrolü
+  iki ayrı savunma katmanı sağlar.
+- **Repository sınıfları SQL'i tek yerde toplar.** Çakışma kontrolü gibi kritik sorgu tek bir
+  metotta durur; sayfaların içine dağılmış SQL'de bir yeri düzeltip diğerini unutma riski olur.
+- **`api/` klasörü HTML üreten sayfalardan ayrıdır.** JSON dönen uç noktalar ile sayfa render
+  eden dosyaları karıştırmamak, ileride mobil uygulama eklenirse aynı uçları kullanmayı sağlar.
+- **`partials/` tekrarı önler.** Navbar'ı 8 dosyada ayrı ayrı güncellemek istemeyiz.
 
 ## Kurulum (XAMPP)
 
-1. Bu klas�r� `C:\xampp\htdocs\kafe-rezervasyon` alt?na kopyalay?n.
-2. XAMPP Control Panel'den **Apache** ve **MySQL** servislerini ba?lat?n.
-3. `http://localhost/phpmyadmin` ? **Import** ? `database.sql` dosyas?n? se�ip �al??t?r?n.
+1. Bu klasörü `C:\xampp\htdocs\kafe-rezervasyon` altına kopyalayın.
+2. XAMPP Control Panel'den **Apache** ve **MySQL** servislerini başlatın.
+3. `http://localhost/phpmyadmin` → **Import** → `database.sql` dosyasını seçip çalıştırın.
    (Alternatif: `mysql -u root -p < database.sql`)
-4. Taray?c?dan `http://localhost/kafe-rezervasyon/` adresini a�?n.
+4. Tarayıcıdan `http://localhost/kafe-rezervasyon/` adresini açın.
 
-### Varsay?lan admin hesab?
+### Varsayılan admin hesabı
 
-| Kullan?c? ad? | ?ifre |
+| Kullanıcı adı | Şifre |
 | --- | --- |
 | `admin` | `admin123` |
 
-> ?ifre veritaban?nda `password_hash()` ile �retilmi? bcrypt hash olarak saklan?r. Ger�ek
-> kullan?mda ilk giri?ten sonra mutlaka de?i?tirin.
+> Şifre veritabanında `password_hash()` ile üretilmiş bcrypt hash olarak saklanır. Gerçek
+> kullanımda ilk girişten sonra mutlaka değiştirin.
 
-## Veritaban? ?emas?
+## Veritabanı Şeması
 
-| Tablo | Ama� |
+| Tablo | Amaç |
 | --- | --- |
-| `yoneticiler` | Admin paneli kullan?c?lar? (`password_hash` ile saklanan ?ifre) |
-| `masalar` | Fiziksel masalar: ad, kapasite, konum (i�/d??), durum (aktif/pasif) |
-| `rezervasyonlar` | Masa + tarih + saat aral??? + m�?teri bilgileri + durum |
-| `v_gunluk_ozet` | Dashboard i�in g�nl�k toplam/onayl?/iptal say?lar?n? veren view |
+| `yoneticiler` | Admin paneli kullanıcıları (`password_hash` ile saklanan şifre) |
+| `masalar` | Fiziksel masalar: ad, kapasite, konum (iç/dış), durum (aktif/pasif) |
+| `rezervasyonlar` | Masa + tarih + saat aralığı + müşteri bilgileri + durum |
+| `v_gunluk_ozet` | Dashboard için günlük toplam/onaylı/iptal sayılarını veren view |
 
-`rezervasyonlar` tablosu `masalar` tablosuna `ON DELETE RESTRICT` ile ba?l?d?r: �zerinde
-rezervasyon bulunan masa silinemez, bunun yerine durumu `pasif` yap?l?r.
+`rezervasyonlar` tablosu `masalar` tablosuna `ON DELETE RESTRICT` ile bağlıdır: üzerinde
+rezervasyon bulunan masa silinemez, bunun yerine durumu `pasif` yapılır.
 
-## Geli?tirme Ad?mlar?
+## Çekirdek Katman (`app/`)
 
-- [x] **Ad?m 1** � Klas�r mimarisi ve `database.sql`
-- [ ] **Ad?m 2** � PDO ba?lant? s?n?f? (`db.php`), yap?land?rma ve yard?mc? fonksiyonlar
-- [ ] **Ad?m 3** � M�?teri aray�z�, m�sait masa listeleme ve �ak??ma algoritmas?
-- [ ] **Ad?m 4** � Admin paneli: kimlik do?rulama, dashboard, masa ve rezervasyon y�netimi
+Tüm sayfalar ilk satırda tek bir dosyayı çağırır:
+
+```php
+require_once __DIR__ . '/app/bootstrap.php';
+```
+
+`bootstrap.php` sırasıyla `APP_INIT` sabitini tanımlar, `config.php` sabitlerini yükler,
+hata gösterimini `APP_DEBUG` bayrağına göre ayarlar, zaman dilimini `Europe/Istanbul` yapar,
+oturumu güvenli çerez bayraklarıyla (`httponly`, `samesite=Lax`, HTTPS varsa `secure`)
+başlatır ve `db.php` + `helpers.php` dosyalarını yükler.
+
+| Fonksiyon / sınıf | Görevi |
+| --- | --- |
+| `Database::baglanti()` | Tek ve paylaşılan PDO nesnesi (lazy singleton) |
+| `Database::query/fetchOne/fetchAll/fetchValue/execute` | Her zaman prepared statement üzerinden sorgu |
+| `e($deger)` | HTML'e basılan her değer için XSS kaçışlaması |
+| `csrf_token()` / `csrf_field()` / `csrf_dogrula()` | CSRF koruması (`random_bytes` + `hash_equals`) |
+| `flash_ekle()` / `flash_goster()` | Yönlendirme sonrası tek seferlik bildirim |
+| `yonlendir($url)` | `header('Location')` + zorunlu `exit` |
+| `telefon_normalize()`, `gecerli_tarih()`, `gecerli_saat()`, `saat_araliginda_mi()` | Sunucu tarafı doğrulama |
+| `rezervasyon_kodu_uret()` | `random_bytes` tabanlı 8 karakterlik takip kodu |
+| `durum_etiketi()` / `durum_rengi()` | ENUM değerini Bootstrap rozetine çevirir |
+
+Kritik PDO ayarları `db.php` içinde tek bir dizide toplanmıştır; en önemlisi
+`PDO::ATTR_EMULATE_PREPARES => false`, yani gerçek (sunucu taraflı) prepared statement.
+
+## Geliştirme Adımları
+
+- [x] **Adım 1** — Klasör mimarisi ve `database.sql`
+- [x] **Adım 2** — PDO bağlantı sınıfı (`db.php`), yapılandırma ve yardımcı fonksiyonlar
+- [ ] **Adım 3** — Müşteri arayüzü, müsait masa listeleme ve çakışma algoritması
+- [ ] **Adım 4** — Admin paneli: kimlik doğrulama, dashboard, masa ve rezervasyon yönetimi

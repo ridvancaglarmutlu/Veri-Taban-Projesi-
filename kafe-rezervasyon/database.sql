@@ -7,7 +7,7 @@
 
 -- ---------------------------------------------------------------------
 -- 1) VERITABANI
--- utf8mb4: Turkce karakterler (ç, ?, ?, ö, ?, ü) ve emoji dahil her sey
+-- utf8mb4: Turkce karakterler (c, g, i, o, s, u harflerinin aksanli halleri)
 -- sorunsuz saklanir. Eski "utf8" karakter seti 4 byte'lik karakterleri
 -- desteklemedigi icin MySQL'de artik utf8mb4 tercih edilir.
 -- ---------------------------------------------------------------------
