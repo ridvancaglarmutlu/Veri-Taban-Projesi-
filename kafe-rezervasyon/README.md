@@ -21,23 +21,23 @@ kafe-rezervasyon/
 │   ├── db.php                  # PDO bağlantısı (Database sınıfı, singleton)        ✔ hazır
 │   ├── helpers.php             # e(), csrf_token(), flash(), redirect(), validasyon ✔ hazır
 │   ├── bootstrap.php           # Her isteğin başında çağrılan tek giriş noktası     ✔ hazır
-│   ├── Auth.php                # Admin giriş/çıkış ve oturum kontrolü               [Adım 4]
+│   ├── Auth.php                # Admin giriş/çıkış ve oturum kontrolü               ✔ hazır
 │   ├── MasaRepository.php      # Masa CRUD + müsait masa sorgusu                    ✔ hazır
 │   └── RezervasyonRepository.php # Çakışma kontrolü, kayıt, filtreleme              ✔ hazır
 │
 ├── partials/                   # Tekrar kullanılan HTML parçaları
 │   ├── header.php              # Müşteri tarafı <head> + navbar                     ✔ hazır
 │   ├── footer.php
-│   ├── admin-header.php        # Admin paneli kabuğu (sidebar + navbar)             [Adım 4]
-│   └── admin-footer.php
+│   ├── admin-header.php        # Admin paneli kabuğu (navbar)                       ✔ hazır
+│   └── admin-footer.php        # Admin sayfa altı                                   ✔ hazır
 │
 ├── api/                        # JavaScript'in çağırdığı JSON uç noktaları
 │   └── musait-masalar.php      # Tarih + saat + kişi sayısı → müsait masa listesi   ✔ hazır
 │
 ├── admin/                      # Yönetim paneli (session ile korumalı)
-│   ├── login.php               # Giriş formu                                        [Adım 4]
-│   ├── logout.php
-│   ├── index.php               # Dashboard: günlük özet, doluluk oranı              [Adım 4]
+│   ├── login.php               # Giriş formu                                        ✔ hazır
+│   ├── logout.php              # POST + CSRF ile çıkış                              ✔ hazır
+│   ├── index.php               # Dashboard: günlük özet, doluluk oranı              ✔ hazır
 │   ├── masalar.php             # Masa yönetimi (liste + ekle/düzenle/sil)           [Adım 4]
 │   └── rezervasyonlar.php      # Rezervasyon listesi + filtre + durum butonları     [Adım 4]
 │
@@ -70,6 +70,18 @@ kafe-rezervasyon/
 3. `http://localhost/phpmyadmin` → **Import** → `database.sql` dosyasını seçip çalıştırın.
    (Alternatif: `mysql -u root -p < database.sql`)
 4. Tarayıcıdan `http://localhost/kafe-rezervasyon/` adresini açın.
+
+### Yönetim paneli adresleri
+
+Müşteri sayfalarından ayrı durur (`admin/` klasörü). Oturum yoksa paneli açmak `login.php` sayfasına yönlendirir.
+
+| Sayfa | Adres |
+| --- | --- |
+| Giriş | `http://localhost/kafe-rezervasyon/admin/login.php` |
+| Panel (dashboard) | `http://localhost/kafe-rezervasyon/admin/index.php` |
+| Çıkış | `admin/logout.php` (yalnızca POST + CSRF; GET ile çıkış yapılmaz) |
+| Masalar | `http://localhost/kafe-rezervasyon/admin/masalar.php` |
+| Rezervasyonlar | `http://localhost/kafe-rezervasyon/admin/rezervasyonlar.php` |
 
 ### Varsayılan admin hesabı
 
@@ -125,4 +137,5 @@ Kritik PDO ayarları `db.php` içinde tek bir dizide toplanmıştır; en önemli
 - [x] **Adım 1** — Klasör mimarisi ve `database.sql`
 - [x] **Adım 2** — PDO bağlantı sınıfı (`db.php`), yapılandırma ve yardımcı fonksiyonlar
 - [x] **Adım 3** — Müşteri arayüzü, müsait masa listeleme ve çakışma algoritması
-- [ ] **Adım 4** — Admin paneli: kimlik doğrulama, dashboard, masa ve rezervasyon yönetimi
+- [x] **Adım 4 (kısmi)** — Admin girişi, kabuk (navbar) ve günlük dashboard
+- [ ] **Adım 4 (devam)** — Masa CRUD ve rezervasyon listesi / durum yönetimi
