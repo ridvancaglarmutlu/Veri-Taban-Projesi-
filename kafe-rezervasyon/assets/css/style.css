@@ -1,0 +1,747 @@
+/* =====================================================================
+   KAFE MASA REZERVASYON SISTEMI - OZEL TEMA
+   ---------------------------------------------------------------------
+   Bu dosya Bootstrap'i DEGISTIRMEZ, UZERINE YAZAR. Bootstrap'in kendi
+   dosyasini elle duzenlemek en kotu yoldur: bir sonraki surumde
+   guncelleme yaptiginizda tum degisiklikleriniz silinir. Dogru yontem,
+   Bootstrap'ten SONRA yuklenen ayri bir dosyada gerekli kurallari
+   ezmektir (partials/header.php icindeki yukleme sirasina bakin).
+
+   ICINDEKILER
+     1. Renk degiskenleri
+     2. Genel govde ve erisilebilirlik
+     3. Navbar
+     4. Butonlar
+     5. Hero (karsilama)
+     6. Kartlar ve bolum basliklari
+     7. Form
+     8. Masa kartlari (JavaScript uretir)
+     9. Basari ekrani ve ozet listesi
+    10. Tablo, footer
+    11. Mobil duzeltmeleri
+   ===================================================================== */
+
+
+/* =====================================================================
+   1) RENK DEGISKENLERI
+   ---------------------------------------------------------------------
+   CSS ozel ozellikleri (custom properties) ":root" icinde tanimlanir;
+   :root belgenin en disdaki ogesidir (<html>), yani buradaki degerler
+   TUM sayfada gecerlidir.
+
+   Neden degisken? Karamel rengi bu dosyada 12 ayri yerde geciyor.
+   Elle yazilsaydi tema degistirmek icin 12 satiri bulup degistirmek
+   gerekirdi ve biri mutlaka atlanirdi. Tek satir degistirerek tum
+   sitenin rengi degisiyor.
+
+   Bootstrap'in kendi degiskenleri de ayni mekanizmayi kullanir
+   (--bs-primary gibi); asagida bazilarini kendi renklerimizle
+   eziyoruz, boylece Bootstrap bilesenleri de temamiza uyuyor.
+   ===================================================================== */
+:root {
+    /* Ana palet - kavrulmus kahve tonlari */
+    --kafe-espresso: #2b1d16;   /* en koyu: baslik ve footer */
+    --kafe-kahve:    #6b4a32;   /* orta: navbar, birincil buton */
+    --kafe-kahve-ac: #8a6244;   /* hover durumu */
+    --kafe-karamel:  #c98a3f;   /* vurgu: rozet, secili masa */
+    --kafe-karamel-ac: #e0a75e;
+
+    /* Notr zemin tonlari */
+    --kafe-sut:   #fbf6f0;      /* sayfa arka plani */
+    --kafe-kum:   #ece0d2;      /* kenarlik */
+    --kafe-kagit: #ffffff;      /* kart zemini */
+
+    /* Metin */
+    --kafe-metin:  #3a2b22;
+    --kafe-soluk:  #8a7566;
+
+    /* Golgeler
+       Yumusak golge = dusuk opaklik + genis yayilma. Siyah yerine
+       kahverengi tonlu bir golge (rgba icindeki renk) sicak paletle
+       daha uyumlu durur; saf siyah golge "kirli" gorunur. */
+    --kafe-golge-kucuk: 0 1px 2px rgba(58, 43, 34, .06),
+                        0 2px 8px rgba(58, 43, 34, .05);
+    --kafe-golge-orta:  0 2px 4px rgba(58, 43, 34, .05),
+                        0 8px 24px rgba(58, 43, 34, .08);
+    --kafe-golge-buyuk: 0 12px 36px rgba(58, 43, 34, .14);
+
+    --kafe-yuvarlak:       14px;
+    --kafe-yuvarlak-kucuk: 10px;
+
+    /* Gecis suresi tek yerde: tum hover animasyonlari ayni ritimde
+       olsun. Karisik sureler arayuzu "ucuz" gosterir. */
+    --kafe-gecis: .18s ease;
+
+    /* Bootstrap degiskenlerini eziyoruz: form odak halkasi, link rengi
+       ve birincil renk artik bizim paletimizden geliyor. */
+    --bs-link-color: var(--kafe-kahve);
+    --bs-link-hover-color: var(--kafe-espresso);
+    --bs-body-color: var(--kafe-metin);
+    --bs-border-radius: var(--kafe-yuvarlak-kucuk);
+}
+
+
+/* =====================================================================
+   2) GENEL GOVDE VE ERISILEBILIRLIK
+   ===================================================================== */
+.kafe-govde {
+    background-color: var(--kafe-sut);
+    color: var(--kafe-metin);
+
+    /* Sistem font yigini: kullanici hangi isletim sistemindeyse onun
+       yerlesik fontunu kullanir. Dis kaynaktan font indirmedigimiz icin
+       sayfa daha hizli acilir ve "yazi tipi yuklenirken metnin ziplamasi"
+       (FOUT) sorunu yasanmaz. */
+    font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+
+    /* Sayfa kisa oldugunda footer'in ekranin ortasinda asili kalmamasi
+       icin klasik "sticky footer" duzeni. */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.kafe-govde > main {
+    flex: 1 0 auto;   /* artan bosluk main'e verilir, footer asagi iner */
+}
+
+/*
+   "İçeriğe atla" baglantisi.
+   Ekranda gorunmez ama SILINMEZ: ekran disina tasinir. display:none
+   kullansaydik klavye ile de odaklanilamazdi ve hicbir ise yaramazdi.
+   TAB'a basildiginda :focus devreye girer ve baglanti gorunur olur.
+*/
+.icerige-atla {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 2000;
+    padding: .65rem 1.1rem;
+    background: var(--kafe-espresso);
+    color: #fff;
+    border-radius: 0 0 var(--kafe-yuvarlak-kucuk) 0;
+    text-decoration: none;
+}
+
+.icerige-atla:focus {
+    left: 0;
+    color: #fff;
+}
+
+/*
+   Odak halkasi (focus ring) ASLA tamamen kaldirilmaz.
+   "outline: none" yazmak klavye kullanicisini kor eder: sayfada nerede
+   olduklarini goremezler. Bunun yerine halkayi temamiza uyduruyoruz.
+   :focus-visible sadece KLAVYE ile odaklanildiginda devreye girer,
+   fare tiklamasinda halka cikmaz - iki tarafi da memnun eden cozum.
+*/
+:focus-visible {
+    outline: 3px solid var(--kafe-karamel);
+    outline-offset: 2px;
+}
+
+
+/* =====================================================================
+   3) NAVBAR
+   ===================================================================== */
+.kafe-navbar {
+    background: var(--kafe-espresso);
+    box-shadow: var(--kafe-golge-orta);
+}
+
+.kafe-navbar .navbar-brand,
+.kafe-navbar .nav-link {
+    color: rgba(255, 255, 255, .88);
+    transition: color var(--kafe-gecis);
+}
+
+.kafe-navbar .navbar-brand:hover,
+.kafe-navbar .nav-link:hover,
+.kafe-navbar .nav-link.active {
+    color: var(--kafe-karamel-ac);
+}
+
+/* Aktif sayfanin altinda ince bir cizgi: rengin yani sira SEKIL ile de
+   ayirt edilebilir olsun. Renk korlugu olan kullanicilar icin gereklidir
+   (bilgiyi asla sadece renge yuklemeyin). */
+.kafe-navbar .nav-link.active {
+    border-bottom: 2px solid var(--kafe-karamel);
+}
+
+.kafe-logo {
+    color: var(--kafe-karamel);
+    flex: none;
+}
+
+/* Bootstrap'in hamburger ikonu varsayilan olarak koyu renktir ve koyu
+   navbar uzerinde gorunmez. Ikon bir SVG arka planidir; beyaz surumunu
+   veriyoruz. */
+.kafe-navbar .navbar-toggler {
+    border-color: rgba(255, 255, 255, .3);
+}
+
+.kafe-navbar .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255,0.85)' stroke-width='2' stroke-linecap='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+
+/* =====================================================================
+   4) BUTONLAR
+   ===================================================================== */
+.btn-kafe {
+    background: var(--kafe-kahve);
+    border: 1px solid var(--kafe-kahve);
+    color: #fff;
+    font-weight: 600;
+    border-radius: var(--kafe-yuvarlak-kucuk);
+    box-shadow: var(--kafe-golge-kucuk);
+    transition: background var(--kafe-gecis),
+                transform var(--kafe-gecis),
+                box-shadow var(--kafe-gecis);
+}
+
+.btn-kafe:hover,
+.btn-kafe:focus {
+    background: var(--kafe-kahve-ac);
+    border-color: var(--kafe-kahve-ac);
+    color: #fff;
+
+    /* 1 pikselik yukselme + buyuyen golge = "kaldirdim" hissi.
+       Daha fazlasi (ornegin 4px) butonu zipliyor gibi gosterir. */
+    transform: translateY(-1px);
+    box-shadow: var(--kafe-golge-orta);
+}
+
+.btn-kafe:active {
+    transform: translateY(0);
+}
+
+.btn-kafe:disabled {
+    background: var(--kafe-soluk);
+    border-color: var(--kafe-soluk);
+    transform: none;
+}
+
+.btn-kafe-cizgi {
+    background: transparent;
+    border: 1px solid var(--kafe-kahve);
+    color: var(--kafe-kahve);
+    font-weight: 600;
+    border-radius: var(--kafe-yuvarlak-kucuk);
+    transition: background var(--kafe-gecis), color var(--kafe-gecis);
+}
+
+.btn-kafe-cizgi:hover,
+.btn-kafe-cizgi:focus {
+    background: var(--kafe-kahve);
+    color: #fff;
+}
+
+
+/* =====================================================================
+   5) HERO (KARSILAMA)
+   ===================================================================== */
+.kafe-hero {
+    /* Iki renkli yumusak gecis + ustte hafif bir isik lekesi.
+       Duz renk yerine degradeler sayfaya derinlik katar; abartmamak
+       icin tonlar birbirine yakin secildi. */
+    background:
+        radial-gradient(circle at 85% 15%, rgba(201, 138, 63, .18), transparent 45%),
+        linear-gradient(160deg, #3a281e 0%, var(--kafe-espresso) 60%);
+    color: #f6ece2;
+    padding: clamp(2.5rem, 6vw, 4.5rem) 0;
+}
+
+.kafe-hero-baslik {
+    font-size: clamp(1.9rem, 4.5vw, 3rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -.5px;
+    margin-bottom: 1rem;
+}
+
+/*
+   clamp(en_kucuk, tercih, en_buyuk)
+   Yazi boyutunu ekran genisligine gore SURESIZ olcekler. Klasik
+   yontemde her kirilma noktasi icin ayri medya sorgusu yazilir ve
+   aradaki genisliklerde yazi ya cok kucuk ya cok buyuk kalir.
+   4.5vw = goruntu alani genisliginin %4,5'i.
+*/
+.kafe-hero-metin {
+    font-size: clamp(1rem, 1.6vw, 1.12rem);
+    max-width: 46ch;   /* ch = "0" karakterinin genisligi.
+                          45-75 karakter satir uzunlugu en rahat okunan
+                          araliktir; px ile ayni etkiyi yakalamak zordur. */
+    color: rgba(246, 236, 226, .82);
+    margin-bottom: 1.75rem;
+}
+
+.kafe-rozet {
+    display: inline-block;
+    padding: .35rem .85rem;
+    border-radius: 999px;   /* cok buyuk deger = tam yuvarlak uclar */
+    background: rgba(201, 138, 63, .18);
+    border: 1px solid rgba(201, 138, 63, .45);
+    color: var(--kafe-karamel-ac);
+    font-size: .82rem;
+    font-weight: 600;
+}
+
+.kafe-ozellik-liste {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.kafe-ozellik-liste li {
+    position: relative;
+    padding: .85rem 0 .85rem 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, .1);
+    font-size: .92rem;
+    color: rgba(246, 236, 226, .78);
+}
+
+.kafe-ozellik-liste li:last-child {
+    border-bottom: 0;
+}
+
+.kafe-ozellik-liste strong {
+    display: block;
+    color: #fff;
+    font-size: .98rem;
+    margin-bottom: .15rem;
+}
+
+/* ::before ile madde isareti uretiyoruz. HTML'e bos bir <span>
+   eklemektense suslemeyi CSS'te tutmak dogru ayrimdir: icerik HTML'de,
+   gorunum CSS'te. */
+.kafe-ozellik-liste li::before {
+    content: "";
+    position: absolute;
+    left: .35rem;
+    top: 1.35rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--kafe-karamel);
+}
+
+
+/* =====================================================================
+   6) KARTLAR VE BOLUM BASLIKLARI
+   ===================================================================== */
+.kafe-kart {
+    background: var(--kafe-kagit);
+    border: 1px solid var(--kafe-kum);
+    border-radius: var(--kafe-yuvarlak);
+    box-shadow: var(--kafe-golge-kucuk);
+    padding: 1.5rem;
+}
+
+.kafe-bolum-baslik {
+    margin-bottom: 1.5rem;
+}
+
+.kafe-bolum-baslik h1,
+.kafe-bolum-baslik h2 {
+    color: var(--kafe-espresso);
+    font-weight: 700;
+    margin-bottom: .35rem;
+}
+
+.kafe-bolum-baslik p {
+    color: var(--kafe-soluk);
+    margin-bottom: 0;
+}
+
+/* Numarali adim basligi: formun uc asamadan olustugunu gorsel olarak
+   anlatir. Kullanici "ne kadar kaldi" sorusunu bir bakista cevaplar. */
+.kafe-adim-baslik {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--kafe-espresso);
+    margin-bottom: 1.15rem;
+}
+
+.kafe-adim-baslik span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--kafe-karamel);
+    color: #fff;
+    font-size: .85rem;
+}
+
+
+/* =====================================================================
+   7) FORM
+   ===================================================================== */
+.kafe-form .form-label {
+    font-weight: 600;
+    font-size: .88rem;
+    color: var(--kafe-espresso);
+    margin-bottom: .35rem;
+}
+
+.form-control,
+.form-select {
+    border-color: var(--kafe-kum);
+    border-radius: var(--kafe-yuvarlak-kucuk);
+    padding: .55rem .75rem;
+    transition: border-color var(--kafe-gecis), box-shadow var(--kafe-gecis);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--kafe-karamel);
+    /* Bootstrap'in mavi odak golgesini kendi rengimizle degistiriyoruz.
+       Golgeyi tamamen kaldirmak erisilebilirlik acisindan yanlis olurdu. */
+    box-shadow: 0 0 0 .2rem rgba(201, 138, 63, .22);
+}
+
+.form-text {
+    color: var(--kafe-soluk);
+    font-size: .82rem;
+}
+
+.kafe-kod-girdi {
+    /* Kod alani: harfler arasi bosluk + tek genislikli font, kullanicinin
+       8 karakteri tek tek kontrol etmesini kolaylastirir. */
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+
+/* =====================================================================
+   8) MASA KARTLARI  (JavaScript uretir - assets/js/app.js)
+   ===================================================================== */
+.kafe-masa-listesi {
+    display: grid;
+    /*
+       auto-fill + minmax = MEDYA SORGUSUZ duyarli izgara.
+       "En az 230px genisliginde sutunlar olustur, sigdigi kadar yan yana
+       koy, kalan yeri esit dagit (1fr)."
+       Boylece 1200px ekranda 4, tablette 2, telefonda 1 sutun olusur ve
+       biz hicbir kirilma noktasi yazmayiz.
+    */
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: .85rem;
+}
+
+/*
+   Masa karti bir <label>'dir; icinde gizli bir radio bulunur.
+   Neden? Label'a tiklamak icindeki radio'yu secer - yani TUM KART
+   tiklanabilir olur. Ayni davranisi JavaScript ile yazmak mumkundur
+   ama gereksizdir: HTML zaten sunar ve klavye ile de calisir.
+*/
+.kafe-masa-karti {
+    position: relative;
+    display: block;
+    padding: 1rem 1rem 1rem 1.1rem;
+    background: var(--kafe-kagit);
+    border: 2px solid var(--kafe-kum);
+    border-radius: var(--kafe-yuvarlak);
+    cursor: pointer;
+    transition: border-color var(--kafe-gecis),
+                box-shadow var(--kafe-gecis),
+                transform var(--kafe-gecis),
+                background var(--kafe-gecis);
+}
+
+.kafe-masa-karti:hover {
+    border-color: var(--kafe-karamel-ac);
+    box-shadow: var(--kafe-golge-orta);
+    transform: translateY(-2px);
+}
+
+/*
+   Radio gorsel olarak gizlenir ama ERISILEBILIR kalir.
+   "display: none" yazsaydik oge klavye sirasindan tamamen cikardi ve
+   TAB ile masa secilemezdi. opacity:0 + position:absolute yontemi ogeyi
+   gorunmez yapar ama odaklanilabilir birakir.
+*/
+.kafe-masa-karti input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Secili kart: kalin kenarlik + acik zemin + sag ustte onay isareti.
+   Uc ayri ipucu birden veriyoruz (renk, kenarlik, ikon) ki secim
+   kimse icin belirsiz kalmasin. */
+.kafe-masa-karti.secili {
+    border-color: var(--kafe-karamel);
+    background: #fff8ee;
+    box-shadow: 0 0 0 .2rem rgba(201, 138, 63, .18);
+}
+
+.kafe-masa-karti.secili::after {
+    content: "\2713";           /* onay isareti (U+2713) */
+    position: absolute;
+    top: .55rem;
+    right: .7rem;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    border-radius: 50%;
+    background: var(--kafe-karamel);
+    color: #fff;
+    font-size: .78rem;
+    font-weight: 700;
+}
+
+/* Klavye ile gezerken de secili kart kadar belirgin bir ipucu. */
+.kafe-masa-karti:focus-within {
+    border-color: var(--kafe-karamel);
+    box-shadow: 0 0 0 .2rem rgba(201, 138, 63, .3);
+}
+
+.kafe-masa-ad {
+    display: block;
+    font-weight: 700;
+    font-size: 1.02rem;
+    color: var(--kafe-espresso);
+    margin-bottom: .45rem;
+    padding-right: 1.6rem;   /* onay isaretine yer birak */
+}
+
+.kafe-masa-rozetler {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+}
+
+.kafe-etiket {
+    display: inline-block;
+    padding: .2rem .6rem;
+    border-radius: 999px;
+    font-size: .76rem;
+    font-weight: 600;
+    background: #f3ece4;
+    color: var(--kafe-kahve);
+    border: 1px solid var(--kafe-kum);
+}
+
+/* Konum rozetleri: ic mekan ve bahce farkli renkte olsun ki listeye
+   bakan kisi tek bakista ayirabilsin. */
+.kafe-etiket-ic {
+    background: #eef2f7;
+    border-color: #d9e2ec;
+    color: #3f5570;
+}
+
+.kafe-etiket-dis {
+    background: #eef6ec;
+    border-color: #d5e8d0;
+    color: #3f6b3a;
+}
+
+.kafe-konum-rozet {
+    background: var(--kafe-kahve);
+    color: #fff;
+    font-weight: 600;
+}
+
+.kafe-masa-dolu {
+    display: block;
+    margin-top: .6rem;
+    padding-top: .55rem;
+    border-top: 1px dashed var(--kafe-kum);
+    font-size: .76rem;
+    color: var(--kafe-soluk);
+}
+
+/* Bos durum / yukleniyor / hata kutulari: liste izgarasinin tamamini
+   kaplasin diye grid-column: 1 / -1 (ilk cizgiden son cizgiye). */
+.kafe-bos-durum,
+.kafe-durum-kutusu {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--kafe-soluk);
+    background: #faf6f1;
+    border: 1px dashed var(--kafe-kum);
+    border-radius: var(--kafe-yuvarlak);
+}
+
+.kafe-durum-kutusu.hata {
+    color: #8c2f2f;
+    background: #fdf2f2;
+    border-color: #f0c9c9;
+    border-style: solid;
+}
+
+
+/* =====================================================================
+   9) BASARI EKRANI VE OZET LISTESI
+   ===================================================================== */
+.kafe-basari-kart {
+    background: var(--kafe-kagit);
+    border: 1px solid var(--kafe-kum);
+    border-left: 6px solid #2f7d4f;   /* soldaki yesil serit: "basarili" */
+    border-radius: var(--kafe-yuvarlak);
+    box-shadow: var(--kafe-golge-buyuk);
+    padding: 1.75rem;
+}
+
+.kafe-kod-etiket {
+    font-size: .78rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--kafe-soluk);
+    margin-bottom: .35rem;
+}
+
+/*
+   REZERVASYON KODU - sayfanin en onemli bilgisi.
+   Buyuk punto, tek genislikli font ve genis harf araligi bir arada
+   kullanildiginda kod hem uzaktan okunur hem de telefonda birine
+   soylerken karakterler karismaz.
+*/
+.kafe-kod {
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: clamp(1.9rem, 5vw, 2.6rem);
+    font-weight: 700;
+    letter-spacing: .16em;
+    color: var(--kafe-espresso);
+    background: linear-gradient(180deg, #fff8ee, #f6ead9);
+    border: 2px dashed var(--kafe-karamel);
+    border-radius: var(--kafe-yuvarlak);
+    padding: .75rem .5rem;
+    margin-bottom: 1rem;
+
+    /* Kodu secmek ve kopyalamak kolay olsun. */
+    user-select: all;
+}
+
+.kafe-kod-kucuk {
+    font-size: 1.4rem;
+    padding: .35rem .75rem;
+    border-width: 1px;
+    border-style: solid;
+    background: #fff8ee;
+    margin-bottom: 0;
+}
+
+/*
+   <dl> (tanim listesi) etiket/deger ciftleri icin DOGRU semantik
+   ogedir. Ayni gorunum <table> ile de yapilabilirdi ama tablo
+   "satir-sutun iliskisi olan veri" demektir; tek bir kaydin alanlarini
+   listelemek tanim listesinin isidir. Ekran okuyucu "Tarih: 30.09.2026"
+   seklinde eslestirerek okur.
+*/
+.kafe-ozet {
+    display: grid;
+    grid-template-columns: minmax(110px, auto) 1fr;
+    gap: .55rem 1rem;
+    margin: 0;
+}
+
+.kafe-ozet dt {
+    font-weight: 600;
+    font-size: .85rem;
+    color: var(--kafe-soluk);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.kafe-ozet dd {
+    margin: 0;
+    color: var(--kafe-metin);
+}
+
+.kafe-kayit-karti {
+    border-left: 6px solid var(--kafe-karamel);
+}
+
+
+/* =====================================================================
+   10) TABLO VE FOOTER
+   ===================================================================== */
+.table > :not(caption) > * > * {
+    padding: .8rem .9rem;
+}
+
+.table thead th {
+    background: #f6efe7;
+    color: var(--kafe-espresso);
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    border-bottom: 1px solid var(--kafe-kum);
+}
+
+.kafe-footer {
+    background: var(--kafe-espresso);
+    color: #efe3d7;
+    flex: none;   /* sticky footer duzeninde kucultulmesin */
+}
+
+
+/* =====================================================================
+   11) MOBIL DUZELTMELERI
+   ---------------------------------------------------------------------
+   Bootstrap'in izgarasi cogu isi hallediyor; burada sadece kendi
+   bilesenlerimizin dar ekranda bozulan yerlerini duzeltiyoruz.
+   ===================================================================== */
+@media (max-width: 575.98px) {
+
+    .kafe-kart,
+    .kafe-basari-kart {
+        padding: 1.1rem;
+    }
+
+    /* Ozet listesi dar ekranda iki sutuna sigmaz; etiketi degerin
+       ustune aliyoruz. */
+    .kafe-ozet {
+        grid-template-columns: 1fr;
+        gap: .15rem;
+    }
+
+    .kafe-ozet dd {
+        margin-bottom: .7rem;
+    }
+
+    /* Tek sutun masa listesi: minmax'taki 230px bazi telefonlarda
+       tasmaya yol acabiliyor. */
+    .kafe-masa-listesi {
+        grid-template-columns: 1fr;
+    }
+
+    /* Mobilde butonlar tam genislik: parmakla isabet ettirmek kolay
+       olsun (dokunma hedefi en az 44px onerilir). */
+    .kafe-hero .btn,
+    #gonderButonu {
+        width: 100%;
+    }
+}
+
+/*
+   HAREKET AZALTMA TERCIHI
+   Isletim sisteminde "animasyonlari azalt" secenegini isaretlemis
+   kullanicilar vardir (vestibuler rahatsizlik, bas donmesi). Bu medya
+   sorgusu o tercihi okur ve gecisleri kapatir. Erisilebilirlik sadece
+   ekran okuyucu demek degildir.
+*/
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+    }
+
+    .kafe-masa-karti:hover,
+    .btn-kafe:hover {
+        transform: none;
+    }
+}
