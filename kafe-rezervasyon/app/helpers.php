@@ -16,7 +16,7 @@
 
 if (!defined('APP_INIT')) {
     http_response_code(403);
-    die('Dogrudan erisim engellendi.');
+    die('Doğrudan erişim engellendi.');
 }
 
 
@@ -225,7 +225,7 @@ function csrf_kontrol_et(): void
 {
     if (!csrf_dogrula()) {
         http_response_code(419);
-        die('Guvenlik dogrulamasi basarisiz. Sayfayi yenileyip tekrar deneyin.');
+        die('Güvenlik doğrulaması başarısız. Sayfayı yenileyip tekrar deneyin.');
     }
 }
 
@@ -702,9 +702,9 @@ function rezervasyon_kodu_uret(int $uzunluk = 8): string
 function durum_etiketi(string $durum): string
 {
     return match ($durum) {
-        'onaylandi'  => 'Onaylandi',
-        'iptal'      => 'Iptal Edildi',
-        'tamamlandi' => 'Tamamlandi',
+        'onaylandi'  => 'Onaylandı',
+        'iptal'      => 'İptal Edildi',
+        'tamamlandi' => 'Tamamlandı',
         default      => 'Bilinmiyor',
     };
 }

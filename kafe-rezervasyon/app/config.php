@@ -22,7 +22,7 @@
 // ---------------------------------------------------------------------
 if (!defined('APP_INIT')) {
     http_response_code(403);
-    die('Dogrudan erisim engellendi.');
+    die('Doğrudan erişim engellendi.');
 }
 
 
@@ -76,8 +76,8 @@ define('DB_CHARSET', 'utf8mb4');
 // 2) UYGULAMA SABITLERI
 // =====================================================================
 
-define('SITE_ADI', 'Kahve Duragi');
-define('SITE_SLOGAN', 'Masani ayirt, sira bekleme.');
+define('SITE_ADI', 'Kahve Durağı');
+define('SITE_SLOGAN', 'Masanı ayırt, sıra bekleme.');
 
 // --- Calisma saatleri -------------------------------------------------
 // Rezervasyon formundaki saat secenekleri bu araliga gore uretilir ve

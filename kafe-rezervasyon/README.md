@@ -22,17 +22,17 @@ kafe-rezervasyon/
 │   ├── helpers.php             # e(), csrf_token(), flash(), redirect(), validasyon ✔ hazır
 │   ├── bootstrap.php           # Her isteğin başında çağrılan tek giriş noktası     ✔ hazır
 │   ├── Auth.php                # Admin giriş/çıkış ve oturum kontrolü               [Adım 4]
-│   ├── MasaRepository.php      # Masa CRUD + müsait masa sorgusu                    [Adım 3]
-│   └── RezervasyonRepository.php # Çakışma kontrolü, kayıt, filtreleme              [Adım 3]
+│   ├── MasaRepository.php      # Masa CRUD + müsait masa sorgusu                    ✔ hazır
+│   └── RezervasyonRepository.php # Çakışma kontrolü, kayıt, filtreleme              ✔ hazır
 │
 ├── partials/                   # Tekrar kullanılan HTML parçaları
-│   ├── header.php              # Müşteri tarafı <head> + navbar                     [Adım 3]
+│   ├── header.php              # Müşteri tarafı <head> + navbar                     ✔ hazır
 │   ├── footer.php
 │   ├── admin-header.php        # Admin paneli kabuğu (sidebar + navbar)             [Adım 4]
 │   └── admin-footer.php
 │
 ├── api/                        # JavaScript'in çağırdığı JSON uç noktaları
-│   └── musait-masalar.php      # Tarih + saat + kişi sayısı → müsait masa listesi   [Adım 3]
+│   └── musait-masalar.php      # Tarih + saat + kişi sayısı → müsait masa listesi   ✔ hazır
 │
 ├── admin/                      # Yönetim paneli (session ile korumalı)
 │   ├── login.php               # Giriş formu                                        [Adım 4]
@@ -42,11 +42,11 @@ kafe-rezervasyon/
 │   └── rezervasyonlar.php      # Rezervasyon listesi + filtre + durum butonları     [Adım 4]
 │
 ├── assets/                     # Statik dosyalar
-│   ├── css/style.css           # Bootstrap üzerine özel tema                        [Adım 3]
-│   └── js/app.js               # Dinamik masa listeleme (fetch)                     [Adım 3]
+│   ├── css/style.css           # Bootstrap üzerine özel tema                        ✔ hazır
+│   └── js/app.js               # Dinamik masa listeleme (fetch)                     ✔ hazır
 │
-├── index.php                   # Müşteri ana sayfası + rezervasyon formu            [Adım 3]
-├── rezervasyon-sorgula.php     # Kod/telefon ile sorgulama ve iptal                 [Adım 3]
+├── index.php                   # Müşteri ana sayfası + rezervasyon formu            ✔ hazır
+├── rezervasyon-sorgula.php     # Kod/telefon ile sorgulama ve iptal                 ✔ hazır
 └── database.sql                # Veritabanı şeması + örnek veriler                  ✔ hazır
 ```
 
@@ -124,5 +124,5 @@ Kritik PDO ayarları `db.php` içinde tek bir dizide toplanmıştır; en önemli
 
 - [x] **Adım 1** — Klasör mimarisi ve `database.sql`
 - [x] **Adım 2** — PDO bağlantı sınıfı (`db.php`), yapılandırma ve yardımcı fonksiyonlar
-- [ ] **Adım 3** — Müşteri arayüzü, müsait masa listeleme ve çakışma algoritması
+- [x] **Adım 3** — Müşteri arayüzü, müsait masa listeleme ve çakışma algoritması
 - [ ] **Adım 4** — Admin paneli: kimlik doğrulama, dashboard, masa ve rezervasyon yönetimi

@@ -147,7 +147,7 @@ CREATE TABLE `rezervasyonlar` (
 -- gercek bir bcrypt hash'idir. Canli ortama gecerken bu hesabin sifresini
 -- mutlaka degistirin.
 INSERT INTO `yoneticiler` (`kullanici_adi`, `sifre`, `ad_soyad`) VALUES
-('admin', '$2a$10$E80aFHWhcNYMMnRvxUSNtuFwz7hql0/4IW4OazFFw0Drs5PlEfbXG', 'Sistem Yoneticisi');
+('admin', '$2a$10$E80aFHWhcNYMMnRvxUSNtuFwz7hql0/4IW4OazFFw0Drs5PlEfbXG', 'Sistem Yöneticisi');
 
 -- Masalar: farkli kapasite ve konumlarda 8 masa
 INSERT INTO `masalar` (`masa_adi`, `kapasite`, `konum`, `durum`) VALUES
@@ -155,19 +155,19 @@ INSERT INTO `masalar` (`masa_adi`, `kapasite`, `konum`, `durum`) VALUES
 ('Masa 2',            2,  'ic',  'aktif'),
 ('Masa 3',            4,  'ic',  'aktif'),
 ('Masa 4',            4,  'ic',  'aktif'),
-('Pencere Kenari',    6,  'ic',  'aktif'),
-('Bahce 1',           4,  'dis', 'aktif'),
-('Bahce 2',           6,  'dis', 'aktif'),
+('Pencere Kenarı',    6,  'ic',  'aktif'),
+('Bahçe 1',           4,  'dis', 'aktif'),
+('Bahçe 2',           6,  'dis', 'aktif'),
 ('Teras Loca',        10, 'dis', 'pasif');  -- tadilatta: rezervasyona kapali
 
 -- Bugune ait ornek rezervasyonlar (CURDATE() sayesinde dosya her gun calisir)
 INSERT INTO `rezervasyonlar`
     (`rezervasyon_kodu`, `masa_id`, `musteri_adi`, `musteri_telefon`, `musteri_email`,
      `tarih`, `baslangic_saati`, `bitis_saati`, `kisi_sayisi`, `durum`) VALUES
-('RZDEMO01', 3, 'Ayse Yilmaz',  '5551112233', 'ayse@example.com',  CURDATE(), '12:00:00', '14:00:00', 4, 'onaylandi'),
+('RZDEMO01', 3, 'Ayşe Yılmaz',  '5551112233', 'ayse@example.com',  CURDATE(), '12:00:00', '14:00:00', 4, 'onaylandi'),
 ('RZDEMO02', 6, 'Mehmet Demir', '5554445566', NULL,                CURDATE(), '19:00:00', '21:00:00', 3, 'onaylandi'),
 ('RZDEMO03', 1, 'Zeynep Kaya',  '5557778899', 'zeynep@example.com', CURDATE(), '10:00:00', '11:30:00', 2, 'tamamlandi'),
-('RZDEMO04', 5, 'Can Ozturk',   '5552223344', NULL,                 CURDATE(), '18:00:00', '20:00:00', 5, 'iptal');
+('RZDEMO04', 5, 'Can Öztürk',   '5552223344', NULL,                 CURDATE(), '18:00:00', '20:00:00', 5, 'iptal');
 
 
 -- =====================================================================
