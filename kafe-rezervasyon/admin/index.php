@@ -96,6 +96,34 @@ $bugununKayitlari = Database::fetchAll(
     [':tarih' => $bugun]
 );
 
+$kalanBugun = (int) Database::fetchValue(
+    "SELECT COUNT(*)
+       FROM rezervasyonlar
+      WHERE tarih = :t3
+        AND durum = 'onaylandi'
+        AND bitis_saati > :saat2",
+    [':t3' => $bugun, ':saat2' => $simdi]
+);
+
+$yaklasanlar = Database::fetchAll(
+    "SELECT r.rezervasyon_kodu, r.musteri_adi, r.tarih, r.baslangic_saati,
+            r.bitis_saati, r.kisi_sayisi, m.masa_adi
+       FROM rezervasyonlar r
+       INNER JOIN masalar m ON m.id = r.masa_id
+      WHERE r.durum = 'onaylandi'
+        AND (
+              (r.tarih = :t4 AND r.bitis_saati > :saat3)
+              OR r.tarih > :t5
+            )
+      ORDER BY r.tarih, r.baslangic_saati, m.masa_adi
+      LIMIT 8",
+    [
+        ':t4'    => $bugun,
+        ':saat3' => $simdi,
+        ':t5'    => $bugun,
+    ]
+);
+
 $sayfaBasligi    = 'Yönetim paneli';
 $sayfaAciklamasi = 'Günlük rezervasyon özeti';
 $aktifSayfa      = 'dashboard';
@@ -111,25 +139,31 @@ require __DIR__ . '/../partials/admin-header.php';
     </div>
 
     <div class="row g-3 mb-4">
-        <div class="col-6 col-lg-3">
+        <div class="col-6 col-lg">
             <div class="admin-ozet-kart">
                 <p class="admin-ozet-etiket">Toplam kayıt</p>
                 <p class="admin-ozet-sayi"><?= e($ozet['toplam_rezervasyon']) ?></p>
             </div>
         </div>
-        <div class="col-6 col-lg-3">
+        <div class="col-6 col-lg">
             <div class="admin-ozet-kart admin-ozet-onay">
                 <p class="admin-ozet-etiket">Onaylı</p>
                 <p class="admin-ozet-sayi"><?= e($ozet['onayli_sayisi']) ?></p>
             </div>
         </div>
-        <div class="col-6 col-lg-3">
+        <div class="col-6 col-lg">
+            <div class="admin-ozet-kart admin-ozet-kalan">
+                <p class="admin-ozet-etiket">Kalan bugün</p>
+                <p class="admin-ozet-sayi"><?= e($kalanBugun) ?></p>
+            </div>
+        </div>
+        <div class="col-6 col-lg">
             <div class="admin-ozet-kart admin-ozet-iptal">
                 <p class="admin-ozet-etiket">İptal</p>
                 <p class="admin-ozet-sayi"><?= e($ozet['iptal_sayisi']) ?></p>
             </div>
         </div>
-        <div class="col-6 col-lg-3">
+        <div class="col-6 col-lg">
             <div class="admin-ozet-kart admin-ozet-tamam">
                 <p class="admin-ozet-etiket">Tamamlanan</p>
                 <p class="admin-ozet-sayi"><?= e($ozet['tamamlanan_sayisi']) ?></p>
@@ -179,10 +213,42 @@ require __DIR__ . '/../partials/admin-header.php';
         </div>
     </div>
 
-    <div class="kafe-kart">
+    <div class="row g-3 mb-4">
+        <div class="col-lg-5">
+            <div class="kafe-kart h-100">
+                <h2 class="h5 mb-3">Yaklaşan onaylılar</h2>
+                <?php if ($yaklasanlar === []): ?>
+                    <div class="kafe-bos-durum">
+                        <span class="kafe-bos-ikon" aria-hidden="true"></span>
+                        <strong>Sırada kimse yok</strong>
+                        <p class="mb-0">Bugünden sonra bitmemiş onaylı rezervasyon bulunmuyor.</p>
+                    </div>
+                <?php else: ?>
+                    <ul class="kafe-yaklasan list-unstyled mb-0">
+                        <?php foreach ($yaklasanlar as $y): ?>
+                            <li>
+                                <span class="kafe-yaklasan-saat">
+                                    <?= e(tarih_goster((string) $y['tarih'])) ?>
+                                    ·
+                                    <?= e(saat_goster((string) $y['baslangic_saati'])) ?>
+                                </span>
+                                <strong><?= e($y['masa_adi']) ?></strong>
+                                <span><?= e($y['musteri_adi']) ?> · <?= e($y['kisi_sayisi']) ?> kişi</span>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+            </div>
+        </div>
+        <div class="col-lg-7">
+    <div class="kafe-kart h-100">
         <h2 class="h5 mb-3">Bugünün rezervasyonları</h2>
         <?php if ($bugununKayitlari === []): ?>
-            <p class="text-muted mb-0">Bugün henüz rezervasyon yok.</p>
+            <div class="kafe-bos-durum">
+                <span class="kafe-bos-ikon" aria-hidden="true"></span>
+                <strong>Bugün henüz kayıt yok</strong>
+                <p class="mb-0">Yeni rezervasyonlar burada listelenir.</p>
+            </div>
         <?php else: ?>
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
@@ -215,6 +281,8 @@ require __DIR__ . '/../partials/admin-header.php';
                 </table>
             </div>
         <?php endif; ?>
+    </div>
+        </div>
     </div>
 </div>
 

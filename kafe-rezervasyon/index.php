@@ -81,27 +81,12 @@ $sonTarih  = date('Y-m-d', strtotime('+' . MAX_ILERI_GUN . ' days'));
 
 
 // =====================================================================
-// 3) BASARI EKRANI VERISI  (tek seferlik okuma)
+// 3) BASARI OZETI
 // ---------------------------------------------------------------------
-// Rezervasyon kaydedildikten sonra kullaniciya kodunu gostermemiz
-// gerekiyor. Ama araya bir YONLENDIRME giriyor (bkz. bolum 5), yani
-// PHP degiskenleri kayboluyor.
-//
-// Veriyi tasimanin iki yolu var:
-//
-//   (a) URL:      index.php?kod=RZ7K4M2Q
-//       Basit ama sakincali: kod tarayici gecmisine, sunucu erisim
-//       log'larina ve tiklanan dis baglantilarin Referer basligina
-//       duser. Kod bu sistemde parola gorevi goruyor (kodu bilen
-//       rezervasyonu IPTAL EDEBILIR), yani adres cubugunda tasinmamali.
-//
-//   (b) SESSION:  tek seferlik ("flash") veri     <- SECTIGIMIZ
-//       Veri sunucuda kalir, adres temiz olur. Okur okumaz siliyoruz;
-//       aksi halde kullanici saatler sonra ana sayfaya girdiginde eski
-//       basari ekranini tekrar gorurdu.
+// Kayit sonrasi ozet session['son_rezervasyon'] icinde tasinir ve
+// rezervasyon-onay.php gosterir. Kod URL'e yazilmaz (iptal yetkisi).
+// Ana sayfa ozeti SILMEZ: yazdir / yenile ayni kodu korur.
 // =====================================================================
-$sonRezervasyon = $_SESSION['son_rezervasyon'] ?? null;
-unset($_SESSION['son_rezervasyon']);
 
 
 // =====================================================================
@@ -390,11 +375,8 @@ if (post_istegi_mi()) {
                 'ad'          => $eski['musteri_adi'],
             ];
 
-            flash_ekle('Rezervasyonunuz oluşturuldu. Kodunuzu aşağıda bulabilirsiniz.', 'success');
-
-            // Yonlendirmeden sonra exit ZORUNLUDUR; yonlendir() bunu
-            // kendi icinde yapiyor (donus tipi "never").
-            yonlendir('index.php');
+            // Basari ozeti onay sayfasinda gosterilir (kod + yazdir).
+            yonlendir('rezervasyon-onay.php');
         }
 
         // Depo basarisiz dondu. En yaygin sebep, form doldurulurken
@@ -409,8 +391,9 @@ if (post_istegi_mi()) {
 // =====================================================================
 // 5) GORUNUM
 // =====================================================================
-$sayfaBasligi = 'Masa Rezervasyonu';
-$aktifSayfa   = 'ana';
+$sayfaBasligi    = 'Masa Rezervasyonu';
+$sayfaAciklamasi = SITE_ADI . ' · ' . KAFE_ACILIS . '–' . KAFE_KAPANIS . ' · masa rezervasyonu';
+$aktifSayfa      = 'ana';
 require __DIR__ . '/partials/header.php';
 ?>
 
@@ -422,39 +405,46 @@ require __DIR__ . '/partials/header.php';
         <div class="row align-items-center gy-4">
 
             <div class="col-lg-7">
-                <span class="kafe-rozet mb-3"><?= e(KAFE_ACILIS) ?> &ndash; <?= e(KAFE_KAPANIS) ?> arası açıktır</span>
+                <span class="kafe-rozet mb-3">Mahalle kahvesi · <?= e(SITE_ADI) ?></span>
 
                 <h1 class="kafe-hero-baslik">
                     Masanı ayırt,<br>kahven hazır olsun.
                 </h1>
 
                 <p class="kafe-hero-metin">
-                    <?= e(SITE_ADI) ?>'nda iç mekan ve bahçe masalarını birkaç saniyede
+                    <?= e(SITE_ADI) ?>’nda iç mekan ve bahçe masalarını birkaç saniyede
                     rezerve edebilirsiniz. Tarih ve saati seçin, o aralıkta boş olan
                     masaları anında görün.
                 </p>
 
                 <div class="d-flex flex-wrap gap-2">
-                    <a href="#rezervasyon-formu" class="btn btn-kafe px-4">Hemen Rezervasyon Yap</a>
-                    <a href="rezervasyon-sorgula.php" class="btn btn-kafe-cizgi px-4">Rezervasyonumu Sorgula</a>
+                    <a href="#rezervasyon-formu" class="btn btn-kafe px-4">Hemen rezervasyon yap</a>
+                    <a href="rezervasyon-sorgula.php" class="btn btn-kafe-cizgi px-4">Rezervasyonumu sorgula</a>
                 </div>
             </div>
 
             <div class="col-lg-5">
-                <ul class="kafe-ozellik-liste">
-                    <li>
-                        <strong>Anında müsaitlik</strong>
-                        Seçtiğiniz saat aralığında gerçekten boş olan masalar listelenir.
-                    </li>
-                    <li>
-                        <strong>Takip kodu</strong>
-                        Her rezervasyon için kısa bir kod üretilir; sorgulama ve iptal bu kodla yapılır.
-                    </li>
-                    <li>
-                        <strong>İç mekan / bahçe</strong>
-                        Masanın konumunu ve kapasitesini seçmeden önce görürsünüz.
-                    </li>
-                </ul>
+                <div class="kafe-saat-karti">
+                    <p class="kafe-ust-etiket">Bugün açık</p>
+                    <p class="kafe-saat-buyuk mb-2">
+                        <?= e(KAFE_ACILIS) ?> <span>&ndash;</span> <?= e(KAFE_KAPANIS) ?>
+                    </p>
+                    <p class="small mb-3 opacity-75">Her gün, mutfağın son siparişine kadar.</p>
+                    <ul class="kafe-ozellik-liste">
+                        <li>
+                            <strong>Anında müsaitlik</strong>
+                            Seçtiğiniz aralıkta gerçekten boş masalar.
+                        </li>
+                        <li>
+                            <strong>Takip kodu</strong>
+                            Sorgulama ve iptal bu kodla yapılır.
+                        </li>
+                        <li>
+                            <strong>İç mekan / bahçe</strong>
+                            Konum ve kapasite kartın üzerinde.
+                        </li>
+                    </ul>
+                </div>
             </div>
 
         </div>
@@ -463,75 +453,6 @@ require __DIR__ . '/partials/header.php';
 
 
 <div class="container my-5">
-
-    <?php if ($sonRezervasyon !== null): ?>
-        <!-- =========================================================
-             BASARI EKRANI
-             Sadece yonlendirmeden hemen sonraki GET istegiyle gorunur.
-             ========================================================= -->
-        <section class="kafe-basari-kart mb-5" id="rezervasyon-sonucu">
-            <div class="row gy-4 align-items-center">
-
-                <div class="col-lg-5 text-center">
-                    <p class="kafe-kod-etiket">Rezervasyon Kodunuz</p>
-
-                    <!--
-                        Kod GORSEL OLARAK en bariz oge olmali: musteri bu
-                        ekrandan sadece bunu almali. Harfler arasi bosluk
-                        (letter-spacing) ve monospace font, kodu telefonda
-                        okurken/yazarken hata yapilmasini azaltir.
-                    -->
-                    <p class="kafe-kod"><?= e($sonRezervasyon['kod']) ?></p>
-
-                    <div class="alert alert-warning small mb-0 text-start">
-                        <strong>Bu kodu saklayın.</strong>
-                        Rezervasyonunuzu sorgulamak ve iptal etmek icin
-                        bu kod gereklidir. Kodu baskasiyla paylasmayin.
-                    </div>
-                </div>
-
-                <div class="col-lg-7">
-                    <h2 class="h4 mb-3">Masanız ayrıldı</h2>
-
-                    <dl class="kafe-ozet">
-                        <dt>Ad Soyad</dt>
-                        <dd><?= e($sonRezervasyon['ad']) ?></dd>
-
-                        <dt>Masa</dt>
-                        <dd>
-                            <?= e($sonRezervasyon['masa_adi']) ?>
-                            <span class="badge kafe-konum-rozet">
-                                <?= $sonRezervasyon['konum'] === 'dis' ? 'Bahçe' : 'İç mekan' ?>
-                            </span>
-                        </dd>
-
-                        <dt>Tarih</dt>
-                        <dd><?= e(tarih_goster($sonRezervasyon['tarih'])) ?></dd>
-
-                        <dt>Saat</dt>
-                        <dd><?= e($sonRezervasyon['baslangic']) ?> &ndash; <?= e($sonRezervasyon['bitis']) ?></dd>
-
-                        <dt>Kişi</dt>
-                        <dd><?= e($sonRezervasyon['kisi_sayisi']) ?> kişi</dd>
-                    </dl>
-
-                    <!--
-                        Koda u() (rawurlencode) uyguluyoruz. Kod sadece
-                        [A-Z2-9] karakterlerinden olustugu icin pratikte
-                        degismez; ama "URL'e giden her deger URL kacislamasi
-                        ister" kuralini istisnasiz uygulamak, bir gun kod
-                        bicimi degistiginde sessiz hatayi onler.
-                    -->
-                    <a class="btn btn-kafe mt-2"
-                       href="rezervasyon-sorgula.php?kod=<?= u($sonRezervasyon['kod']) ?>">
-                        Rezervasyonu Goruntule
-                    </a>
-                </div>
-
-            </div>
-        </section>
-    <?php endif; ?>
-
 
     <!-- =============================================================
          REZERVASYON FORMU
@@ -684,9 +605,11 @@ require __DIR__ . '/partials/header.php';
                     kullanici listenin geldigini hic fark etmez.
                 -->
                 <div id="masaListesi" class="kafe-masa-listesi" aria-live="polite">
-                    <p class="kafe-bos-durum">
-                        Müsait masaları görmek için yukarıdan tarih, saat ve kişi sayısı seçin.
-                    </p>
+                    <div class="kafe-bos-durum">
+                        <span class="kafe-bos-ikon" aria-hidden="true"></span>
+                        <strong>Önce zamanı seçin</strong>
+                        <p class="mb-0">Müsait masalar, tarih, saat ve kişi sayısı girilince listelenir.</p>
+                    </div>
                 </div>
 
                 <!--
@@ -789,6 +712,30 @@ require __DIR__ . '/partials/header.php';
             </div>
 
         </form>
+    </section>
+
+    <section class="kafe-ozet-serit mt-5">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="kafe-mini-kart">
+                    <p class="kafe-ust-etiket">Saatler</p>
+                    <p class="mb-0 fw-semibold"><?= e(KAFE_ACILIS) ?> – <?= e(KAFE_KAPANIS) ?></p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="kafe-mini-kart">
+                    <p class="kafe-ust-etiket">Adres</p>
+                    <p class="mb-0"><?= e(KAFE_ADRES) ?></p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="kafe-mini-kart">
+                    <p class="kafe-ust-etiket">Hikâye</p>
+                    <p class="mb-2">Kısa bir mahalle kahvesi notu ve iletişim.</p>
+                    <a href="hakkimizda.php">Hakkımızda</a>
+                </div>
+            </div>
+        </div>
     </section>
 
 </div>

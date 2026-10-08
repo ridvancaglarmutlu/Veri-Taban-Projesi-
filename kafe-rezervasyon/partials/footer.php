@@ -22,30 +22,29 @@ $jsSurumu = $jsSurumu ?? (@filemtime(APP_KOK . '/assets/js/app.js') ?: time());
 </main>
 
 <footer class="kafe-footer mt-5">
-    <div class="container py-4">
-        <div class="row gy-3 align-items-center">
-
-            <div class="col-md-6">
-                <p class="mb-1 fw-semibold"><?= e(SITE_ADI) ?></p>
+    <div class="container py-5">
+        <div class="row gy-4">
+            <div class="col-md-4">
+                <p class="kafe-marka mb-1"><?= e(SITE_ADI) ?></p>
                 <p class="mb-0 small opacity-75"><?= e(SITE_SLOGAN) ?></p>
             </div>
-
-            <div class="col-md-6 text-md-end small opacity-75">
-                <p class="mb-1">
-                    Çalışma saatleri:
-                    <?= e(KAFE_ACILIS) ?> &ndash; <?= e(KAFE_KAPANIS) ?>
-                </p>
-                <p class="mb-0">
-                    <!--
-                        date('Y') her yil elle guncelleme derdini bitirir.
-                        Zaman dilimi bootstrap.php'de Europe/Istanbul olarak
-                        sabitlendigi icin yil donumunde de dogru sonuc verir.
-                    -->
-                    &copy; <?= e(date('Y')) ?> &middot; Veritabanı dersi projesi
+            <div class="col-md-4 small">
+                <p class="kafe-ust-etiket text-white-50 mb-2">Saatler</p>
+                <p class="mb-1 fw-semibold"><?= e(KAFE_ACILIS) ?> &ndash; <?= e(KAFE_KAPANIS) ?></p>
+                <p class="mb-0 opacity-75"><?= e(KAFE_ADRES) ?></p>
+            </div>
+            <div class="col-md-4 small">
+                <p class="kafe-ust-etiket text-white-50 mb-2">Bağlantılar</p>
+                <p class="mb-1"><a href="rezervasyon-sorgula.php">Rezervasyon sorgula</a></p>
+                <p class="mb-1"><a href="hakkimizda.php">Hakkımızda</a></p>
+                <p class="mb-0 kafe-personel-link">
+                    <a href="admin/login.php">Personel girişi</a>
                 </p>
             </div>
-
         </div>
+        <p class="small opacity-50 mt-4 mb-0">
+            &copy; <?= e(date('Y')) ?> &middot; Veritabanı dersi projesi
+        </p>
     </div>
 </footer>
 

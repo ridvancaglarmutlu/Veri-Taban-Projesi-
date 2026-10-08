@@ -79,6 +79,11 @@ define('DB_CHARSET', 'utf8mb4');
 define('SITE_ADI', 'Kahve Durağı');
 define('SITE_SLOGAN', 'Masanı ayırt, sıra bekleme.');
 
+// Ornek iletisim — gercek bir isletmeye ait degildir (ders projesi).
+define('KAFE_ADRES', 'Öğrenci Mahallesi, Dersane Sokak No: 12, Örnekkent');
+define('KAFE_TELEFON_GOSTER', '0212 000 00 00');
+define('KAFE_EPOSTA', 'iletisim@kahveduragi.ornek');
+
 // --- Calisma saatleri -------------------------------------------------
 // Rezervasyon formundaki saat secenekleri bu araliga gore uretilir ve
 // sunucu tarafinda da bu araliga gore DOGRULANIR.

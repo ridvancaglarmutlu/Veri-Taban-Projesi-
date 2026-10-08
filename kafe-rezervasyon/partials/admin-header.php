@@ -48,6 +48,11 @@ $menuSinifi = static function (string $anahtar) use ($aktifSayfa): string {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="<?= e($sayfaAciklamasi) ?>">
+    <meta property="og:title" content="<?= e($sayfaBasligi) ?> · <?= e(SITE_ADI) ?>">
+    <meta property="og:description" content="<?= e($sayfaAciklamasi) ?>">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
     <title><?= e($sayfaBasligi) ?> &middot; <?= e(SITE_ADI) ?></title>
     <link
         rel="stylesheet"

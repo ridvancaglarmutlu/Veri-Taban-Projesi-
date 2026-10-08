@@ -39,17 +39,18 @@
    eziyoruz, boylece Bootstrap bilesenleri de temamiza uyuyor.
    ===================================================================== */
 :root {
-    /* Ana palet - kavrulmus kahve tonlari */
-    --kafe-espresso: #2b1d16;   /* en koyu: baslik ve footer */
-    --kafe-kahve:    #6b4a32;   /* orta: navbar, birincil buton */
-    --kafe-kahve-ac: #8a6244;   /* hover durumu */
-    --kafe-karamel:  #c98a3f;   /* vurgu: rozet, secili masa */
-    --kafe-karamel-ac: #e0a75e;
+    /* Ana palet - espresso, krema, pirinc (brass) */
+    --kafe-espresso: #1c1410;   /* en koyu: baslik ve footer */
+    --kafe-kahve:    #5c3d28;   /* orta: navbar, birincil buton */
+    --kafe-kahve-ac: #7a5338;   /* hover durumu */
+    --kafe-karamel:  #b08d57;   /* pirinc vurgu */
+    --kafe-karamel-ac: #d4b484;
 
     /* Notr zemin tonlari */
-    --kafe-sut:   #fbf6f0;      /* sayfa arka plani */
-    --kafe-kum:   #ece0d2;      /* kenarlik */
-    --kafe-kagit: #ffffff;      /* kart zemini */
+    --kafe-sut:   #f4eadc;      /* sayfa arka plani */
+    --kafe-kum:   #e2d3c0;      /* kenarlik */
+    --kafe-kagit: #fffaf3;      /* kart zemini */
+    --kafe-pirinc: #c4a574;
 
     /* Metin */
     --kafe-metin:  #3a2b22;
@@ -92,7 +93,10 @@
        yerlesik fontunu kullanir. Dis kaynaktan font indirmedigimiz icin
        sayfa daha hizli acilir ve "yazi tipi yuklenirken metnin ziplamasi"
        (FOUT) sorunu yasanmaz. */
-    font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-family: "Segoe UI", "Helvetica Neue", system-ui, -apple-system, Arial, sans-serif;
+    letter-spacing: -.01em;
+    font-size: 0.97rem;
+    line-height: 1.55;
 
     /* Sayfa kisa oldugunda footer'in ekranin ortasinda asili kalmamasi
        icin klasik "sticky footer" duzeni. */
@@ -146,7 +150,15 @@
    ===================================================================== */
 .kafe-navbar {
     background: var(--kafe-espresso);
-    box-shadow: var(--kafe-golge-orta);
+    box-shadow: 0 1px 0 rgba(196, 165, 116, .28);
+    padding-top: .45rem;
+    padding-bottom: .45rem;
+}
+
+.kafe-marka {
+    font-family: Palatino, "Palatino Linotype", "Iowan Old Style", Georgia, serif;
+    font-weight: 600;
+    letter-spacing: .02em;
 }
 
 .kafe-navbar .navbar-brand,
@@ -253,10 +265,11 @@
 }
 
 .kafe-hero-baslik {
-    font-size: clamp(1.9rem, 4.5vw, 3rem);
-    font-weight: 700;
-    line-height: 1.15;
-    letter-spacing: -.5px;
+    font-family: Palatino, "Palatino Linotype", "Iowan Old Style", Georgia, serif;
+    font-size: clamp(2.05rem, 4.6vw, 3.15rem);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -.03em;
     margin-bottom: 1rem;
 }
 
@@ -686,6 +699,26 @@
     background: var(--kafe-espresso);
     color: #efe3d7;
     flex: none;   /* sticky footer duzeninde kucultulmesin */
+    border-top: 1px solid rgba(196, 165, 116, .35);
+}
+
+.kafe-footer a {
+    color: var(--kafe-karamel-ac);
+    text-decoration: none;
+}
+
+.kafe-footer a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.kafe-personel-link a {
+    color: rgba(239, 227, 215, .38) !important;
+    font-size: .8rem;
+}
+
+.kafe-personel-link a:hover {
+    color: rgba(239, 227, 215, .7) !important;
 }
 
 
@@ -1057,5 +1090,142 @@
 
     .admin-icerik-ic {
         padding: 1rem;
+    }
+}
+
+
+/* =====================================================================
+   14) PREMIUM CILA — saat karti, bos durum, onay, yazdir
+   ===================================================================== */
+.kafe-ust-etiket {
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--kafe-pirinc);
+    margin-bottom: .35rem;
+}
+
+.kafe-saat-karti {
+    background: rgba(255, 250, 243, .08);
+    border: 1px solid rgba(196, 165, 116, .35);
+    border-radius: var(--kafe-yuvarlak);
+    padding: 1.35rem 1.4rem;
+    backdrop-filter: blur(6px);
+}
+
+.kafe-saat-buyuk {
+    font-family: Palatino, "Palatino Linotype", Georgia, serif;
+    font-size: clamp(1.7rem, 3vw, 2.15rem);
+    font-weight: 600;
+    letter-spacing: .04em;
+    color: #f6ece2;
+    margin: 0;
+}
+
+.kafe-saat-buyuk span {
+    color: var(--kafe-pirinc);
+}
+
+.kafe-hero-kisa {
+    padding: clamp(2rem, 5vw, 3.2rem) 0;
+}
+
+.kafe-mini-kart {
+    background: var(--kafe-kagit);
+    border: 1px solid var(--kafe-kum);
+    border-radius: var(--kafe-yuvarlak);
+    padding: 1.15rem 1.2rem;
+    height: 100%;
+    box-shadow: var(--kafe-golge-kucuk);
+}
+
+.kafe-bos-durum,
+.kafe-durum-kutusu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .35rem;
+    padding: 2rem 1.25rem;
+}
+
+.kafe-bos-durum strong,
+.kafe-durum-kutusu strong {
+    color: var(--kafe-espresso);
+}
+
+.kafe-bos-ikon {
+    display: block;
+    width: 42px;
+    height: 42px;
+    margin-bottom: .35rem;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b08d57' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 8h1a4 4 0 1 1 0 8h-1'/%3E%3Cpath d='M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z'/%3E%3Cpath d='M6 2v3M10 2v3M14 2v3'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.kafe-onay-sayfa {
+    border-left-width: 8px;
+}
+
+.kafe-iletisim-kart {
+    border-top: 3px solid var(--kafe-pirinc);
+}
+
+.admin-ozet-kalan {
+    border-top: 4px solid var(--kafe-karamel);
+}
+
+.kafe-yaklasan li {
+    display: flex;
+    flex-direction: column;
+    gap: .1rem;
+    padding: .7rem 0;
+    border-bottom: 1px solid var(--kafe-kum);
+}
+
+.kafe-yaklasan li:last-child {
+    border-bottom: 0;
+}
+
+.kafe-yaklasan-saat {
+    font-size: .75rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--kafe-soluk);
+}
+
+.admin-yan-marka small {
+    color: var(--kafe-pirinc);
+}
+
+.admin-govde-panel .admin-yan {
+    border-right-color: rgba(196, 165, 116, .4);
+}
+
+@media print {
+    .icerige-atla,
+    .kafe-navbar,
+    .kafe-footer,
+    .no-print,
+    .alert {
+        display: none !important;
+    }
+
+    .kafe-govde,
+    body {
+        background: #fff !important;
+        color: #000;
+    }
+
+    .kafe-basari-kart {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+
+    .kafe-kod {
+        user-select: all;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 }

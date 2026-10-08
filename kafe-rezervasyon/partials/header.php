@@ -91,6 +91,11 @@ $menuSinifi = static function (string $anahtar) use ($aktifSayfa): string {
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <meta name="description" content="<?= e($sayfaAciklamasi) ?>">
+    <meta property="og:title" content="<?= e($sayfaBasligi) ?> · <?= e(SITE_ADI) ?>">
+    <meta property="og:description" content="<?= e($sayfaAciklamasi) ?>">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 
     <!--
         Baslik bicimi "Sayfa - Site": tarayici sekmesi daraldiginda once
@@ -173,7 +178,7 @@ $menuSinifi = static function (string $anahtar) use ($aktifSayfa): string {
                 <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path>
                 <path d="M6 2v3M10 2v3M14 2v3"></path>
             </svg>
-            <span class="fw-semibold"><?= e(SITE_ADI) ?></span>
+            <span class="kafe-marka"><?= e(SITE_ADI) ?></span>
         </a>
 
         <!--
@@ -198,13 +203,18 @@ $menuSinifi = static function (string $anahtar) use ($aktifSayfa): string {
                        href="index.php">Ana Sayfa</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link<?= $menuSinifi('hakkimizda') ?>"
+                       <?= $aktifSayfa === 'hakkimizda' ? 'aria-current="page"' : '' ?>
+                       href="hakkimizda.php">Hakkımızda</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link<?= $menuSinifi('sorgula') ?>"
                        <?= $aktifSayfa === 'sorgula' ? 'aria-current="page"' : '' ?>
-                       href="rezervasyon-sorgula.php">Rezervasyon Sorgula</a>
+                       href="rezervasyon-sorgula.php">Sorgula</a>
                 </li>
                 <li class="nav-item ms-lg-2">
                     <a class="btn btn-kafe btn-sm px-3" href="index.php#rezervasyon-formu">
-                        Masa Ayırt
+                        Masa ayırt
                     </a>
                 </li>
             </ul>

@@ -43,10 +43,13 @@ kafe-rezervasyon/
 │
 ├── assets/
 │   ├── css/style.css           # Kahve teması + admin sidebar
+│   ├── img/favicon.svg         # Sekme ikonu
 │   ├── js/app.js               # Dinamik masa listeleme (fetch)
 │   └── js/admin.js             # Sil / iptal öncesi confirm()
 │
 ├── index.php                   # Müşteri ana sayfası + rezervasyon formu
+├── hakkimizda.php              # Kısa hikâye + yer tutucu iletişim
+├── rezervasyon-onay.php        # Başarılı rezervasyon (kod + yazdır)
 ├── rezervasyon-sorgula.php     # Kod/telefon ile sorgulama ve iptal
 └── database.sql                # Veritabanı şeması + örnek veriler
 ```
@@ -81,6 +84,8 @@ Oturum yoksa korunan sayfalar `login.php` adresine 303 ile gider.
 | Sayfa | Adres |
 | --- | --- |
 | Müşteri formu | `http://localhost/kafe-rezervasyon/` |
+| Hakkımızda | `http://localhost/kafe-rezervasyon/hakkimizda.php` |
+| Rezervasyon onay | `http://localhost/kafe-rezervasyon/rezervasyon-onay.php` (kayıt sonrası 303) |
 | Rezervasyon sorgula | `http://localhost/kafe-rezervasyon/rezervasyon-sorgula.php` |
 | Giriş | `http://localhost/kafe-rezervasyon/admin/login.php` |
 | Panel (dashboard) | `http://localhost/kafe-rezervasyon/admin/index.php` |

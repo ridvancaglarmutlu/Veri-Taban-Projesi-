@@ -435,10 +435,14 @@ require __DIR__ . '/partials/header.php';
 
 
     <?php if (!$arandiMi): ?>
-        <p class="text-muted">
-            Henüz rezervasyonunuz yok mu?
-            <a href="index.php#rezervasyon-formu">Hemen masa ayırtın.</a>
-        </p>
+        <div class="kafe-bos-durum">
+            <span class="kafe-bos-ikon" aria-hidden="true"></span>
+            <strong>Kodunuz hazır olduğunda</strong>
+            <p class="mb-0">
+                Henüz rezervasyonunuz yok mu?
+                <a href="index.php#rezervasyon-formu">Hemen masa ayırtın.</a>
+            </p>
+        </div>
     <?php endif; ?>
 
 </div>

@@ -110,7 +110,9 @@
     /** Liste alanina tek satirlik bir durum kutusu basar. */
     function durumGoster(html, hataMi) {
         listeEl.innerHTML =
-            '<div class="kafe-durum-kutusu' + (hataMi ? ' hata' : '') + '">' + html + '</div>';
+            '<div class="kafe-durum-kutusu' + (hataMi ? ' hata' : '') + '">' +
+            (hataMi ? '' : '<span class="kafe-bos-ikon" aria-hidden="true"></span>') +
+            html + '</div>';
     }
 
 
@@ -262,8 +264,11 @@
         // hata demektir.
         if (!tarih || !baslangic || !kisi) {
             listeEl.innerHTML =
-                '<p class="kafe-bos-durum">Musait masalari gormek icin yukaridan ' +
-                'tarih, saat ve kişi sayısı seçin.</p>';
+                '<div class="kafe-bos-durum">' +
+                '<span class="kafe-bos-ikon" aria-hidden="true"></span>' +
+                '<strong>Önce zamanı seçin</strong>' +
+                '<p class="mb-0">Müsait masalar, tarih, saat ve kişi sayısı girilince listelenir.</p>' +
+                '</div>';
             return;
         }
 
