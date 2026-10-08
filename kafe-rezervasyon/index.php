@@ -425,6 +425,11 @@ require __DIR__ . '/partials/header.php';
             </div>
 
             <div class="col-lg-5">
+                <figure class="kafe-hero-foto-cerceve mb-3">
+                    <img src="assets/img/salon-hero.jpg"
+                         alt="Kahve Durağı iç salonu, ahşap masalar"
+                         width="1362" height="900">
+                </figure>
                 <div class="kafe-saat-karti">
                     <p class="kafe-ust-etiket">Salon saatleri</p>
                     <p class="kafe-saat-buyuk mb-2">
@@ -453,6 +458,49 @@ require __DIR__ . '/partials/header.php';
 </section>
 
 
+<section class="kafe-imza-menu" id="imza-menu" aria-labelledby="imzaMenuBaslik">
+    <div class="container">
+        <p class="kafe-ust-etiket mb-2">Mutfak defteri</p>
+        <h2 id="imzaMenuBaslik">İmza fincanlar ve tepsi</h2>
+        <p class="mb-0 opacity-75">Sabit vitrin menüsü — sipariş kapıda alınır, veritabanına yazılmaz.</p>
+        <div class="kafe-imza-grid">
+            <figure class="kafe-imza-kart">
+                <img src="assets/img/menu-espresso.jpg" alt="Espresso fincanı" width="400" height="467" loading="lazy">
+                <figcaption><strong>Espresso</strong><span>Kısa shot · 45 ₺</span></figcaption>
+            </figure>
+            <figure class="kafe-imza-kart">
+                <img src="assets/img/menu-filtre.jpg" alt="Filtre kahve" width="400" height="467" loading="lazy">
+                <figcaption><strong>Filtre kahve</strong><span>Günün çekirdeği · 55 ₺</span></figcaption>
+            </figure>
+            <figure class="kafe-imza-kart">
+                <img src="assets/img/menu-latte.jpg" alt="Latte" width="400" height="467" loading="lazy">
+                <figcaption><strong>Latte</strong><span>Sütlü · 70 ₺</span></figcaption>
+            </figure>
+            <figure class="kafe-imza-kart">
+                <img src="assets/img/menu-mocha.jpg" alt="Mocha" width="400" height="467" loading="lazy">
+                <figcaption><strong>Mocha</strong><span>Kakao · 75 ₺</span></figcaption>
+            </figure>
+            <figure class="kafe-imza-kart">
+                <img src="assets/img/menu-buzlu.jpg" alt="Buzlu kahve" width="400" height="467" loading="lazy">
+                <figcaption><strong>Buzlu Americano</strong><span>Yaz bardağı · 65 ₺</span></figcaption>
+            </figure>
+            <figure class="kafe-imza-kart">
+                <img src="assets/img/menu-cheesecake.jpg" alt="Cheesecake dilimi" width="400" height="467" loading="lazy">
+                <figcaption><strong>San Sebastian</strong><span>Yanmış uç · 95 ₺</span></figcaption>
+            </figure>
+            <figure class="kafe-imza-kart">
+                <img src="assets/img/menu-brownie.jpg" alt="Brownie" width="400" height="467" loading="lazy">
+                <figcaption><strong>Brownie</strong><span>Cevizli · 80 ₺</span></figcaption>
+            </figure>
+            <figure class="kafe-imza-kart">
+                <img src="assets/img/menu-croissant.jpg" alt="Kruvasan" width="400" height="467" loading="lazy">
+                <figcaption><strong>Kruvasan</strong><span>Tereyağlı · 60 ₺</span></figcaption>
+            </figure>
+        </div>
+    </div>
+</section>
+
+
 <div class="container my-5">
 
     <!-- =============================================================
@@ -460,11 +508,34 @@ require __DIR__ . '/partials/header.php';
          ============================================================= -->
     <section id="rezervasyon-formu">
 
-        <header class="kafe-bolum-baslik">
-            <p class="kafe-ust-etiket">Misafir defteri</p>
-            <h2>Rezervasyon formu</h2>
-            <p>Önce tarih ve saati seçin, ardından listelenen müsait masalardan birini işaretleyin.</p>
-        </header>
+        <div class="kafe-rezervasyon-sahne">
+            <figure class="kafe-rezervasyon-foto">
+                <img src="assets/img/salon-masa.jpg"
+                     alt="Ayrılmış masa, loş salon ışığı"
+                     width="1000" height="667" loading="lazy">
+                <figcaption>İç salon · numaralı masalar</figcaption>
+            </figure>
+            <header class="kafe-bolum-baslik mb-0">
+                <p class="kafe-ust-etiket">Misafir defteri</p>
+                <h2>Üç adımda masa</h2>
+                <p>Önce zamanı kilitleyin, boş kartlardan birini seçin, iletişimle deftere yazın. Çakışan saatler listelenmez.</p>
+            </header>
+        </div>
+
+        <ol class="kafe-adim-serit">
+            <li data-adim="Adım 01">
+                <b>Zaman</b>
+                <small>Tarih, saat, süre ve kişi sayısı.</small>
+            </li>
+            <li data-adim="Adım 02">
+                <b>Masa</b>
+                <small>Salon veya bahçe; yalnızca müsait olanlar.</small>
+            </li>
+            <li data-adim="Adım 03">
+                <b>İletişim</b>
+                <small>Ad, telefon ve davetiye kodu.</small>
+            </li>
+        </ol>
 
         <?php if (isset($hatalar['genel'])): ?>
             <!--

@@ -45,7 +45,7 @@ kafe-rezervasyon/
 │   ├── css/style.css           # Lüks kafe teması + admin sidebar
 │   ├── css/fonts.css           # Yerel Cormorant Garamond + Outfit
 │   ├── fonts/                  # woff2 (latin + latin-ext)
-│   ├── img/favicon.svg         # Sekme ikonu
+│   ├── img/                    # Yerel kafe JPEG + favicon (çevrimdışı)
 │   ├── js/app.js               # Dinamik masa listeleme (fetch)
 │   └── js/admin.js             # Sil / iptal öncesi confirm()
 │
@@ -160,4 +160,4 @@ Kritik PDO ayarı: `PDO::ATTR_EMULATE_PREPARES => false` (gerçek prepared state
 
 ## Stok fotoğraflar
 
-Kahraman, hakkımızda ve personel girişi görselleri **Unsplash** stok fotoğraflarıdır (https bağlantısı; indirme yok). Gerçek işletme veya müşteri fotoğrafı değildir. Çevrimdışı ortamda görseller yüklenmez; metin ve rezervasyon akışı yine çalışır.
+Kahraman, menü şeridi, hakkımızda ve personel girişi görselleri **Unsplash** stok fotoğraflarının yerelde sıkıştırılmış JPEG kopyalarıdır (`assets/img/`). Gerçek işletme veya müşteri fotoğrafı değildir. XAMPP / çevrimdışı teslimde harici görsel adresi gerekmez.

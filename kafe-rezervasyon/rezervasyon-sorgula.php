@@ -180,6 +180,14 @@ require __DIR__ . '/partials/header.php';
         </p>
     </div>
 </section>
+<div class="container mt-n2">
+    <figure class="kafe-foto-cerceve mt-4 mb-0">
+        <img src="assets/img/salon-sokak.jpg"
+             alt="Kafe vitrini, sokak cephesi"
+             width="1000" height="667" loading="lazy">
+        <figcaption>Sokak cephesi · yerel stok</figcaption>
+    </figure>
+</div>
 
 <div class="container my-4 my-lg-5">
 

@@ -194,9 +194,28 @@
             rozetler.appendChild(kapasite);
             rozetler.appendChild(konum);
 
+            const fotoSerit = document.createElement('span');
+            fotoSerit.className = 'kafe-masa-foto';
+            fotoSerit.setAttribute('aria-hidden', 'true');
+
+            const koltuk = document.createElement('span');
+            koltuk.className = 'kafe-masa-koltuk';
+            koltuk.setAttribute('aria-hidden', 'true');
+            const koltukSayisi = Math.min(parseInt(masa.kapasite, 10) || 0, 8);
+            for (let i = 0; i < koltukSayisi; i++) {
+                koltuk.appendChild(document.createElement('i'));
+            }
+
+            const ipucu = document.createElement('span');
+            ipucu.className = 'kafe-masa-ipucu';
+            ipucu.textContent = disMiKart ? 'Bahçe köşesi · ısıtıcılı' : 'İç salon · loş ışık';
+
             kart.appendChild(radio);
+            kart.appendChild(fotoSerit);
             kart.appendChild(ad);
             kart.appendChild(rozetler);
+            kart.appendChild(koltuk);
+            kart.appendChild(ipucu);
 
             // --- Doluluk ipucu ---
             // API 'dolu_araliklar' alanini metin olarak dondurur

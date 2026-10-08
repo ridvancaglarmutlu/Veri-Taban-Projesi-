@@ -35,10 +35,10 @@ require __DIR__ . '/partials/header.php';
     <div class="row g-4 align-items-stretch">
         <div class="col-lg-6">
             <figure class="kafe-foto-cerceve mb-0 h-100">
-                <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&amp;fit=crop&amp;w=1200&amp;q=80"
-                     alt="Fincanlarda kahve, stok fotoğraf"
-                     width="1200" height="800" loading="lazy">
-                <figcaption>Stok fotoğraf · Unsplash</figcaption>
+                <img src="assets/img/fincan.jpg"
+                     alt="Fincanlarda demlenmiş kahve"
+                     width="900" height="600" loading="lazy">
+                <figcaption>Yerel stok · salon fincanı</figcaption>
             </figure>
         </div>
         <div class="col-lg-6">
@@ -58,6 +58,14 @@ require __DIR__ . '/partials/header.php';
                     gerekirse aynı gün iptal edersiniz.
                 </p>
             </article>
+        </div>
+        <div class="col-12">
+            <figure class="kafe-foto-cerceve mb-0">
+                <img src="assets/img/salon-vitrin.jpg"
+                     alt="Vitrin ve iç mekan masaları"
+                     width="1000" height="686" loading="lazy">
+                <figcaption>İç salon vitrini · yerel stok</figcaption>
+            </figure>
         </div>
         <div class="col-lg-7">
             <aside class="kafe-kart kafe-saat-cizelge h-100">

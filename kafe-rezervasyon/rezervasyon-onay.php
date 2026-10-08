@@ -30,6 +30,11 @@ require __DIR__ . '/partials/header.php';
     <section class="kafe-basari-kart kafe-onay-sayfa" id="rezervasyon-sonucu">
         <div class="row gy-4 align-items-center">
             <div class="col-lg-5 text-center kafe-onay-kod">
+                <figure class="kafe-onay-foto">
+                    <img src="assets/img/salon-masa.jpg"
+                         alt="Ayrılmış masa"
+                         width="1000" height="667">
+                </figure>
                 <p class="kafe-kod-etiket">Davetiye kodu</p>
                 <p class="kafe-kod"><?= e($sonRezervasyon['kod']) ?></p>
                 <div class="alert alert-warning small mb-0 text-start">
