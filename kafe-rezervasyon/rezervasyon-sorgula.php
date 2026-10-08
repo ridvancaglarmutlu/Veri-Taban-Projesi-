@@ -170,7 +170,8 @@ require __DIR__ . '/partials/header.php';
 <div class="container my-4 my-lg-5">
 
     <header class="kafe-bolum-baslik">
-        <h1 class="h3 mb-2">Rezervasyon Sorgula</h1>
+        <p class="kafe-ust-etiket">Defter kaydı</p>
+        <h1 class="h3 mb-2">Rezervasyon sorgula</h1>
         <p>Rezervasyon kodunuz ya da telefon numaranızla kaydınızı görüntüleyin.</p>
     </header>
 

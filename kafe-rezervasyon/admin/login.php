@@ -44,12 +44,16 @@ require __DIR__ . '/../partials/admin-header.php';
 
 <div class="admin-giris-sahne">
     <div class="admin-giris-pano">
-        <p class="kafe-rozet mb-3">Kahve Durağı · 09:00–23:00</p>
+        <p class="kafe-rozet mb-3"><?= e(SITE_ADI) ?> · <?= e(KAFE_ACILIS) ?>–<?= e(KAFE_KAPANIS) ?></p>
         <h1 class="h2 mb-3">Kasa ofisi</h1>
-        <p class="mb-0">Masa düzeni, günlük doluluk ve rezervasyon durumu buradan yönetilir. Müşteri formu bu oturumu kullanmaz.</p>
+        <p class="kafe-alinti kafe-alinti-karanlik mb-3">
+            Günlük defter, salon planı, yalnızca yetkili oturum.
+        </p>
+        <p class="mb-0">Masa düzeni ve rezervasyon durumu buradan yönetilir. Müşteri formu bu oturumu kullanmaz.</p>
     </div>
     <div class="kafe-kart admin-giris-kart">
         <div class="kafe-bolum-baslik mb-4">
+            <p class="kafe-ust-etiket">Personel</p>
             <h2 class="h4">Yönetici girişi</h2>
             <p>Panel yalnızca yetkili hesaplarla açılır.</p>
         </div>

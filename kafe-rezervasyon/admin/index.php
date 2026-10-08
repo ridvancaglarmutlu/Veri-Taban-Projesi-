@@ -133,6 +133,7 @@ require __DIR__ . '/../partials/admin-header.php';
 <div class="admin-sayfa">
     <div class="kafe-bolum-baslik d-flex flex-wrap justify-content-between align-items-end gap-2">
         <div>
+            <p class="kafe-ust-etiket mb-1">Kasa ofisi</p>
             <h1 class="h3 mb-1">Günlük özet</h1>
             <p><?= e(tarih_goster($bugun)) ?> &middot; saat <?= e(saat_goster($simdi)) ?></p>
         </div>

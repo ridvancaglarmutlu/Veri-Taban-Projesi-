@@ -25,6 +25,7 @@ $jsSurumu = $jsSurumu ?? (@filemtime(APP_KOK . '/assets/js/app.js') ?: time());
     <div class="container py-5">
         <div class="row gy-4">
             <div class="col-md-4">
+                <p class="kafe-ust-etiket mb-2">Salon</p>
                 <p class="kafe-marka mb-1"><?= e(SITE_ADI) ?></p>
                 <p class="mb-0 small opacity-75"><?= e(SITE_SLOGAN) ?></p>
             </div>

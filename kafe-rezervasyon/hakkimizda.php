@@ -18,12 +18,15 @@ require __DIR__ . '/partials/header.php';
 ?>
 
 <section class="kafe-hero kafe-hero-kisa">
-    <div class="container">
-        <span class="kafe-rozet mb-3">Mahalle kahvesi</span>
-        <h1 class="kafe-hero-baslik">Masaların dolu olduğu sokak köşesi.</h1>
+    <div class="container kafe-hero-ic">
+        <span class="kafe-rozet mb-3">Salon defteri</span>
+        <h1 class="kafe-hero-baslik">
+            Işıklar kısık,<br>
+            <span class="kafe-italik">masalar numaralı.</span>
+        </h1>
         <p class="kafe-hero-metin mb-0">
-            <?= e(SITE_ADI) ?> öğrenci projesi için kurgulanmış bir mahalle kahvesidir.
-            Gerçek bir işletme değildir; rezervasyon akışı ders kapsamında çalışır.
+            <?= e(SITE_ADI) ?> ders projesi için kurgulanmış bir salondur.
+            Gerçek bir işletme değildir; rezervasyon akışı öğretim kapsamında çalışır.
         </p>
     </div>
 </section>
@@ -33,23 +36,25 @@ require __DIR__ . '/partials/header.php';
         <div class="col-lg-7">
             <article class="kafe-kart kafe-metin-kart h-100">
                 <p class="kafe-ust-etiket">Hikâye</p>
-                <h2 class="h3 mb-3">Espresso, krema, pirinç.</h2>
+                <blockquote class="kafe-alinti">
+                    Sabah dokuzda ilk demlik; gece on birde son fincan.
+                </blockquote>
+                <h2 class="h3 mb-3">Ahşap salon, pirinç çizgi.</h2>
                 <p>
-                    Sabah dokuzda ilk demlik, gece on birde son fincan.
-                    İçeride ahşap masalar, bahçede ısıtıcılı köşe.
-                    Kalabalık akşamlar için masayı önceden ayırmak yeterlidir.
+                    İçeride düşük ışık ve numaralı masalar; bahçede ısıtıcılı köşe.
+                    Kalabalık akşamlar için yer, deftere önceden yazılır.
+                    Ödeme veya üyelik yoktur — sipariş kapıdadır.
                 </p>
                 <p class="mb-0">
-                    Rezervasyon kodunuzla kaydınızı sorgulayabilir, gerekirse
-                    aynı gün iptal edebilirsiniz. Ödeme veya üyelik yoktur;
-                    kapıda sipariş.
+                    Rezervasyon kodunuz davetiye gibidir: onunla kaydı görür,
+                    gerekirse aynı gün iptal edersiniz.
                 </p>
             </article>
         </div>
         <div class="col-lg-5">
             <aside class="kafe-kart kafe-iletisim-kart h-100">
                 <p class="kafe-ust-etiket">İletişim</p>
-                <h2 class="h4 mb-3">Bize yazın</h2>
+                <h2 class="h4 mb-3">Yer tutucu kart</h2>
                 <dl class="kafe-ozet">
                     <dt>Adres</dt>
                     <dd><?= e(KAFE_ADRES) ?></dd>

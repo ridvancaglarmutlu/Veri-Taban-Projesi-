@@ -39,22 +39,24 @@
    eziyoruz, boylece Bootstrap bilesenleri de temamiza uyuyor.
    ===================================================================== */
 :root {
-    /* Ana palet - espresso, krema, pirinc (brass) */
-    --kafe-espresso: #1c1410;   /* en koyu: baslik ve footer */
-    --kafe-kahve:    #5c3d28;   /* orta: navbar, birincil buton */
-    --kafe-kahve-ac: #7a5338;   /* hover durumu */
-    --kafe-karamel:  #b08d57;   /* pirinc vurgu */
-    --kafe-karamel-ac: #d4b484;
+    /* Palet: muzekkep, sarap, pirinc (brass) - krema/espresso'dan ayrilir */
+    --kafe-espresso: #110d0b;   /* en koyu: baslik ve footer */
+    --kafe-kahve:    #6b2d2a;   /* sarap: birincil buton */
+    --kafe-kahve-ac: #863833;
+    --kafe-karamel:  #c6a15b;   /* pirinc cizgi */
+    --kafe-karamel-ac: #e4c98a;
 
     /* Notr zemin tonlari */
-    --kafe-sut:   #f4eadc;      /* sayfa arka plani */
-    --kafe-kum:   #e2d3c0;      /* kenarlik */
-    --kafe-kagit: #fffaf3;      /* kart zemini */
-    --kafe-pirinc: #c4a574;
+    --kafe-sut:   #ebe2d2;      /* sayfa arka plani */
+    --kafe-kum:   #d4c4aa;      /* kenarlik */
+    --kafe-kagit: #f8f1e4;      /* kart zemini */
+    --kafe-pirinc: #c6a15b;
 
     /* Metin */
-    --kafe-metin:  #3a2b22;
-    --kafe-soluk:  #8a7566;
+    --kafe-metin:  #241c16;
+    --kafe-soluk:  #74685b;
+    --kafe-serif:  "Cormorant Garamond", Palatino, Georgia, serif;
+    --kafe-sans:   Outfit, "Segoe UI", system-ui, sans-serif;
 
     /* Golgeler
        Yumusak golge = dusuk opaklik + genis yayilma. Siyah yerine
@@ -66,8 +68,8 @@
                         0 8px 24px rgba(58, 43, 34, .08);
     --kafe-golge-buyuk: 0 12px 36px rgba(58, 43, 34, .14);
 
-    --kafe-yuvarlak:       14px;
-    --kafe-yuvarlak-kucuk: 10px;
+    --kafe-yuvarlak:       3px;
+    --kafe-yuvarlak-kucuk: 2px;
 
     /* Gecis suresi tek yerde: tum hover animasyonlari ayni ritimde
        olsun. Karisik sureler arayuzu "ucuz" gosterir. */
@@ -93,10 +95,10 @@
        yerlesik fontunu kullanir. Dis kaynaktan font indirmedigimiz icin
        sayfa daha hizli acilir ve "yazi tipi yuklenirken metnin ziplamasi"
        (FOUT) sorunu yasanmaz. */
-    font-family: "Segoe UI", "Helvetica Neue", system-ui, -apple-system, Arial, sans-serif;
-    letter-spacing: -.01em;
+    font-family: var(--kafe-sans);
+    letter-spacing: 0;
     font-size: 0.97rem;
-    line-height: 1.55;
+    line-height: 1.6;
 
     /* Sayfa kisa oldugunda footer'in ekranin ortasinda asili kalmamasi
        icin klasik "sticky footer" duzeni. */
@@ -156,9 +158,10 @@
 }
 
 .kafe-marka {
-    font-family: Palatino, "Palatino Linotype", "Iowan Old Style", Georgia, serif;
+    font-family: var(--kafe-serif);
     font-weight: 600;
-    letter-spacing: .02em;
+    letter-spacing: .06em;
+    font-size: 1.28rem;
 }
 
 .kafe-navbar .navbar-brand,
@@ -265,11 +268,11 @@
 }
 
 .kafe-hero-baslik {
-    font-family: Palatino, "Palatino Linotype", "Iowan Old Style", Georgia, serif;
-    font-size: clamp(2.05rem, 4.6vw, 3.15rem);
+    font-family: var(--kafe-serif);
+    font-size: clamp(2.35rem, 5.4vw, 3.65rem);
     font-weight: 600;
-    line-height: 1.12;
-    letter-spacing: -.03em;
+    line-height: 1.08;
+    letter-spacing: -.02em;
     margin-bottom: 1rem;
 }
 
@@ -1115,7 +1118,7 @@
 }
 
 .kafe-saat-buyuk {
-    font-family: Palatino, "Palatino Linotype", Georgia, serif;
+    font-family: var(--kafe-serif);
     font-size: clamp(1.7rem, 3vw, 2.15rem);
     font-weight: 600;
     letter-spacing: .04em;
@@ -1227,5 +1230,413 @@
         user-select: all;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
+    }
+
+    .kafe-navbar,
+    .kafe-hero,
+    .kafe-hero::before {
+        background: none !important;
+    }
+}
+
+
+/* =====================================================================
+   15) LUKS EDITORIAL KAFE — sarap + pirinc, dergi duzeni
+   ---------------------------------------------------------------------
+   Onceki tur espresso/krema idi. Burada zemin daha koyu parsomene,
+   kenarlar pirinc kil, basliklar serif, kartlar bilet/davetiye.
+   Bootstrap izgarasi kalir; mor SaaS paleti kullanilmaz.
+   ===================================================================== */
+
+.kafe-govde {
+    background-color: #e8dcc8;
+    background-image:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(198, 161, 91, .18), transparent 50%),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 3px,
+            rgba(36, 28, 22, .015) 3px,
+            rgba(36, 28, 22, .015) 4px
+        ),
+        linear-gradient(180deg, #f3ead9 0%, #e6d7c0 55%, #ddd0b8 100%);
+    color: var(--kafe-metin);
+}
+
+.kafe-navbar {
+    background: linear-gradient(180deg, #160f0d 0%, #0e0a08 100%);
+    box-shadow: none;
+    border-bottom: 1px solid var(--kafe-pirinc);
+    padding-top: .7rem;
+    padding-bottom: .7rem;
+}
+
+.kafe-navbar::before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--kafe-pirinc), transparent);
+}
+
+.kafe-navbar .nav-link {
+    font-size: .82rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.kafe-navbar .nav-link.active {
+    border-bottom: 1px solid var(--kafe-pirinc);
+}
+
+.kafe-navbar .btn-kafe {
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    font-size: .75rem;
+    background: transparent;
+    border: 1px solid var(--kafe-pirinc);
+    color: var(--kafe-karamel-ac);
+    box-shadow: none;
+}
+
+.kafe-navbar .btn-kafe:hover,
+.kafe-navbar .btn-kafe:focus {
+    background: var(--kafe-pirinc);
+    color: #160f0d;
+    border-color: var(--kafe-pirinc);
+}
+
+.btn-kafe {
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-size: .82rem;
+    background: var(--kafe-kahve);
+    border-color: var(--kafe-kahve);
+    border-radius: 0;
+}
+
+.btn-kafe-cizgi {
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-size: .82rem;
+    border-radius: 0;
+    border-color: var(--kafe-pirinc);
+    color: var(--kafe-kahve);
+}
+
+.btn-kafe-cizgi:hover,
+.btn-kafe-cizgi:focus {
+    background: var(--kafe-espresso);
+    border-color: var(--kafe-espresso);
+    color: var(--kafe-karamel-ac);
+}
+
+.kafe-hero {
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse at 20% 80%, rgba(107, 45, 42, .45), transparent 50%),
+        radial-gradient(circle at 90% 10%, rgba(198, 161, 91, .22), transparent 36%),
+        linear-gradient(165deg, #1a100e 0%, #241614 42%, #0c0908 100%);
+    border-bottom: 0;
+    padding: clamp(3rem, 8vw, 5.5rem) 0;
+}
+
+.kafe-hero::before {
+    content: "";
+    position: absolute;
+    inset: 1.1rem 1.1rem auto 1.1rem;
+    height: calc(100% - 2.2rem);
+    border: 1px solid rgba(198, 161, 91, .35);
+    pointer-events: none;
+}
+
+.kafe-hero::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 8%, var(--kafe-pirinc) 50%, transparent 92%);
+}
+
+.kafe-hero-ic {
+    position: relative;
+    z-index: 1;
+}
+
+.kafe-italik {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--kafe-karamel-ac);
+}
+
+.kafe-rozet {
+    border-radius: 0;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    font-size: .7rem;
+    font-weight: 500;
+    background: transparent;
+    border-color: rgba(198, 161, 91, .55);
+    color: var(--kafe-karamel-ac);
+}
+
+.kafe-saat-karti {
+    background: rgba(10, 7, 6, .35);
+    border: 1px solid rgba(198, 161, 91, .4);
+    border-radius: 0;
+    position: relative;
+}
+
+.kafe-saat-karti::before,
+.kafe-saat-karti::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border: 1px solid var(--kafe-pirinc);
+}
+
+.kafe-saat-karti::before {
+    top: -1px;
+    left: -1px;
+    border-right: 0;
+    border-bottom: 0;
+}
+
+.kafe-saat-karti::after {
+    bottom: -1px;
+    right: -1px;
+    border-left: 0;
+    border-top: 0;
+}
+
+.kafe-kart {
+    background:
+        linear-gradient(180deg, rgba(255, 252, 245, .7), transparent 28%),
+        var(--kafe-kagit);
+    border: 1px solid var(--kafe-kum);
+    border-radius: 0;
+    box-shadow: 0 1px 0 rgba(198, 161, 91, .35), var(--kafe-golge-kucuk);
+    position: relative;
+}
+
+.kafe-kart::before {
+    content: "";
+    position: absolute;
+    left: .65rem;
+    right: .65rem;
+    top: .45rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(198, 161, 91, .55), transparent);
+}
+
+.kafe-bolum-baslik h1,
+.kafe-bolum-baslik h2,
+.kafe-adim-baslik,
+.admin-ust-baslik,
+.admin-ozet-sayi {
+    font-family: var(--kafe-serif);
+    font-weight: 600;
+}
+
+.kafe-adim-baslik span {
+    border-radius: 0;
+    background: transparent;
+    color: var(--kafe-kahve);
+    border: 1px solid var(--kafe-pirinc);
+    font-family: var(--kafe-serif);
+}
+
+.kafe-masa-karti {
+    border-radius: 0;
+    background:
+        repeating-linear-gradient(
+            -12deg,
+            transparent,
+            transparent 8px,
+            rgba(198, 161, 91, .04) 8px,
+            rgba(198, 161, 91, .04) 9px
+        ),
+        var(--kafe-kagit);
+}
+
+.kafe-masa-karti.secili {
+    background: #f3ead4;
+    border-color: var(--kafe-pirinc);
+}
+
+.kafe-masa-karti.secili::after {
+    border-radius: 0;
+    background: var(--kafe-kahve);
+}
+
+.kafe-masa-ad {
+    font-family: var(--kafe-serif);
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.kafe-etiket {
+    border-radius: 0;
+}
+
+.kafe-basari-kart,
+.kafe-onay-sayfa {
+    border-radius: 0;
+    border: 1px solid var(--kafe-pirinc);
+    border-left: 1px solid var(--kafe-pirinc);
+    background:
+        linear-gradient(90deg, rgba(107, 45, 42, .08) 0, rgba(107, 45, 42, .08) 8px, transparent 8px),
+        var(--kafe-kagit);
+    position: relative;
+}
+
+.kafe-onay-sayfa::after {
+    content: "";
+    position: absolute;
+    top: 1.2rem;
+    bottom: 1.2rem;
+    left: 42%;
+    width: 0;
+    border-left: 1px dashed rgba(198, 161, 91, .55);
+    pointer-events: none;
+}
+
+@media (max-width: 991.98px) {
+    .kafe-onay-sayfa::after {
+        display: none;
+    }
+}
+
+.kafe-kod {
+    border-radius: 0;
+    border: 1px solid var(--kafe-pirinc);
+    background: #f4ead6;
+    font-family: var(--kafe-serif);
+    letter-spacing: .2em;
+}
+
+.kafe-kod-etiket,
+.kafe-ust-etiket,
+.admin-ozet-etiket,
+.admin-yan-grup {
+    letter-spacing: .18em;
+}
+
+.kafe-iletisim-kart {
+    border-top: 1px solid var(--kafe-pirinc);
+}
+
+.kafe-alinti {
+    font-family: var(--kafe-serif);
+    font-style: italic;
+    font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+    line-height: 1.35;
+    color: var(--kafe-espresso);
+    border: 0;
+    border-left: 1px solid var(--kafe-pirinc);
+    padding: .2rem 0 .2rem 1.15rem;
+    margin: 0 0 1.25rem;
+}
+
+.kafe-mini-kart {
+    border-radius: 0;
+    background: var(--kafe-kagit);
+    border: 1px solid var(--kafe-kum);
+    box-shadow: none;
+}
+
+.kafe-footer {
+    background: #0e0a08;
+    border-top: 1px solid var(--kafe-pirinc);
+}
+
+.kafe-footer .kafe-marka {
+    color: var(--kafe-karamel-ac);
+}
+
+.admin-govde-panel {
+    background: #e6d9c4;
+}
+
+.admin-ust {
+    background: #f8f1e4;
+    border-bottom: 1px solid var(--kafe-pirinc);
+}
+
+.admin-ozet-kart {
+    border-radius: 0;
+    background: var(--kafe-kagit);
+    box-shadow: none;
+}
+
+.admin-giris-pano {
+    border-radius: 0;
+    background:
+        radial-gradient(circle at 80% 20%, rgba(198, 161, 91, .28), transparent 42%),
+        linear-gradient(160deg, #140e0c, #2a1614);
+    border: 1px solid rgba(198, 161, 91, .4);
+}
+
+.admin-giris-pano h1 {
+    font-family: var(--kafe-serif);
+    font-weight: 600;
+    font-size: clamp(2rem, 4vw, 2.6rem);
+}
+
+.kafe-alinti-karanlik {
+    color: var(--kafe-karamel-ac);
+    border: 0;
+    padding-left: 0;
+}
+
+@media (min-width: 992px) {
+    .admin-govde-panel .admin-yan {
+        background: linear-gradient(180deg, #120c0a 0%, #1a1010 100%);
+        border-right: 1px solid var(--kafe-pirinc);
+        width: 248px;
+    }
+
+    .admin-govde-panel .admin-cerceve {
+        margin-left: 248px;
+    }
+
+    .admin-yan-link {
+        border-radius: 0;
+        letter-spacing: .04em;
+    }
+
+    .admin-yan-link.active {
+        box-shadow: inset 2px 0 0 var(--kafe-pirinc);
+        background: rgba(198, 161, 91, .12);
+    }
+}
+
+.form-control,
+.form-select {
+    border-radius: 0;
+    background: #fcf7ee;
+}
+
+.table thead th {
+    background: #efe4d0;
+    font-family: var(--kafe-sans);
+}
+
+@media print {
+    .kafe-onay-sayfa::after {
+        border-left-style: dotted;
+    }
+
+    .kafe-hero::before,
+    .kafe-navbar::before {
+        display: none;
     }
 }

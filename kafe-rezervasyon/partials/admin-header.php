@@ -35,7 +35,10 @@ $aktifSayfa      = $aktifSayfa      ?? '';
 $yonetici        = class_exists('Auth') ? Auth::yonetici() : null;
 $panelIci        = is_array($yonetici);
 
-$cssSurumu     = @filemtime(APP_KOK . '/assets/css/style.css') ?: time();
+$cssSurumu     = max(
+    (int) (@filemtime(APP_KOK . '/assets/css/style.css') ?: 0),
+    (int) (@filemtime(APP_KOK . '/assets/css/fonts.css') ?: 0)
+) ?: time();
 $adminJsSurumu = @filemtime(APP_KOK . '/assets/js/admin.js') ?: time();
 
 $menuSinifi = static function (string $anahtar) use ($aktifSayfa): string {
@@ -65,6 +68,7 @@ $menuSinifi = static function (string $anahtar) use ($aktifSayfa): string {
         yuklenmezdi. Musteri header'ini kopyalayip yolu unutmak, admin
         panelinin "stilsiz" gorunmesinin klasik sebebidir.
     -->
+    <link rel="stylesheet" href="../assets/css/fonts.css?v=<?= e($cssSurumu) ?>">
     <link rel="stylesheet" href="../assets/css/style.css?v=<?= e($cssSurumu) ?>">
 </head>
 <body class="kafe-govde admin-govde<?= $panelIci ? ' admin-govde-panel' : ' admin-govde-giris' ?>">

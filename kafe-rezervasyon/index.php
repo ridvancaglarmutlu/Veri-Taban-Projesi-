@@ -401,47 +401,48 @@ require __DIR__ . '/partials/header.php';
      KARSILAMA (HERO)
      ================================================================= -->
 <section class="kafe-hero">
-    <div class="container">
-        <div class="row align-items-center gy-4">
+    <div class="container kafe-hero-ic">
+        <div class="row align-items-center gy-5">
 
             <div class="col-lg-7">
-                <span class="kafe-rozet mb-3">Mahalle kahvesi · <?= e(SITE_ADI) ?></span>
+                <span class="kafe-rozet mb-3">Rezervasyon defteri · <?= e(SITE_ADI) ?></span>
 
                 <h1 class="kafe-hero-baslik">
-                    Masanı ayırt,<br>kahven hazır olsun.
+                    Akşam masası,<br>
+                    <span class="kafe-italik">sizin için ayrılır.</span>
                 </h1>
 
                 <p class="kafe-hero-metin">
-                    <?= e(SITE_ADI) ?>’nda iç mekan ve bahçe masalarını birkaç saniyede
-                    rezerve edebilirsiniz. Tarih ve saati seçin, o aralıkta boş olan
-                    masaları anında görün.
+                    <?= e(SITE_ADI) ?> iç salon ve bahçe masalarını tarih ve saate göre
+                    ayırır. Aralık seçildiğinde gerçekten boş olan yerler listelenir;
+                    kodunuzla kaydı sorgular veya iptal edersiniz.
                 </p>
 
                 <div class="d-flex flex-wrap gap-2">
-                    <a href="#rezervasyon-formu" class="btn btn-kafe px-4">Hemen rezervasyon yap</a>
-                    <a href="rezervasyon-sorgula.php" class="btn btn-kafe-cizgi px-4">Rezervasyonumu sorgula</a>
+                    <a href="#rezervasyon-formu" class="btn btn-kafe px-4">Masa ayırt</a>
+                    <a href="rezervasyon-sorgula.php" class="btn btn-kafe-cizgi px-4">Kodu sorgula</a>
                 </div>
             </div>
 
             <div class="col-lg-5">
                 <div class="kafe-saat-karti">
-                    <p class="kafe-ust-etiket">Bugün açık</p>
+                    <p class="kafe-ust-etiket">Salon saatleri</p>
                     <p class="kafe-saat-buyuk mb-2">
                         <?= e(KAFE_ACILIS) ?> <span>&ndash;</span> <?= e(KAFE_KAPANIS) ?>
                     </p>
-                    <p class="small mb-3 opacity-75">Her gün, mutfağın son siparişine kadar.</p>
+                    <p class="small mb-3 opacity-75">Her gün. Son sipariş kapanışa kadar.</p>
                     <ul class="kafe-ozellik-liste">
                         <li>
-                            <strong>Anında müsaitlik</strong>
-                            Seçtiğiniz aralıkta gerçekten boş masalar.
+                            <strong>Defter usulü müsaitlik</strong>
+                            Seçilen aralıkta çakışmayan masalar.
                         </li>
                         <li>
-                            <strong>Takip kodu</strong>
-                            Sorgulama ve iptal bu kodla yapılır.
+                            <strong>Davetiye kodu</strong>
+                            Sorgulama ve iptal yalnızca bu kodla.
                         </li>
                         <li>
-                            <strong>İç mekan / bahçe</strong>
-                            Konum ve kapasite kartın üzerinde.
+                            <strong>Salon / bahçe</strong>
+                            Konum ve kişi sayısı kartın üzerinde.
                         </li>
                     </ul>
                 </div>
@@ -460,7 +461,8 @@ require __DIR__ . '/partials/header.php';
     <section id="rezervasyon-formu">
 
         <header class="kafe-bolum-baslik">
-            <h2>Rezervasyon Formu</h2>
+            <p class="kafe-ust-etiket">Misafir defteri</p>
+            <h2>Rezervasyon formu</h2>
             <p>Önce tarih ve saati seçin, ardından listelenen müsait masalardan birini işaretleyin.</p>
         </header>
 

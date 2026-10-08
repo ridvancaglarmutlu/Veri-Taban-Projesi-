@@ -30,7 +30,7 @@ require __DIR__ . '/partials/header.php';
     <section class="kafe-basari-kart kafe-onay-sayfa" id="rezervasyon-sonucu">
         <div class="row gy-4 align-items-center">
             <div class="col-lg-5 text-center kafe-onay-kod">
-                <p class="kafe-kod-etiket">Rezervasyon kodunuz</p>
+                <p class="kafe-kod-etiket">Davetiye kodu</p>
                 <p class="kafe-kod"><?= e($sonRezervasyon['kod']) ?></p>
                 <div class="alert alert-warning small mb-0 text-start">
                     <strong>Bu kodu saklayın.</strong>
@@ -38,8 +38,8 @@ require __DIR__ . '/partials/header.php';
                 </div>
             </div>
             <div class="col-lg-7">
-                <p class="kafe-ust-etiket mb-2">Kahve Durağı</p>
-                <h1 class="h3 mb-3">Masanız ayrıldı</h1>
+                <p class="kafe-ust-etiket mb-2"><?= e(SITE_ADI) ?></p>
+                <h1 class="h3 mb-3">Masanız deftere işlendi</h1>
                 <dl class="kafe-ozet">
                     <dt>Ad Soyad</dt>
                     <dd><?= e($sonRezervasyon['ad']) ?></dd>

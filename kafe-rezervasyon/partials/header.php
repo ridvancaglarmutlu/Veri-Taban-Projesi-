@@ -49,7 +49,10 @@ $aktifSayfa     = $aktifSayfa     ?? '';
 // @ (hata bastirma) ve ?: (kisa ternary): dosya henuz yoksa filemtime
 // uyari verip false doner; o durumda anlik zamani kullaniyoruz.
 // ---------------------------------------------------------------------
-$cssSurumu = @filemtime(APP_KOK . '/assets/css/style.css') ?: time();
+$cssSurumu = max(
+    (int) (@filemtime(APP_KOK . '/assets/css/style.css') ?: 0),
+    (int) (@filemtime(APP_KOK . '/assets/css/fonts.css') ?: 0)
+) ?: time();
 $jsSurumu  = @filemtime(APP_KOK . '/assets/js/app.js') ?: time();
 
 /**
@@ -137,6 +140,12 @@ $menuSinifi = static function (string $anahtar) use ($aktifSayfa): string {
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
         crossorigin="anonymous">
+
+    <!--
+        Yazi tipleri yerel woff2 (assets/fonts). CDN hash'i degismez;
+        Turkce glifler latin-ext dosyasindan gelir.
+    -->
+    <link rel="stylesheet" href="assets/css/fonts.css?v=<?= e($cssSurumu) ?>">
 
     <!--
         Kendi temamiz Bootstrap'ten SONRA yuklenir. CSS'te esit

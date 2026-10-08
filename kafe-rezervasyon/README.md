@@ -42,7 +42,9 @@ kafe-rezervasyon/
 │   └── rezervasyonlar.php      # Rezervasyon listesi + filtre + durum
 │
 ├── assets/
-│   ├── css/style.css           # Kahve teması + admin sidebar
+│   ├── css/style.css           # Lüks kafe teması + admin sidebar
+│   ├── css/fonts.css           # Yerel Cormorant Garamond + Outfit
+│   ├── fonts/                  # woff2 (latin + latin-ext)
 │   ├── img/favicon.svg         # Sekme ikonu
 │   ├── js/app.js               # Dinamik masa listeleme (fetch)
 │   └── js/admin.js             # Sil / iptal öncesi confirm()
@@ -76,6 +78,18 @@ Hocaya göndermeden önce projeyi düzenlemek veya ekran görüntüsü almak iç
 3. `C:\xampp\htdocs\kafe-rezervasyon` klasörünü seçin. **Üst klasörü (htdocs) değil, proje klasörünün kendisini** açın.
 4. Sol gezginde `app/`, `admin/`, `database.sql` ve `README.md` yan yana görünmelidir.
 5. PHP dosyalarını VS Code’dan “Run” ile çalıştırmayın; tarayıcı XAMPP Apache üzerinden açılır.
+
+### Hocaya RAR ile göndermek
+
+Ödev klasörü ZIP olarak da paketlenir; hocanın istediği biçim **RAR** ise Windows’ta şunu yapın:
+
+1. `kafe-rezervasyon` klasörüne sağ tıklayın.
+2. **WinRAR → Klasöre ekle…** (Add to archive…) seçin. WinRAR yoksa [winrar.com](https://www.winrar.com) kurulumundan sonra tekrar deneyin.
+3. Arşiv biçimi **RAR** olsun. İçinde yalnızca `kafe-rezervasyon/` kökü durmalı (`database.sql` bu klasörün içinde).
+4. `.git` klasörü varsa arşive **eklemeyin**.
+5. Ortaya çıkan `.rar` dosyasını hocaya gönderin.
+
+ZIP teslimi: aynı kök kuralı geçerlidir (`kafe-rezervasyon/` tek üst klasör).
 
 ### Yönetim paneli adresleri
 
