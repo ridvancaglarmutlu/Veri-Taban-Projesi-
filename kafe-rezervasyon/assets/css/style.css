@@ -745,3 +745,317 @@
         transform: none;
     }
 }
+
+
+/* =====================================================================
+   12) MUSTERI CILA — kahve dukkani, mor SaaS degil
+   ---------------------------------------------------------------------
+   Mevcut palet zaten espresso/karamel. Burada zemin ve kahraman
+   bolumune kagit/ahsap hissi eklenir; Bootstrap'in mor/mavi
+   birincil rengi zaten :root icinde ezilmistir.
+   ===================================================================== */
+.kafe-govde {
+    background-color: #f4eadc;
+    background-image:
+        radial-gradient(ellipse at top, rgba(201, 138, 63, .12), transparent 46%),
+        linear-gradient(180deg, #f7efe4 0%, #f0e4d4 100%);
+}
+
+.kafe-hero {
+    background:
+        radial-gradient(circle at 12% 20%, rgba(224, 167, 94, .22), transparent 38%),
+        radial-gradient(circle at 88% 0%, rgba(107, 74, 50, .35), transparent 42%),
+        linear-gradient(165deg, #2a1b14 0%, #3d281c 55%, #241610 100%);
+    border-bottom: 4px solid var(--kafe-karamel);
+}
+
+.kafe-kart {
+    background: #fffaf3;
+    box-shadow: var(--kafe-golge-kucuk);
+}
+
+
+/* =====================================================================
+   13) ADMIN KASA OFISI (sidebar)
+   ---------------------------------------------------------------------
+   Giris yapilmissa sol serit espresso, sagda kagit zemin.
+   Login sayfasinda sidebar yoktur: henuz yetki kanitlanmamistir.
+   ===================================================================== */
+.admin-govde-panel {
+    background: #efe4d4;
+}
+
+.admin-yan {
+    display: none;
+}
+
+.admin-cerceve {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.admin-ust {
+    display: flex;
+    align-items: center;
+    gap: .85rem;
+    padding: .85rem 1.25rem;
+    background: #fffaf3;
+    border-bottom: 1px solid var(--kafe-kum);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+.admin-ust-baslik {
+    color: var(--kafe-espresso);
+    font-weight: 700;
+}
+
+.admin-ust-saat,
+.admin-ust-musteri {
+    margin-left: auto;
+    color: var(--kafe-soluk);
+    font-size: .88rem;
+    text-decoration: none;
+}
+
+.admin-ust-musteri:hover {
+    color: var(--kafe-kahve);
+}
+
+.admin-giris-marka {
+    color: var(--kafe-espresso) !important;
+    text-decoration: none;
+}
+
+.admin-rozet {
+    display: inline-block;
+    margin-left: .15rem;
+    padding: .12rem .5rem;
+    border-radius: 999px;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    background: rgba(201, 138, 63, .2);
+    color: var(--kafe-kahve);
+    border: 1px solid rgba(201, 138, 63, .4);
+}
+
+.admin-yan-ac {
+    border: 1px solid var(--kafe-kum);
+    padding: .35rem .5rem;
+}
+
+.admin-yan-ac .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(43,29,22,0.85)' stroke-width='2' stroke-linecap='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+.admin-flash {
+    padding: 1rem 1.25rem 0;
+}
+
+.admin-icerik {
+    flex: 1 0 auto;
+}
+
+.admin-icerik-ic {
+    padding: 1.25rem 1.4rem 2rem;
+}
+
+.admin-giris-sahne {
+    display: grid;
+    gap: 1.5rem;
+    max-width: 880px;
+    margin: 1.5rem auto 2rem;
+}
+
+.admin-giris-pano {
+    background:
+        radial-gradient(circle at 80% 20%, rgba(201, 138, 63, .28), transparent 42%),
+        linear-gradient(160deg, #2b1d16, #4a3224);
+    color: #f6ece2;
+    border-radius: var(--kafe-yuvarlak);
+    padding: 1.75rem 1.6rem;
+    box-shadow: var(--kafe-golge-orta);
+}
+
+.admin-giris-kart {
+    box-shadow: var(--kafe-golge-buyuk);
+}
+
+.admin-ozet-kart {
+    background: #fffaf3;
+    border: 1px solid var(--kafe-kum);
+    border-radius: var(--kafe-yuvarlak);
+    padding: 1.1rem 1.15rem;
+    box-shadow: var(--kafe-golge-kucuk);
+    height: 100%;
+}
+
+.admin-ozet-onay { border-top: 4px solid #2f7d4f; }
+.admin-ozet-iptal { border-top: 4px solid #b02a2a; }
+.admin-ozet-tamam { border-top: 4px solid #6c757d; }
+
+.admin-ozet-etiket {
+    margin: 0;
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--kafe-soluk);
+}
+
+.admin-ozet-sayi {
+    margin: .35rem 0 0;
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--kafe-espresso);
+    line-height: 1.1;
+}
+
+.admin-bar {
+    height: 8px;
+    background: var(--kafe-kum);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.admin-bar span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--kafe-kahve), var(--kafe-karamel));
+    border-radius: 999px;
+}
+
+.admin-footer {
+    margin-top: auto;
+}
+
+.admin-mobil-menu {
+    background: var(--kafe-espresso);
+    color: #efe3d7;
+}
+
+.admin-mobil-menu .admin-yan-link {
+    display: block;
+    color: #efe3d7;
+    text-decoration: none;
+    padding: .55rem .2rem;
+}
+
+.admin-mobil-menu .admin-yan-link.active {
+    color: var(--kafe-karamel-ac);
+    font-weight: 700;
+}
+
+@media (min-width: 992px) {
+    .admin-govde-panel {
+        display: block;
+    }
+
+    .admin-govde-panel .admin-yan {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        inset: 0 auto 0 0;
+        width: 240px;
+        background: linear-gradient(180deg, #241610 0%, #2b1d16 70%);
+        color: #efe3d7;
+        padding: 1.15rem 1rem 1rem;
+        z-index: 30;
+        border-right: 1px solid rgba(201, 138, 63, .25);
+    }
+
+    .admin-govde-panel .admin-cerceve {
+        margin-left: 240px;
+        min-height: 100vh;
+    }
+
+    .admin-yan-marka {
+        display: flex;
+        gap: .7rem;
+        align-items: center;
+        color: #fff;
+        text-decoration: none;
+        margin-bottom: 1.4rem;
+    }
+
+    .admin-yan-marka small {
+        display: block;
+        color: var(--kafe-karamel-ac);
+        font-size: .72rem;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+    }
+
+    .admin-yan-nav {
+        display: flex;
+        flex-direction: column;
+        gap: .15rem;
+        flex: 1 1 auto;
+    }
+
+    .admin-yan-grup {
+        margin: 1rem 0 .35rem;
+        font-size: .68rem;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: rgba(239, 227, 215, .5);
+    }
+
+    .admin-yan-link {
+        color: rgba(239, 227, 215, .88);
+        text-decoration: none;
+        padding: .45rem .7rem;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+
+    .admin-yan-link:hover,
+    .admin-yan-link.active {
+        background: rgba(201, 138, 63, .16);
+        color: #fff;
+    }
+
+    .admin-yan-link.active {
+        box-shadow: inset 3px 0 0 var(--kafe-karamel);
+    }
+
+    .admin-yan-alt {
+        border-top: 1px solid rgba(255, 255, 255, .08);
+        padding-top: 1rem;
+        margin-top: 1rem;
+    }
+
+    .admin-yan-kullanici {
+        font-size: .85rem;
+        margin-bottom: .6rem;
+        color: rgba(255, 255, 255, .8);
+    }
+
+    .admin-yan-musteri {
+        display: block;
+        margin-top: .65rem;
+        font-size: .78rem;
+        color: var(--kafe-karamel-ac);
+        text-decoration: none;
+    }
+
+    .admin-giris-sahne {
+        grid-template-columns: 1fr 1fr;
+        align-items: stretch;
+        margin-top: 2.5rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .admin-ozet-sayi {
+        font-size: 1.45rem;
+    }
+
+    .admin-icerik-ic {
+        padding: 1rem;
+    }
+}

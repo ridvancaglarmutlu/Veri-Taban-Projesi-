@@ -1,6 +1,6 @@
 # Kafe Masa Rezervasyon Sistemi
 
-Saf PHP (PDO) + MySQL + Bootstrap 5 ile geliştirilen, XAMPP üzerinde çalışan masa rezervasyon uygulaması.
+Saf PHP (PDO) + MySQL + Bootstrap 5 ile geliştirilen, XAMPP üzerinde çalışan masa rezervasyon uygulaması. Kafe adı **Kahve Durağı**, çalışma saatleri **09:00–23:00**.
 
 ## Kullanılan Teknolojiler
 
@@ -9,7 +9,7 @@ Saf PHP (PDO) + MySQL + Bootstrap 5 ile geliştirilen, XAMPP üzerinde çalışa
 | Frontend | HTML5, CSS3, Vanilla JavaScript (fetch API), Bootstrap 5 |
 | Backend | Saf PHP 8 (framework yok), PDO + prepared statements |
 | Veritabanı | MySQL 8 / MariaDB 10.4+ (phpMyAdmin uyumlu) |
-| Güvenlik | Prepared statements, `htmlspecialchars`, CSRF token, session yönetimi |
+| Güvenlik | Prepared statements, `htmlspecialchars` (`e()`), CSRF token, session yönetimi |
 
 ## Klasör Mimarisi
 
@@ -17,59 +17,76 @@ Saf PHP (PDO) + MySQL + Bootstrap 5 ile geliştirilen, XAMPP üzerinde çalışa
 kafe-rezervasyon/
 ├── app/                        # ÇEKİRDEK — tarayıcıdan erişilemez (.htaccess ile kapalı)
 │   ├── .htaccess               # Require all denied
-│   ├── config.php              # DB bilgileri, saat aralıkları gibi sabitler        ✔ hazır
-│   ├── db.php                  # PDO bağlantısı (Database sınıfı, singleton)        ✔ hazır
-│   ├── helpers.php             # e(), csrf_token(), flash(), redirect(), validasyon ✔ hazır
-│   ├── bootstrap.php           # Her isteğin başında çağrılan tek giriş noktası     ✔ hazır
-│   ├── Auth.php                # Admin giriş/çıkış ve oturum kontrolü               [Adım 4]
-│   ├── MasaRepository.php      # Masa CRUD + müsait masa sorgusu                    ✔ hazır
-│   └── RezervasyonRepository.php # Çakışma kontrolü, kayıt, filtreleme              ✔ hazır
+│   ├── config.php              # DB bilgileri, saat aralıkları gibi sabitler
+│   ├── db.php                  # PDO bağlantısı (Database sınıfı, singleton)
+│   ├── helpers.php             # e(), csrf_token(), flash(), yonlendir(), doğrulama
+│   ├── bootstrap.php           # Her isteğin başında çağrılan tek giriş noktası
+│   ├── Auth.php                # Admin giriş/çıkış ve oturum kontrolü
+│   ├── MasaRepository.php      # Masa CRUD + müsait masa sorgusu
+│   └── RezervasyonRepository.php # Çakışma kontrolü, kayıt, filtreleme
 │
 ├── partials/                   # Tekrar kullanılan HTML parçaları
-│   ├── header.php              # Müşteri tarafı <head> + navbar                     ✔ hazır
+│   ├── header.php              # Müşteri tarafı <head> + navbar
 │   ├── footer.php
-│   ├── admin-header.php        # Admin paneli kabuğu (sidebar + navbar)             [Adım 4]
+│   ├── admin-header.php        # Admin kasa ofisi (sidebar + üst çubuk)
 │   └── admin-footer.php
 │
 ├── api/                        # JavaScript'in çağırdığı JSON uç noktaları
-│   └── musait-masalar.php      # Tarih + saat + kişi sayısı → müsait masa listesi   ✔ hazır
+│   └── musait-masalar.php      # Tarih + saat + kişi sayısı → müsait masa listesi
 │
 ├── admin/                      # Yönetim paneli (session ile korumalı)
-│   ├── login.php               # Giriş formu                                        [Adım 4]
-│   ├── logout.php
-│   ├── index.php               # Dashboard: günlük özet, doluluk oranı              [Adım 4]
-│   ├── masalar.php             # Masa yönetimi (liste + ekle/düzenle/sil)           [Adım 4]
-│   └── rezervasyonlar.php      # Rezervasyon listesi + filtre + durum butonları     [Adım 4]
+│   ├── login.php               # Giriş formu
+│   ├── logout.php              # POST + CSRF ile çıkış
+│   ├── index.php               # Dashboard: günlük özet
+│   ├── masalar.php             # Masa yönetimi (liste + ekle/düzenle/sil)
+│   └── rezervasyonlar.php      # Rezervasyon listesi + filtre + durum
 │
-├── assets/                     # Statik dosyalar
-│   ├── css/style.css           # Bootstrap üzerine özel tema                        ✔ hazır
-│   └── js/app.js               # Dinamik masa listeleme (fetch)                     ✔ hazır
+├── assets/
+│   ├── css/style.css           # Kahve teması + admin sidebar
+│   ├── js/app.js               # Dinamik masa listeleme (fetch)
+│   └── js/admin.js             # Sil / iptal öncesi confirm()
 │
-├── index.php                   # Müşteri ana sayfası + rezervasyon formu            ✔ hazır
-├── rezervasyon-sorgula.php     # Kod/telefon ile sorgulama ve iptal                 ✔ hazır
-└── database.sql                # Veritabanı şeması + örnek veriler                  ✔ hazır
+├── index.php                   # Müşteri ana sayfası + rezervasyon formu
+├── rezervasyon-sorgula.php     # Kod/telefon ile sorgulama ve iptal
+└── database.sql                # Veritabanı şeması + örnek veriler
 ```
-
-### Bu mimari neden böyle?
-
-- **`app/` web kökünün dışında mantığı tutar.** Veritabanı şifresi içeren dosyanın tarayıcıdan
-  okunabilmesi klasik bir güvenlik hatasıdır. PHP dosyaları normalde yorumlanıp çalıştığı için
-  içeriği görünmez; ancak PHP modülü devre dışı kaldığında (yanlış yapılandırma, `.php.bak`
-  uzantılı yedekler) düz metin olarak sunulur. `.htaccess` + `bootstrap.php` sabiti kontrolü
-  iki ayrı savunma katmanı sağlar.
-- **Repository sınıfları SQL'i tek yerde toplar.** Çakışma kontrolü gibi kritik sorgu tek bir
-  metotta durur; sayfaların içine dağılmış SQL'de bir yeri düzeltip diğerini unutma riski olur.
-- **`api/` klasörü HTML üreten sayfalardan ayrıdır.** JSON dönen uç noktalar ile sayfa render
-  eden dosyaları karıştırmamak, ileride mobil uygulama eklenirse aynı uçları kullanmayı sağlar.
-- **`partials/` tekrarı önler.** Navbar'ı 8 dosyada ayrı ayrı güncellemek istemeyiz.
 
 ## Kurulum (XAMPP)
 
-1. Bu klasörü `C:\xampp\htdocs\kafe-rezervasyon` altına kopyalayın.
-2. XAMPP Control Panel'den **Apache** ve **MySQL** servislerini başlatın.
-3. `http://localhost/phpmyadmin` → **Import** → `database.sql` dosyasını seçip çalıştırın.
-   (Alternatif: `mysql -u root -p < database.sql`)
-4. Tarayıcıdan `http://localhost/kafe-rezervasyon/` adresini açın.
+1. ZIP’i açın. İçinde **`kafe-rezervasyon/`** klasörü olmalıdır (`database.sql`, `app/`, `admin/`, `index.php` bu klasörün içindedir).
+2. Klasörü `C:\xampp\htdocs\kafe-rezervasyon` altına kopyalayın.
+   - Sonuç yolu: `C:\xampp\htdocs\kafe-rezervasyon\index.php`
+   - Klasörü bir kez daha iç içe koymayın (`...\kafe-rezervasyon\kafe-rezervasyon\...` olmasın).
+3. XAMPP Control Panel’den **Apache** ve **MySQL** servislerini başlatın.
+4. Tarayıcıdan `http://localhost/phpmyadmin` açın.
+5. Sol üstten **Import** (İçe Aktar) → **Choose File** → `C:\xampp\htdocs\kafe-rezervasyon\database.sql` seçin → **Go / İçe Aktar**.
+   - phpMyAdmin “kafe_rezervasyon veritabanı oluşturuldu” benzeri bir başarı mesajı göstermelidir.
+   - Alternatif (komut satırı): `mysql -u root -p < C:\xampp\htdocs\kafe-rezervasyon\database.sql`
+6. Tarayıcıdan `http://localhost/kafe-rezervasyon/` adresini açın.
+
+### VS Code’da klasörü Aç
+
+Hocaya göndermeden önce projeyi düzenlemek veya ekran görüntüsü almak için:
+
+1. Visual Studio Code’u açın.
+2. **Dosya → Klasörü Aç…** (File → Open Folder…).
+3. `C:\xampp\htdocs\kafe-rezervasyon` klasörünü seçin. **Üst klasörü (htdocs) değil, proje klasörünün kendisini** açın.
+4. Sol gezginde `app/`, `admin/`, `database.sql` ve `README.md` yan yana görünmelidir.
+5. PHP dosyalarını VS Code’dan “Run” ile çalıştırmayın; tarayıcı XAMPP Apache üzerinden açılır.
+
+### Yönetim paneli adresleri
+
+Oturum yoksa korunan sayfalar `login.php` adresine 303 ile gider.
+
+| Sayfa | Adres |
+| --- | --- |
+| Müşteri formu | `http://localhost/kafe-rezervasyon/` |
+| Rezervasyon sorgula | `http://localhost/kafe-rezervasyon/rezervasyon-sorgula.php` |
+| Giriş | `http://localhost/kafe-rezervasyon/admin/login.php` |
+| Panel (dashboard) | `http://localhost/kafe-rezervasyon/admin/index.php` |
+| Masalar | `http://localhost/kafe-rezervasyon/admin/masalar.php` |
+| Rezervasyonlar | `http://localhost/kafe-rezervasyon/admin/rezervasyonlar.php` |
+| Çıkış | `admin/logout.php` (yalnızca POST + CSRF; GET ile çıkış yapılmaz) |
 
 ### Varsayılan admin hesabı
 
@@ -94,35 +111,30 @@ rezervasyon bulunan masa silinemez, bunun yerine durumu `pasif` yapılır.
 
 ## Çekirdek Katman (`app/`)
 
-Tüm sayfalar ilk satırda tek bir dosyayı çağırır:
+Tüm sayfalar ilk satırda tek bir dosyayı çağırır (`APP_INIT` sayfa dosyasında **tanımlanmaz**):
 
 ```php
 require_once __DIR__ . '/app/bootstrap.php';
 ```
 
-`bootstrap.php` sırasıyla `APP_INIT` sabitini tanımlar, `config.php` sabitlerini yükler,
-hata gösterimini `APP_DEBUG` bayrağına göre ayarlar, zaman dilimini `Europe/Istanbul` yapar,
-oturumu güvenli çerez bayraklarıyla (`httponly`, `samesite=Lax`, HTTPS varsa `secure`)
-başlatır ve `db.php` + `helpers.php` dosyalarını yükler.
+Admin sayfalarında yol bir üst klasöre çıkar: `require_once __DIR__ . '/../app/bootstrap.php';`
 
 | Fonksiyon / sınıf | Görevi |
 | --- | --- |
 | `Database::baglanti()` | Tek ve paylaşılan PDO nesnesi (lazy singleton) |
-| `Database::query/fetchOne/fetchAll/fetchValue/execute` | Her zaman prepared statement üzerinden sorgu |
 | `e($deger)` | HTML'e basılan her değer için XSS kaçışlaması |
 | `csrf_token()` / `csrf_field()` / `csrf_dogrula()` | CSRF koruması (`random_bytes` + `hash_equals`) |
-| `flash_ekle()` / `flash_goster()` | Yönlendirme sonrası tek seferlik bildirim |
-| `yonlendir($url)` | `header('Location')` + zorunlu `exit` |
-| `telefon_normalize()`, `gecerli_tarih()`, `gecerli_saat()`, `saat_araliginda_mi()` | Sunucu tarafı doğrulama |
-| `rezervasyon_kodu_uret()` | `random_bytes` tabanlı 8 karakterlik takip kodu |
-| `durum_etiketi()` / `durum_rengi()` | ENUM değerini Bootstrap rozetine çevirir |
+| `yonlendir($url)` | `header('Location')` + zorunlu `exit` (varsayılan 303 PRG) |
+| `Auth::girisYap()` / `cikisYap()` / `kontrol()` | Session + `session_regenerate_id(true)` |
+| `MasaRepository::musaitMasalar()` | `NOT EXISTS` + `baslangic < bitis AND bitis > baslangic` |
+| `RezervasyonRepository::olustur()` | Transaction + masa satırı `FOR UPDATE` |
+| `MasaRepository::sil()` | Rezervasyon varsa DELETE yok, `pasif` |
 
-Kritik PDO ayarları `db.php` içinde tek bir dizide toplanmıştır; en önemlisi
-`PDO::ATTR_EMULATE_PREPARES => false`, yani gerçek (sunucu taraflı) prepared statement.
+Kritik PDO ayarı: `PDO::ATTR_EMULATE_PREPARES => false` (gerçek prepared statement).
 
 ## Geliştirme Adımları
 
 - [x] **Adım 1** — Klasör mimarisi ve `database.sql`
 - [x] **Adım 2** — PDO bağlantı sınıfı (`db.php`), yapılandırma ve yardımcı fonksiyonlar
 - [x] **Adım 3** — Müşteri arayüzü, müsait masa listeleme ve çakışma algoritması
-- [ ] **Adım 4** — Admin paneli: kimlik doğrulama, dashboard, masa ve rezervasyon yönetimi
+- [x] **Adım 4** — Admin paneli: kimlik doğrulama, kasa ofisi (sidebar), dashboard, masa ve rezervasyon yönetimi

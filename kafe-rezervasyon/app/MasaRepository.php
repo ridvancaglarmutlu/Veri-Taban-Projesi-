@@ -49,9 +49,10 @@ final class MasaRepository
     public static function tumu(): array
     {
         return Database::fetchAll(
-            'SELECT id, masa_adi, kapasite, konum, durum, created_at
-               FROM masalar
-              ORDER BY masa_adi'
+            'SELECT m.id, m.masa_adi, m.kapasite, m.konum, m.durum, m.created_at,
+                    (SELECT COUNT(*) FROM rezervasyonlar r WHERE r.masa_id = m.id) AS rezervasyon_sayisi
+               FROM masalar m
+              ORDER BY m.masa_adi'
         );
     }
 
@@ -354,5 +355,237 @@ final class MasaRepository
         );
 
         return (int) $deger;
+    }
+
+
+    // =================================================================
+    //  ADMIN CRUD  (Adim 4)
+    // =================================================================
+
+    /**
+     * Bu masaya bagli rezervasyon sayisi (tum durumlar).
+     *
+     * sil() metodu DELETE mi yoksa pasif mi yapacagina BURADAN bakar.
+     * COUNT(*) LIMIT'sizdir cunku sayinin kendisi lazim: 0 ise fiziksel
+     * silmeye izin var, 1+ ise gecmis kayitlari korumak icin pasife cekeriz.
+     */
+    public static function rezervasyonSayisi(int $id): int
+    {
+        return (int) Database::fetchValue(
+            'SELECT COUNT(*) FROM rezervasyonlar WHERE masa_id = :id',
+            [':id' => $id]
+        );
+    }
+
+    /**
+     * Yeni masa ekler.
+     *
+     * @return array{basarili:bool, id:?int, hata:?string}
+     *
+     * Kapasite CHECK kisiti (1-30) veritabaninda da vardir, ama MySQL 8.0.16
+     * oncesi ve bazi MariaDB kurulumlari CHECK'i yok sayar. PHP kontrolu
+     * kullaniciya Turkce mesaj verir; veritabani son savunmadir.
+     */
+    public static function ekle(string $masaAdi, int $kapasite, string $konum): array
+    {
+        $hata = self::masaGirdiDogrula($masaAdi, $kapasite, $konum, 'aktif');
+        if ($hata !== null) {
+            return ['basarili' => false, 'id' => null, 'hata' => $hata];
+        }
+
+        try {
+            Database::execute(
+                'INSERT INTO masalar (masa_adi, kapasite, konum, durum)
+                 VALUES (:adi, :kapasite, :konum, :durum)',
+                [
+                    ':adi'      => $masaAdi,
+                    ':kapasite' => $kapasite,
+                    ':konum'    => $konum,
+                    ':durum'    => 'aktif',
+                ]
+            );
+        } catch (PDOException $e) {
+            return ['basarili' => false, 'id' => null, 'hata' => self::yazmaHatasi($e)];
+        }
+
+        return ['basarili' => true, 'id' => Database::sonId(), 'hata' => null];
+    }
+
+    /**
+     * Mevcut masayi gunceller (ad, kapasite, konum, durum).
+     *
+     * @return array{basarili:bool, hata:?string}
+     */
+    public static function guncelle(
+        int $id,
+        string $masaAdi,
+        int $kapasite,
+        string $konum,
+        string $durum
+    ): array {
+        if (self::bul($id) === null) {
+            return ['basarili' => false, 'hata' => 'Güncellenecek masa bulunamadı.'];
+        }
+
+        $hata = self::masaGirdiDogrula($masaAdi, $kapasite, $konum, $durum);
+        if ($hata !== null) {
+            return ['basarili' => false, 'hata' => $hata];
+        }
+
+        try {
+            Database::execute(
+                'UPDATE masalar
+                    SET masa_adi = :adi,
+                        kapasite = :kapasite,
+                        konum    = :konum,
+                        durum    = :durum
+                  WHERE id = :id',
+                [
+                    ':adi'      => $masaAdi,
+                    ':kapasite' => $kapasite,
+                    ':konum'    => $konum,
+                    ':durum'    => $durum,
+                    ':id'       => $id,
+                ]
+            );
+        } catch (PDOException $e) {
+            return ['basarili' => false, 'hata' => self::yazmaHatasi($e)];
+        }
+
+        return ['basarili' => true, 'hata' => null];
+    }
+
+    /**
+     * Masayi hizmet disi birakir (durum = pasif).
+     *
+     * Fiziksel silmenin alternatifi: uzerinde rezervasyon olsun olmasin
+     * musteri formunda artik gorunmez. Gecmis kayitlarin JOIN'i bozulmaz.
+     */
+    public static function pasifYap(int $id): bool
+    {
+        return Database::execute(
+            "UPDATE masalar SET durum = 'pasif' WHERE id = :id",
+            [':id' => $id]
+        ) > 0;
+    }
+
+    /**
+     * Masayi silmeyi dener; uzerinde rezervasyon varsa PASIF yapar.
+     *
+     * NEDEN DOGRUDAN DELETE DEGIL?
+     * database.sql'deki fk_rezervasyon_masa kisiti ON DELETE RESTRICT
+     * tanimlidir: rezervasyonlar.masa_id, masalar.id'ye baglidir. Uzerinde
+     * kayit bulunan masayi silmek MySQL'in 1451 hatasini uretir. Bu bir
+     * bug degil, BILINCLI bir tercihtir:
+     *   - Gecmis rezervasyonlarin "hangi masadaydi?" bilgisi kaybolmasin.
+     *   - Raporlar (v_gunluk_ozet, musteri sorgulama) JOIN ile masa adini
+     *     okur; masa satiri yoksa INNER JOIN o rezervasyonu da kaybeder.
+     *
+     * Bu yuzden once COUNT bakiyoruz. 0 ise DELETE guvenlidir. 1+ ise
+     * DELETE'i hic denemeden pasife cekiyoruz; kullaniciya nedenini
+     * soylemek icin 'islem' => 'pasif' donuyoruz.
+     *
+     * COUNT ile DELETE arasinda yaris penceresi vardir (arada bir
+     * rezervasyon yazilabilir). O durumda 1451 yakalanir ve yine pasife
+     * dusulur - cift savunma.
+     *
+     * @return array{basarili:bool, islem:?string, hata:?string}
+     *         islem: 'silindi' | 'pasif'
+     */
+    public static function sil(int $id): array
+    {
+        if (self::bul($id) === null) {
+            return ['basarili' => false, 'islem' => null, 'hata' => 'Silinecek masa bulunamadı.'];
+        }
+
+        if (self::rezervasyonSayisi($id) > 0) {
+            self::pasifYap($id);
+
+            return [
+                'basarili' => true,
+                'islem'    => 'pasif',
+                'hata'     => null,
+            ];
+        }
+
+        try {
+            Database::execute('DELETE FROM masalar WHERE id = :id', [':id' => $id]);
+        } catch (PDOException $e) {
+            // 1451 = ER_ROW_IS_REFERENCED_2 (RESTRICT tetiklendi).
+            // COUNT ile DELETE arasinda yeni rezervasyon gelmis olabilir.
+            $bilgi = $e->errorInfo ?? [];
+            if ((int) ($bilgi[1] ?? 0) === 1451) {
+                self::pasifYap($id);
+
+                return ['basarili' => true, 'islem' => 'pasif', 'hata' => null];
+            }
+
+            return ['basarili' => false, 'islem' => null, 'hata' => self::yazmaHatasi($e)];
+        }
+
+        return ['basarili' => true, 'islem' => 'silindi', 'hata' => null];
+    }
+
+    /**
+     * Masa formu girdileri. Ilk hatayi dondurur.
+     */
+    private static function masaGirdiDogrula(
+        string $masaAdi,
+        int $kapasite,
+        string $konum,
+        string $durum
+    ): ?string {
+        $adUzunluk = (int) preg_match_all('/./us', $masaAdi);
+
+        if ($adUzunluk < 2) {
+            return 'Masa adı en az 2 karakter olmalıdır.';
+        }
+        if ($adUzunluk > 50) {
+            return 'Masa adı en fazla 50 karakter olabilir.';
+        }
+
+        // CHECK kisiti ile ayni aralik: 1-30. PHP'de tekrarlamak,
+        // kisiti yok sayan eski MySQL'de sessizce yanlis veri yazilmasini
+        // ve kullaniciya "SQLSTATE" gostermeyi onler.
+        if ($kapasite < 1 || $kapasite > 30) {
+            return 'Kapasite 1 ile 30 arasında olmalıdır.';
+        }
+
+        if ($konum !== 'ic' && $konum !== 'dis') {
+            return 'Konum yalnızca iç mekan veya bahçe olabilir.';
+        }
+
+        if ($durum !== 'aktif' && $durum !== 'pasif') {
+            return 'Masa durumu geçersiz.';
+        }
+
+        return null;
+    }
+
+    /**
+     * UNIQUE / CHECK ihlallerini kullanici diline cevirir.
+     * Diger hatalari yutmayiz: log + genel mesaj.
+     */
+    private static function yazmaHatasi(PDOException $e): string
+    {
+        $bilgi = $e->errorInfo ?? [];
+        $kod   = (int) ($bilgi[1] ?? 0);
+        $mesaj = (string) ($bilgi[2] ?? '');
+
+        // 1062 = yinelenen anahtar. uq_masa_adi iki masanin ayni isimle
+        // durmasini engeller; aksi halde musteri formunda "Masa 1" iki kez
+        // gorunur ve hangisinin dolu oldugu belirsizlesir.
+        if ($kod === 1062 && str_contains($mesaj, 'uq_masa_adi')) {
+            return 'Bu masa adı zaten kayıtlı. Başka bir ad seçin.';
+        }
+
+        // 3819 = CHECK kisiti ihlali (MySQL 8). Kapasite 1-30 disi.
+        if ($kod === 3819) {
+            return 'Kapasite 1 ile 30 arasında olmalıdır.';
+        }
+
+        error_log('[Masa] Yazma hatasi: ' . $e->getMessage());
+
+        return 'Masa kaydedilemedi. Lütfen tekrar deneyin.';
     }
 }
