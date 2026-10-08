@@ -1,0 +1,1996 @@
+/* =====================================================================
+   KAFE MASA REZERVASYON SISTEMI - OZEL TEMA
+   ---------------------------------------------------------------------
+   Bu dosya Bootstrap'i DEGISTIRMEZ, UZERINE YAZAR. Bootstrap'in kendi
+   dosyasini elle duzenlemek en kotu yoldur: bir sonraki surumde
+   guncelleme yaptiginizda tum degisiklikleriniz silinir. Dogru yontem,
+   Bootstrap'ten SONRA yuklenen ayri bir dosyada gerekli kurallari
+   ezmektir (partials/header.php icindeki yukleme sirasina bakin).
+
+   ICINDEKILER
+     1. Renk degiskenleri
+     2. Genel govde ve erisilebilirlik
+     3. Navbar
+     4. Butonlar
+     5. Hero (karsilama)
+     6. Kartlar ve bolum basliklari
+     7. Form
+     8. Masa kartlari (JavaScript uretir)
+     9. Basari ekrani ve ozet listesi
+    10. Tablo, footer
+    11. Mobil duzeltmeleri
+   ===================================================================== */
+
+
+/* =====================================================================
+   1) RENK DEGISKENLERI
+   ---------------------------------------------------------------------
+   CSS ozel ozellikleri (custom properties) ":root" icinde tanimlanir;
+   :root belgenin en disdaki ogesidir (<html>), yani buradaki degerler
+   TUM sayfada gecerlidir.
+
+   Neden degisken? Karamel rengi bu dosyada 12 ayri yerde geciyor.
+   Elle yazilsaydi tema degistirmek icin 12 satiri bulup degistirmek
+   gerekirdi ve biri mutlaka atlanirdi. Tek satir degistirerek tum
+   sitenin rengi degisiyor.
+
+   Bootstrap'in kendi degiskenleri de ayni mekanizmayi kullanir
+   (--bs-primary gibi); asagida bazilarini kendi renklerimizle
+   eziyoruz, boylece Bootstrap bilesenleri de temamiza uyuyor.
+   ===================================================================== */
+:root {
+    /* Palet: muzekkep, sarap, pirinc (brass) - krema/espresso'dan ayrilir */
+    --kafe-espresso: #110d0b;   /* en koyu: baslik ve footer */
+    --kafe-kahve:    #6b2d2a;   /* sarap: birincil buton */
+    --kafe-kahve-ac: #863833;
+    --kafe-karamel:  #c6a15b;   /* pirinc cizgi */
+    --kafe-karamel-ac: #e4c98a;
+
+    /* Notr zemin tonlari */
+    --kafe-sut:   #ebe2d2;      /* sayfa arka plani */
+    --kafe-kum:   #d4c4aa;      /* kenarlik */
+    --kafe-kagit: #f8f1e4;      /* kart zemini */
+    --kafe-pirinc: #c6a15b;
+
+    /* Metin */
+    --kafe-metin:  #241c16;
+    --kafe-soluk:  #74685b;
+    --kafe-serif:  "Cormorant Garamond", Palatino, Georgia, serif;
+    --kafe-sans:   Outfit, "Segoe UI", system-ui, sans-serif;
+
+    /* Golgeler
+       Yumusak golge = dusuk opaklik + genis yayilma. Siyah yerine
+       kahverengi tonlu bir golge (rgba icindeki renk) sicak paletle
+       daha uyumlu durur; saf siyah golge "kirli" gorunur. */
+    --kafe-golge-kucuk: 0 1px 2px rgba(58, 43, 34, .06),
+                        0 2px 8px rgba(58, 43, 34, .05);
+    --kafe-golge-orta:  0 2px 4px rgba(58, 43, 34, .05),
+                        0 8px 24px rgba(58, 43, 34, .08);
+    --kafe-golge-buyuk: 0 12px 36px rgba(58, 43, 34, .14);
+
+    --kafe-yuvarlak:       3px;
+    --kafe-yuvarlak-kucuk: 2px;
+
+    /* Gecis suresi tek yerde: tum hover animasyonlari ayni ritimde
+       olsun. Karisik sureler arayuzu "ucuz" gosterir. */
+    --kafe-gecis: .18s ease;
+
+    /* Bootstrap degiskenlerini eziyoruz: form odak halkasi, link rengi
+       ve birincil renk artik bizim paletimizden geliyor. */
+    --bs-link-color: var(--kafe-kahve);
+    --bs-link-hover-color: var(--kafe-espresso);
+    --bs-body-color: var(--kafe-metin);
+    --bs-border-radius: var(--kafe-yuvarlak-kucuk);
+}
+
+
+/* =====================================================================
+   2) GENEL GOVDE VE ERISILEBILIRLIK
+   ===================================================================== */
+.kafe-govde {
+    background-color: var(--kafe-sut);
+    color: var(--kafe-metin);
+
+    /* Sistem font yigini: kullanici hangi isletim sistemindeyse onun
+       yerlesik fontunu kullanir. Dis kaynaktan font indirmedigimiz icin
+       sayfa daha hizli acilir ve "yazi tipi yuklenirken metnin ziplamasi"
+       (FOUT) sorunu yasanmaz. */
+    font-family: var(--kafe-sans);
+    letter-spacing: 0;
+    font-size: 0.97rem;
+    line-height: 1.6;
+
+    /* Sayfa kisa oldugunda footer'in ekranin ortasinda asili kalmamasi
+       icin klasik "sticky footer" duzeni. */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.kafe-govde > main {
+    flex: 1 0 auto;   /* artan bosluk main'e verilir, footer asagi iner */
+}
+
+/*
+   "İçeriğe atla" baglantisi.
+   Ekranda gorunmez ama SILINMEZ: ekran disina tasinir. display:none
+   kullansaydik klavye ile de odaklanilamazdi ve hicbir ise yaramazdi.
+   TAB'a basildiginda :focus devreye girer ve baglanti gorunur olur.
+*/
+.icerige-atla {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 2000;
+    padding: .65rem 1.1rem;
+    background: var(--kafe-espresso);
+    color: #fff;
+    border-radius: 0 0 var(--kafe-yuvarlak-kucuk) 0;
+    text-decoration: none;
+}
+
+.icerige-atla:focus {
+    left: 0;
+    color: #fff;
+}
+
+/*
+   Odak halkasi (focus ring) ASLA tamamen kaldirilmaz.
+   "outline: none" yazmak klavye kullanicisini kor eder: sayfada nerede
+   olduklarini goremezler. Bunun yerine halkayi temamiza uyduruyoruz.
+   :focus-visible sadece KLAVYE ile odaklanildiginda devreye girer,
+   fare tiklamasinda halka cikmaz - iki tarafi da memnun eden cozum.
+*/
+:focus-visible {
+    outline: 3px solid var(--kafe-karamel);
+    outline-offset: 2px;
+}
+
+
+/* =====================================================================
+   3) NAVBAR
+   ===================================================================== */
+.kafe-navbar {
+    background: var(--kafe-espresso);
+    box-shadow: 0 1px 0 rgba(196, 165, 116, .28);
+    padding-top: .45rem;
+    padding-bottom: .45rem;
+}
+
+.kafe-marka {
+    font-family: var(--kafe-serif);
+    font-weight: 600;
+    letter-spacing: .06em;
+    font-size: 1.28rem;
+}
+
+.kafe-navbar .navbar-brand,
+.kafe-navbar .nav-link {
+    color: rgba(255, 255, 255, .88);
+    transition: color var(--kafe-gecis);
+}
+
+.kafe-navbar .navbar-brand:hover,
+.kafe-navbar .nav-link:hover,
+.kafe-navbar .nav-link.active {
+    color: var(--kafe-karamel-ac);
+}
+
+/* Aktif sayfanin altinda ince bir cizgi: rengin yani sira SEKIL ile de
+   ayirt edilebilir olsun. Renk korlugu olan kullanicilar icin gereklidir
+   (bilgiyi asla sadece renge yuklemeyin). */
+.kafe-navbar .nav-link.active {
+    border-bottom: 2px solid var(--kafe-karamel);
+}
+
+.kafe-logo {
+    color: var(--kafe-karamel);
+    flex: none;
+}
+
+/* Bootstrap'in hamburger ikonu varsayilan olarak koyu renktir ve koyu
+   navbar uzerinde gorunmez. Ikon bir SVG arka planidir; beyaz surumunu
+   veriyoruz. */
+.kafe-navbar .navbar-toggler {
+    border-color: rgba(255, 255, 255, .3);
+}
+
+.kafe-navbar .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255,0.85)' stroke-width='2' stroke-linecap='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+
+/* =====================================================================
+   4) BUTONLAR
+   ===================================================================== */
+.btn-kafe {
+    background: var(--kafe-kahve);
+    border: 1px solid var(--kafe-kahve);
+    color: #fff;
+    font-weight: 600;
+    border-radius: var(--kafe-yuvarlak-kucuk);
+    box-shadow: var(--kafe-golge-kucuk);
+    transition: background var(--kafe-gecis),
+                transform var(--kafe-gecis),
+                box-shadow var(--kafe-gecis);
+}
+
+.btn-kafe:hover,
+.btn-kafe:focus {
+    background: var(--kafe-kahve-ac);
+    border-color: var(--kafe-kahve-ac);
+    color: #fff;
+
+    /* 1 pikselik yukselme + buyuyen golge = "kaldirdim" hissi.
+       Daha fazlasi (ornegin 4px) butonu zipliyor gibi gosterir. */
+    transform: translateY(-1px);
+    box-shadow: var(--kafe-golge-orta);
+}
+
+.btn-kafe:active {
+    transform: translateY(0);
+}
+
+.btn-kafe:disabled {
+    background: var(--kafe-soluk);
+    border-color: var(--kafe-soluk);
+    transform: none;
+}
+
+.btn-kafe-cizgi {
+    background: transparent;
+    border: 1px solid var(--kafe-kahve);
+    color: var(--kafe-kahve);
+    font-weight: 600;
+    border-radius: var(--kafe-yuvarlak-kucuk);
+    transition: background var(--kafe-gecis), color var(--kafe-gecis);
+}
+
+.btn-kafe-cizgi:hover,
+.btn-kafe-cizgi:focus {
+    background: var(--kafe-kahve);
+    color: #fff;
+}
+
+
+/* =====================================================================
+   5) HERO (KARSILAMA)
+   ===================================================================== */
+.kafe-hero {
+    /* Iki renkli yumusak gecis + ustte hafif bir isik lekesi.
+       Duz renk yerine degradeler sayfaya derinlik katar; abartmamak
+       icin tonlar birbirine yakin secildi. */
+    background:
+        radial-gradient(circle at 85% 15%, rgba(201, 138, 63, .18), transparent 45%),
+        linear-gradient(160deg, #3a281e 0%, var(--kafe-espresso) 60%);
+    color: #f6ece2;
+    padding: clamp(2.5rem, 6vw, 4.5rem) 0;
+}
+
+.kafe-hero-baslik {
+    font-family: var(--kafe-serif);
+    font-size: clamp(2.35rem, 5.4vw, 3.65rem);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -.02em;
+    margin-bottom: 1rem;
+}
+
+/*
+   clamp(en_kucuk, tercih, en_buyuk)
+   Yazi boyutunu ekran genisligine gore SURESIZ olcekler. Klasik
+   yontemde her kirilma noktasi icin ayri medya sorgusu yazilir ve
+   aradaki genisliklerde yazi ya cok kucuk ya cok buyuk kalir.
+   4.5vw = goruntu alani genisliginin %4,5'i.
+*/
+.kafe-hero-metin {
+    font-size: clamp(1rem, 1.6vw, 1.12rem);
+    max-width: 46ch;   /* ch = "0" karakterinin genisligi.
+                          45-75 karakter satir uzunlugu en rahat okunan
+                          araliktir; px ile ayni etkiyi yakalamak zordur. */
+    color: rgba(246, 236, 226, .82);
+    margin-bottom: 1.75rem;
+}
+
+.kafe-rozet {
+    display: inline-block;
+    padding: .35rem .85rem;
+    border-radius: 999px;   /* cok buyuk deger = tam yuvarlak uclar */
+    background: rgba(201, 138, 63, .18);
+    border: 1px solid rgba(201, 138, 63, .45);
+    color: var(--kafe-karamel-ac);
+    font-size: .82rem;
+    font-weight: 600;
+}
+
+.kafe-ozellik-liste {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.kafe-ozellik-liste li {
+    position: relative;
+    padding: .85rem 0 .85rem 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, .1);
+    font-size: .92rem;
+    color: rgba(246, 236, 226, .78);
+}
+
+.kafe-ozellik-liste li:last-child {
+    border-bottom: 0;
+}
+
+.kafe-ozellik-liste strong {
+    display: block;
+    color: #fff;
+    font-size: .98rem;
+    margin-bottom: .15rem;
+}
+
+/* ::before ile madde isareti uretiyoruz. HTML'e bos bir <span>
+   eklemektense suslemeyi CSS'te tutmak dogru ayrimdir: icerik HTML'de,
+   gorunum CSS'te. */
+.kafe-ozellik-liste li::before {
+    content: "";
+    position: absolute;
+    left: .35rem;
+    top: 1.35rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--kafe-karamel);
+}
+
+
+/* =====================================================================
+   6) KARTLAR VE BOLUM BASLIKLARI
+   ===================================================================== */
+.kafe-kart {
+    background: var(--kafe-kagit);
+    border: 1px solid var(--kafe-kum);
+    border-radius: var(--kafe-yuvarlak);
+    box-shadow: var(--kafe-golge-kucuk);
+    padding: 1.5rem;
+}
+
+.kafe-bolum-baslik {
+    margin-bottom: 1.5rem;
+}
+
+.kafe-bolum-baslik h1,
+.kafe-bolum-baslik h2 {
+    color: var(--kafe-espresso);
+    font-weight: 700;
+    margin-bottom: .35rem;
+}
+
+.kafe-bolum-baslik p {
+    color: var(--kafe-soluk);
+    margin-bottom: 0;
+}
+
+/* Numarali adim basligi: formun uc asamadan olustugunu gorsel olarak
+   anlatir. Kullanici "ne kadar kaldi" sorusunu bir bakista cevaplar. */
+.kafe-adim-baslik {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--kafe-espresso);
+    margin-bottom: 1.15rem;
+}
+
+.kafe-adim-baslik span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--kafe-karamel);
+    color: #fff;
+    font-size: .85rem;
+}
+
+
+/* =====================================================================
+   7) FORM
+   ===================================================================== */
+.kafe-form .form-label {
+    font-weight: 600;
+    font-size: .88rem;
+    color: var(--kafe-espresso);
+    margin-bottom: .35rem;
+}
+
+.form-control,
+.form-select {
+    border-color: var(--kafe-kum);
+    border-radius: var(--kafe-yuvarlak-kucuk);
+    padding: .55rem .75rem;
+    transition: border-color var(--kafe-gecis), box-shadow var(--kafe-gecis);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--kafe-karamel);
+    /* Bootstrap'in mavi odak golgesini kendi rengimizle degistiriyoruz.
+       Golgeyi tamamen kaldirmak erisilebilirlik acisindan yanlis olurdu. */
+    box-shadow: 0 0 0 .2rem rgba(201, 138, 63, .22);
+}
+
+.form-text {
+    color: var(--kafe-soluk);
+    font-size: .82rem;
+}
+
+.kafe-kod-girdi {
+    /* Kod alani: harfler arasi bosluk + tek genislikli font, kullanicinin
+       8 karakteri tek tek kontrol etmesini kolaylastirir. */
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+
+/* =====================================================================
+   8) MASA KARTLARI  (JavaScript uretir - assets/js/app.js)
+   ===================================================================== */
+.kafe-masa-listesi {
+    display: grid;
+    /*
+       auto-fill + minmax = MEDYA SORGUSUZ duyarli izgara.
+       "En az 230px genisliginde sutunlar olustur, sigdigi kadar yan yana
+       koy, kalan yeri esit dagit (1fr)."
+       Boylece 1200px ekranda 4, tablette 2, telefonda 1 sutun olusur ve
+       biz hicbir kirilma noktasi yazmayiz.
+    */
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: .85rem;
+}
+
+/*
+   Masa karti bir <label>'dir; icinde gizli bir radio bulunur.
+   Neden? Label'a tiklamak icindeki radio'yu secer - yani TUM KART
+   tiklanabilir olur. Ayni davranisi JavaScript ile yazmak mumkundur
+   ama gereksizdir: HTML zaten sunar ve klavye ile de calisir.
+*/
+.kafe-masa-karti {
+    position: relative;
+    display: block;
+    padding: 1rem 1rem 1rem 1.1rem;
+    background: var(--kafe-kagit);
+    border: 2px solid var(--kafe-kum);
+    border-radius: var(--kafe-yuvarlak);
+    cursor: pointer;
+    transition: border-color var(--kafe-gecis),
+                box-shadow var(--kafe-gecis),
+                transform var(--kafe-gecis),
+                background var(--kafe-gecis);
+}
+
+.kafe-masa-karti:hover {
+    border-color: var(--kafe-karamel-ac);
+    box-shadow: var(--kafe-golge-orta);
+    transform: translateY(-2px);
+}
+
+/*
+   Radio gorsel olarak gizlenir ama ERISILEBILIR kalir.
+   "display: none" yazsaydik oge klavye sirasindan tamamen cikardi ve
+   TAB ile masa secilemezdi. opacity:0 + position:absolute yontemi ogeyi
+   gorunmez yapar ama odaklanilabilir birakir.
+*/
+.kafe-masa-karti input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Secili kart: kalin kenarlik + acik zemin + sag ustte onay isareti.
+   Uc ayri ipucu birden veriyoruz (renk, kenarlik, ikon) ki secim
+   kimse icin belirsiz kalmasin. */
+.kafe-masa-karti.secili {
+    border-color: var(--kafe-karamel);
+    background: #fff8ee;
+    box-shadow: 0 0 0 .2rem rgba(201, 138, 63, .18);
+}
+
+.kafe-masa-karti.secili::after {
+    content: "\2713";           /* onay isareti (U+2713) */
+    position: absolute;
+    top: .55rem;
+    right: .7rem;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    border-radius: 50%;
+    background: var(--kafe-karamel);
+    color: #fff;
+    font-size: .78rem;
+    font-weight: 700;
+}
+
+/* Klavye ile gezerken de secili kart kadar belirgin bir ipucu. */
+.kafe-masa-karti:focus-within {
+    border-color: var(--kafe-karamel);
+    box-shadow: 0 0 0 .2rem rgba(201, 138, 63, .3);
+}
+
+.kafe-masa-ad {
+    display: block;
+    font-weight: 700;
+    font-size: 1.02rem;
+    color: var(--kafe-espresso);
+    margin-bottom: .45rem;
+    padding-right: 1.6rem;   /* onay isaretine yer birak */
+}
+
+.kafe-masa-rozetler {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+}
+
+.kafe-etiket {
+    display: inline-block;
+    padding: .2rem .6rem;
+    border-radius: 999px;
+    font-size: .76rem;
+    font-weight: 600;
+    background: #f3ece4;
+    color: var(--kafe-kahve);
+    border: 1px solid var(--kafe-kum);
+}
+
+/* Konum rozetleri: ic mekan ve bahce farkli renkte olsun ki listeye
+   bakan kisi tek bakista ayirabilsin. */
+.kafe-etiket-ic {
+    background: #eef2f7;
+    border-color: #d9e2ec;
+    color: #3f5570;
+}
+
+.kafe-etiket-dis {
+    background: #eef6ec;
+    border-color: #d5e8d0;
+    color: #3f6b3a;
+}
+
+.kafe-konum-rozet {
+    background: var(--kafe-kahve);
+    color: #fff;
+    font-weight: 600;
+}
+
+.kafe-masa-dolu {
+    display: block;
+    margin-top: .6rem;
+    padding-top: .55rem;
+    border-top: 1px dashed var(--kafe-kum);
+    font-size: .76rem;
+    color: var(--kafe-soluk);
+}
+
+/* Bos durum / yukleniyor / hata kutulari: liste izgarasinin tamamini
+   kaplasin diye grid-column: 1 / -1 (ilk cizgiden son cizgiye). */
+.kafe-bos-durum,
+.kafe-durum-kutusu {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--kafe-soluk);
+    background: #faf6f1;
+    border: 1px dashed var(--kafe-kum);
+    border-radius: var(--kafe-yuvarlak);
+}
+
+.kafe-durum-kutusu.hata {
+    color: #8c2f2f;
+    background: #fdf2f2;
+    border-color: #f0c9c9;
+    border-style: solid;
+}
+
+
+/* =====================================================================
+   9) BASARI EKRANI VE OZET LISTESI
+   ===================================================================== */
+.kafe-basari-kart {
+    background: var(--kafe-kagit);
+    border: 1px solid var(--kafe-kum);
+    border-left: 6px solid #2f7d4f;   /* soldaki yesil serit: "basarili" */
+    border-radius: var(--kafe-yuvarlak);
+    box-shadow: var(--kafe-golge-buyuk);
+    padding: 1.75rem;
+}
+
+.kafe-kod-etiket {
+    font-size: .78rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--kafe-soluk);
+    margin-bottom: .35rem;
+}
+
+/*
+   REZERVASYON KODU - sayfanin en onemli bilgisi.
+   Buyuk punto, tek genislikli font ve genis harf araligi bir arada
+   kullanildiginda kod hem uzaktan okunur hem de telefonda birine
+   soylerken karakterler karismaz.
+*/
+.kafe-kod {
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: clamp(1.9rem, 5vw, 2.6rem);
+    font-weight: 700;
+    letter-spacing: .16em;
+    color: var(--kafe-espresso);
+    background: linear-gradient(180deg, #fff8ee, #f6ead9);
+    border: 2px dashed var(--kafe-karamel);
+    border-radius: var(--kafe-yuvarlak);
+    padding: .75rem .5rem;
+    margin-bottom: 1rem;
+
+    /* Kodu secmek ve kopyalamak kolay olsun. */
+    user-select: all;
+}
+
+.kafe-kod-kucuk {
+    font-size: 1.4rem;
+    padding: .35rem .75rem;
+    border-width: 1px;
+    border-style: solid;
+    background: #fff8ee;
+    margin-bottom: 0;
+}
+
+/*
+   <dl> (tanim listesi) etiket/deger ciftleri icin DOGRU semantik
+   ogedir. Ayni gorunum <table> ile de yapilabilirdi ama tablo
+   "satir-sutun iliskisi olan veri" demektir; tek bir kaydin alanlarini
+   listelemek tanim listesinin isidir. Ekran okuyucu "Tarih: 30.09.2026"
+   seklinde eslestirerek okur.
+*/
+.kafe-ozet {
+    display: grid;
+    grid-template-columns: minmax(110px, auto) 1fr;
+    gap: .55rem 1rem;
+    margin: 0;
+}
+
+.kafe-ozet dt {
+    font-weight: 600;
+    font-size: .85rem;
+    color: var(--kafe-soluk);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.kafe-ozet dd {
+    margin: 0;
+    color: var(--kafe-metin);
+}
+
+.kafe-kayit-karti {
+    border-left: 6px solid var(--kafe-karamel);
+}
+
+
+/* =====================================================================
+   10) TABLO VE FOOTER
+   ===================================================================== */
+.table > :not(caption) > * > * {
+    padding: .8rem .9rem;
+}
+
+.table thead th {
+    background: #f6efe7;
+    color: var(--kafe-espresso);
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    border-bottom: 1px solid var(--kafe-kum);
+}
+
+.kafe-footer {
+    background: var(--kafe-espresso);
+    color: #efe3d7;
+    flex: none;   /* sticky footer duzeninde kucultulmesin */
+    border-top: 1px solid rgba(196, 165, 116, .35);
+}
+
+.kafe-footer a {
+    color: var(--kafe-karamel-ac);
+    text-decoration: none;
+}
+
+.kafe-footer a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.kafe-personel-link a {
+    color: rgba(239, 227, 215, .38) !important;
+    font-size: .8rem;
+}
+
+.kafe-personel-link a:hover {
+    color: rgba(239, 227, 215, .7) !important;
+}
+
+
+/* =====================================================================
+   11) MOBIL DUZELTMELERI
+   ---------------------------------------------------------------------
+   Bootstrap'in izgarasi cogu isi hallediyor; burada sadece kendi
+   bilesenlerimizin dar ekranda bozulan yerlerini duzeltiyoruz.
+   ===================================================================== */
+@media (max-width: 575.98px) {
+
+    .kafe-kart,
+    .kafe-basari-kart {
+        padding: 1.1rem;
+    }
+
+    /* Ozet listesi dar ekranda iki sutuna sigmaz; etiketi degerin
+       ustune aliyoruz. */
+    .kafe-ozet {
+        grid-template-columns: 1fr;
+        gap: .15rem;
+    }
+
+    .kafe-ozet dd {
+        margin-bottom: .7rem;
+    }
+
+    /* Tek sutun masa listesi: minmax'taki 230px bazi telefonlarda
+       tasmaya yol acabiliyor. */
+    .kafe-masa-listesi {
+        grid-template-columns: 1fr;
+    }
+
+    /* Mobilde butonlar tam genislik: parmakla isabet ettirmek kolay
+       olsun (dokunma hedefi en az 44px onerilir). */
+    .kafe-hero .btn,
+    #gonderButonu {
+        width: 100%;
+    }
+}
+
+/*
+   HAREKET AZALTMA TERCIHI
+   Isletim sisteminde "animasyonlari azalt" secenegini isaretlemis
+   kullanicilar vardir (vestibuler rahatsizlik, bas donmesi). Bu medya
+   sorgusu o tercihi okur ve gecisleri kapatir. Erisilebilirlik sadece
+   ekran okuyucu demek degildir.
+*/
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+    }
+
+    .kafe-masa-karti:hover,
+    .btn-kafe:hover {
+        transform: none;
+    }
+}
+
+
+/* =====================================================================
+   12) MUSTERI CILA — kahve dukkani, mor SaaS degil
+   ---------------------------------------------------------------------
+   Mevcut palet zaten espresso/karamel. Burada zemin ve kahraman
+   bolumune kagit/ahsap hissi eklenir; Bootstrap'in mor/mavi
+   birincil rengi zaten :root icinde ezilmistir.
+   ===================================================================== */
+.kafe-govde {
+    background-color: #f4eadc;
+    background-image:
+        radial-gradient(ellipse at top, rgba(201, 138, 63, .12), transparent 46%),
+        linear-gradient(180deg, #f7efe4 0%, #f0e4d4 100%);
+}
+
+.kafe-hero {
+    background:
+        radial-gradient(circle at 12% 20%, rgba(224, 167, 94, .22), transparent 38%),
+        radial-gradient(circle at 88% 0%, rgba(107, 74, 50, .35), transparent 42%),
+        linear-gradient(165deg, #2a1b14 0%, #3d281c 55%, #241610 100%);
+    border-bottom: 4px solid var(--kafe-karamel);
+}
+
+.kafe-kart {
+    background: #fffaf3;
+    box-shadow: var(--kafe-golge-kucuk);
+}
+
+
+/* =====================================================================
+   13) ADMIN KASA OFISI (sidebar)
+   ---------------------------------------------------------------------
+   Giris yapilmissa sol serit espresso, sagda kagit zemin.
+   Login sayfasinda sidebar yoktur: henuz yetki kanitlanmamistir.
+   ===================================================================== */
+.admin-govde-panel {
+    background: #efe4d4;
+}
+
+.admin-yan {
+    display: none;
+}
+
+.admin-cerceve {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.admin-ust {
+    display: flex;
+    align-items: center;
+    gap: .85rem;
+    padding: .85rem 1.25rem;
+    background: #fffaf3;
+    border-bottom: 1px solid var(--kafe-kum);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+.admin-ust-baslik {
+    color: var(--kafe-espresso);
+    font-weight: 700;
+}
+
+.admin-ust-saat,
+.admin-ust-musteri {
+    margin-left: auto;
+    color: var(--kafe-soluk);
+    font-size: .88rem;
+    text-decoration: none;
+}
+
+.admin-ust-musteri:hover {
+    color: var(--kafe-kahve);
+}
+
+.admin-giris-marka {
+    color: var(--kafe-espresso) !important;
+    text-decoration: none;
+}
+
+.admin-rozet {
+    display: inline-block;
+    margin-left: .15rem;
+    padding: .12rem .5rem;
+    border-radius: 999px;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    background: rgba(201, 138, 63, .2);
+    color: var(--kafe-kahve);
+    border: 1px solid rgba(201, 138, 63, .4);
+}
+
+.admin-yan-ac {
+    border: 1px solid var(--kafe-kum);
+    padding: .35rem .5rem;
+}
+
+.admin-yan-ac .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(43,29,22,0.85)' stroke-width='2' stroke-linecap='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+.admin-flash {
+    padding: 1rem 1.25rem 0;
+}
+
+.admin-icerik {
+    flex: 1 0 auto;
+}
+
+.admin-icerik-ic {
+    padding: 1.25rem 1.4rem 2rem;
+}
+
+.admin-giris-sahne {
+    display: grid;
+    gap: 1.5rem;
+    max-width: 880px;
+    margin: 1.5rem auto 2rem;
+}
+
+.admin-giris-pano {
+    background:
+        radial-gradient(circle at 80% 20%, rgba(201, 138, 63, .28), transparent 42%),
+        linear-gradient(160deg, #2b1d16, #4a3224);
+    color: #f6ece2;
+    border-radius: var(--kafe-yuvarlak);
+    padding: 1.75rem 1.6rem;
+    box-shadow: var(--kafe-golge-orta);
+}
+
+.admin-giris-kart {
+    box-shadow: var(--kafe-golge-buyuk);
+}
+
+.admin-ozet-kart {
+    background: #fffaf3;
+    border: 1px solid var(--kafe-kum);
+    border-radius: var(--kafe-yuvarlak);
+    padding: 1.1rem 1.15rem;
+    box-shadow: var(--kafe-golge-kucuk);
+    height: 100%;
+}
+
+.admin-ozet-onay { border-top: 4px solid #2f7d4f; }
+.admin-ozet-iptal { border-top: 4px solid #b02a2a; }
+.admin-ozet-tamam { border-top: 4px solid #6c757d; }
+
+.admin-ozet-etiket {
+    margin: 0;
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--kafe-soluk);
+}
+
+.admin-ozet-sayi {
+    margin: .35rem 0 0;
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--kafe-espresso);
+    line-height: 1.1;
+}
+
+.admin-bar {
+    height: 8px;
+    background: var(--kafe-kum);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.admin-bar span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--kafe-kahve), var(--kafe-karamel));
+    border-radius: 999px;
+}
+
+.admin-footer {
+    margin-top: auto;
+}
+
+.admin-mobil-menu {
+    background: var(--kafe-espresso);
+    color: #efe3d7;
+}
+
+.admin-mobil-menu .admin-yan-link {
+    display: block;
+    color: #efe3d7;
+    text-decoration: none;
+    padding: .55rem .2rem;
+}
+
+.admin-mobil-menu .admin-yan-link.active {
+    color: var(--kafe-karamel-ac);
+    font-weight: 700;
+}
+
+@media (min-width: 992px) {
+    .admin-govde-panel {
+        display: block;
+    }
+
+    .admin-govde-panel .admin-yan {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        inset: 0 auto 0 0;
+        width: 240px;
+        background: linear-gradient(180deg, #241610 0%, #2b1d16 70%);
+        color: #efe3d7;
+        padding: 1.15rem 1rem 1rem;
+        z-index: 30;
+        border-right: 1px solid rgba(201, 138, 63, .25);
+    }
+
+    .admin-govde-panel .admin-cerceve {
+        margin-left: 240px;
+        min-height: 100vh;
+    }
+
+    .admin-yan-marka {
+        display: flex;
+        gap: .7rem;
+        align-items: center;
+        color: #fff;
+        text-decoration: none;
+        margin-bottom: 1.4rem;
+    }
+
+    .admin-yan-marka small {
+        display: block;
+        color: var(--kafe-karamel-ac);
+        font-size: .72rem;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+    }
+
+    .admin-yan-nav {
+        display: flex;
+        flex-direction: column;
+        gap: .15rem;
+        flex: 1 1 auto;
+    }
+
+    .admin-yan-grup {
+        margin: 1rem 0 .35rem;
+        font-size: .68rem;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: rgba(239, 227, 215, .5);
+    }
+
+    .admin-yan-link {
+        color: rgba(239, 227, 215, .88);
+        text-decoration: none;
+        padding: .45rem .7rem;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+
+    .admin-yan-link:hover,
+    .admin-yan-link.active {
+        background: rgba(201, 138, 63, .16);
+        color: #fff;
+    }
+
+    .admin-yan-link.active {
+        box-shadow: inset 3px 0 0 var(--kafe-karamel);
+    }
+
+    .admin-yan-alt {
+        border-top: 1px solid rgba(255, 255, 255, .08);
+        padding-top: 1rem;
+        margin-top: 1rem;
+    }
+
+    .admin-yan-kullanici {
+        font-size: .85rem;
+        margin-bottom: .6rem;
+        color: rgba(255, 255, 255, .8);
+    }
+
+    .admin-yan-musteri {
+        display: block;
+        margin-top: .65rem;
+        font-size: .78rem;
+        color: var(--kafe-karamel-ac);
+        text-decoration: none;
+    }
+
+    .admin-giris-sahne {
+        grid-template-columns: 1fr 1fr;
+        align-items: stretch;
+        margin-top: 2.5rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .admin-ozet-sayi {
+        font-size: 1.45rem;
+    }
+
+    .admin-icerik-ic {
+        padding: 1rem;
+    }
+}
+
+
+/* =====================================================================
+   14) PREMIUM CILA — saat karti, bos durum, onay, yazdir
+   ===================================================================== */
+.kafe-ust-etiket {
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--kafe-pirinc);
+    margin-bottom: .35rem;
+}
+
+.kafe-saat-karti {
+    background: rgba(255, 250, 243, .08);
+    border: 1px solid rgba(196, 165, 116, .35);
+    border-radius: var(--kafe-yuvarlak);
+    padding: 1.35rem 1.4rem;
+    backdrop-filter: blur(6px);
+}
+
+.kafe-saat-buyuk {
+    font-family: var(--kafe-serif);
+    font-size: clamp(1.7rem, 3vw, 2.15rem);
+    font-weight: 600;
+    letter-spacing: .04em;
+    color: #f6ece2;
+    margin: 0;
+}
+
+.kafe-saat-buyuk span {
+    color: var(--kafe-pirinc);
+}
+
+.kafe-hero-kisa {
+    padding: clamp(2rem, 5vw, 3.2rem) 0;
+}
+
+.kafe-mini-kart {
+    background: var(--kafe-kagit);
+    border: 1px solid var(--kafe-kum);
+    border-radius: var(--kafe-yuvarlak);
+    padding: 1.15rem 1.2rem;
+    height: 100%;
+    box-shadow: var(--kafe-golge-kucuk);
+}
+
+.kafe-bos-durum,
+.kafe-durum-kutusu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .35rem;
+    padding: 2rem 1.25rem;
+}
+
+.kafe-bos-durum strong,
+.kafe-durum-kutusu strong {
+    color: var(--kafe-espresso);
+}
+
+.kafe-bos-ikon {
+    display: block;
+    width: 42px;
+    height: 42px;
+    margin-bottom: .35rem;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b08d57' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 8h1a4 4 0 1 1 0 8h-1'/%3E%3Cpath d='M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z'/%3E%3Cpath d='M6 2v3M10 2v3M14 2v3'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.kafe-onay-sayfa {
+    border-left-width: 8px;
+}
+
+.kafe-iletisim-kart {
+    border-top: 3px solid var(--kafe-pirinc);
+}
+
+.admin-ozet-kalan {
+    border-top: 4px solid var(--kafe-karamel);
+}
+
+.kafe-yaklasan li {
+    display: flex;
+    flex-direction: column;
+    gap: .1rem;
+    padding: .7rem 0;
+    border-bottom: 1px solid var(--kafe-kum);
+}
+
+.kafe-yaklasan li:last-child {
+    border-bottom: 0;
+}
+
+.kafe-yaklasan-saat {
+    font-size: .75rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--kafe-soluk);
+}
+
+.admin-yan-marka small {
+    color: var(--kafe-pirinc);
+}
+
+.admin-govde-panel .admin-yan {
+    border-right-color: rgba(196, 165, 116, .4);
+}
+
+@media print {
+    .icerige-atla,
+    .kafe-navbar,
+    .kafe-footer,
+    .no-print,
+    .alert {
+        display: none !important;
+    }
+
+    .kafe-govde,
+    body {
+        background: #fff !important;
+        color: #000;
+    }
+
+    .kafe-basari-kart {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+
+    .kafe-kod {
+        user-select: all;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .kafe-navbar,
+    .kafe-hero,
+    .kafe-hero::before {
+        background: none !important;
+    }
+}
+
+
+/* =====================================================================
+   15) LUKS EDITORIAL KAFE — sarap + pirinc, dergi duzeni
+   ---------------------------------------------------------------------
+   Onceki tur espresso/krema idi. Burada zemin daha koyu parsomene,
+   kenarlar pirinc kil, basliklar serif, kartlar bilet/davetiye.
+   Bootstrap izgarasi kalir; mor SaaS paleti kullanilmaz.
+   ===================================================================== */
+
+.kafe-govde {
+    background-color: #e8dcc8;
+    background-image:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(198, 161, 91, .18), transparent 50%),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 3px,
+            rgba(36, 28, 22, .015) 3px,
+            rgba(36, 28, 22, .015) 4px
+        ),
+        linear-gradient(180deg, #f3ead9 0%, #e6d7c0 55%, #ddd0b8 100%);
+    color: var(--kafe-metin);
+}
+
+.kafe-navbar {
+    background: linear-gradient(180deg, #160f0d 0%, #0e0a08 100%);
+    box-shadow: none;
+    border-bottom: 1px solid var(--kafe-pirinc);
+    padding-top: .7rem;
+    padding-bottom: .7rem;
+}
+
+.kafe-navbar::before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--kafe-pirinc), transparent);
+}
+
+.kafe-navbar .nav-link {
+    font-size: .82rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.kafe-navbar .nav-link.active {
+    border-bottom: 1px solid var(--kafe-pirinc);
+}
+
+.kafe-navbar .btn-kafe {
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    font-size: .75rem;
+    background: transparent;
+    border: 1px solid var(--kafe-pirinc);
+    color: var(--kafe-karamel-ac);
+    box-shadow: none;
+}
+
+.kafe-navbar .btn-kafe:hover,
+.kafe-navbar .btn-kafe:focus {
+    background: var(--kafe-pirinc);
+    color: #160f0d;
+    border-color: var(--kafe-pirinc);
+}
+
+.btn-kafe {
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-size: .82rem;
+    background: var(--kafe-kahve);
+    border-color: var(--kafe-kahve);
+    border-radius: 0;
+}
+
+.btn-kafe-cizgi {
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-size: .82rem;
+    border-radius: 0;
+    border-color: var(--kafe-pirinc);
+    color: var(--kafe-kahve);
+}
+
+.btn-kafe-cizgi:hover,
+.btn-kafe-cizgi:focus {
+    background: var(--kafe-espresso);
+    border-color: var(--kafe-espresso);
+    color: var(--kafe-karamel-ac);
+}
+
+.kafe-hero {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    min-height: min(76vh, 600px);
+    display: flex;
+    align-items: center;
+    background-color: #110d0b;
+    background-image:
+        linear-gradient(105deg, rgba(10, 7, 6, .88) 0%, rgba(18, 10, 8, .58) 48%, rgba(10, 7, 6, .28) 100%),
+        url("../img/salon-hero.jpg");
+    background-size: cover;
+    background-position: center 40%;
+    border-bottom: 0;
+    padding: clamp(3rem, 8vw, 5.5rem) 0;
+}
+
+.kafe-hero-kisa {
+    min-height: 0;
+    align-items: flex-end;
+}
+
+.kafe-hero-hakkinda {
+    background-image:
+        linear-gradient(100deg, rgba(10, 7, 6, .86) 0%, rgba(18, 10, 8, .5) 100%),
+        url("../img/salon-vitrin.jpg");
+    background-position: center;
+}
+
+.kafe-hero-sorgula {
+    background-image:
+        linear-gradient(100deg, rgba(10, 7, 6, .88) 0%, rgba(18, 10, 8, .55) 100%),
+        url("../img/salon-sokak.jpg");
+}
+
+.kafe-hero::before {
+    content: "";
+    position: absolute;
+    inset: 1.1rem 1.1rem auto 1.1rem;
+    height: calc(100% - 2.2rem);
+    border: 1px solid rgba(198, 161, 91, .35);
+    pointer-events: none;
+}
+
+.kafe-hero::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 8%, var(--kafe-pirinc) 50%, transparent 92%);
+}
+
+.kafe-hero-ic {
+    position: relative;
+    z-index: 1;
+}
+
+.kafe-italik {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--kafe-karamel-ac);
+}
+
+.kafe-rozet {
+    border-radius: 0;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    font-size: .7rem;
+    font-weight: 500;
+    background: transparent;
+    border-color: rgba(198, 161, 91, .55);
+    color: var(--kafe-karamel-ac);
+}
+
+.kafe-saat-karti {
+    background: rgba(10, 7, 6, .35);
+    border: 1px solid rgba(198, 161, 91, .4);
+    border-radius: 0;
+    position: relative;
+}
+
+.kafe-saat-karti::before,
+.kafe-saat-karti::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border: 1px solid var(--kafe-pirinc);
+}
+
+.kafe-saat-karti::before {
+    top: -1px;
+    left: -1px;
+    border-right: 0;
+    border-bottom: 0;
+}
+
+.kafe-saat-karti::after {
+    bottom: -1px;
+    right: -1px;
+    border-left: 0;
+    border-top: 0;
+}
+
+.kafe-kart {
+    background:
+        linear-gradient(180deg, rgba(255, 252, 245, .7), transparent 28%),
+        var(--kafe-kagit);
+    border: 1px solid var(--kafe-kum);
+    border-radius: 0;
+    box-shadow: 0 1px 0 rgba(198, 161, 91, .35), var(--kafe-golge-kucuk);
+    position: relative;
+}
+
+.kafe-kart::before {
+    content: "";
+    position: absolute;
+    left: .65rem;
+    right: .65rem;
+    top: .45rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(198, 161, 91, .55), transparent);
+}
+
+.kafe-bolum-baslik h1,
+.kafe-bolum-baslik h2,
+.kafe-adim-baslik,
+.admin-ust-baslik,
+.admin-ozet-sayi {
+    font-family: var(--kafe-serif);
+    font-weight: 600;
+}
+
+.kafe-adim-baslik span {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 0;
+    background: transparent;
+    color: var(--kafe-kahve);
+    border: 1px solid var(--kafe-pirinc);
+    font-family: var(--kafe-serif);
+    font-size: .78rem;
+    letter-spacing: .04em;
+}
+
+.kafe-masa-karti {
+    border-radius: 0;
+    overflow: hidden;
+    background:
+        repeating-linear-gradient(
+            -12deg,
+            transparent,
+            transparent 8px,
+            rgba(198, 161, 91, .04) 8px,
+            rgba(198, 161, 91, .04) 9px
+        ),
+        var(--kafe-kagit);
+}
+
+.kafe-masa-karti::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background: var(--kafe-pirinc);
+}
+
+.kafe-masa-bahce::before {
+    background: #5f7d4a;
+}
+
+.kafe-masa-ic::before {
+    background: var(--kafe-kahve);
+}
+
+.kafe-masa-karti.secili {
+    background: #f3ead4;
+    border-color: var(--kafe-pirinc);
+}
+
+.kafe-masa-karti.secili::after {
+    border-radius: 0;
+    background: var(--kafe-kahve);
+}
+
+.kafe-masa-ad {
+    font-family: var(--kafe-serif);
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.kafe-etiket {
+    border-radius: 0;
+}
+
+.kafe-basari-kart,
+.kafe-onay-sayfa {
+    border-radius: 0;
+    border: 1px solid var(--kafe-pirinc);
+    border-left: 1px solid var(--kafe-pirinc);
+    background:
+        linear-gradient(90deg, rgba(107, 45, 42, .08) 0, rgba(107, 45, 42, .08) 8px, transparent 8px),
+        var(--kafe-kagit);
+    position: relative;
+}
+
+.kafe-onay-sayfa::after {
+    content: "";
+    position: absolute;
+    top: 1.2rem;
+    bottom: 1.2rem;
+    left: 42%;
+    width: 0;
+    border-left: 1px dashed rgba(198, 161, 91, .55);
+    pointer-events: none;
+}
+
+@media (max-width: 991.98px) {
+    .kafe-onay-sayfa::after {
+        display: none;
+    }
+}
+
+.kafe-kod {
+    border-radius: 0;
+    border: 1px solid var(--kafe-pirinc);
+    background: #f4ead6;
+    font-family: var(--kafe-serif);
+    letter-spacing: .2em;
+}
+
+.kafe-kod-etiket,
+.kafe-ust-etiket,
+.admin-ozet-etiket,
+.admin-yan-grup {
+    letter-spacing: .18em;
+}
+
+.kafe-iletisim-kart {
+    border-top: 1px solid var(--kafe-pirinc);
+}
+
+.kafe-alinti {
+    font-family: var(--kafe-serif);
+    font-style: italic;
+    font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+    line-height: 1.35;
+    color: var(--kafe-espresso);
+    border: 0;
+    border-left: 1px solid var(--kafe-pirinc);
+    padding: .2rem 0 .2rem 1.15rem;
+    margin: 0 0 1.25rem;
+}
+
+.kafe-mini-kart {
+    border-radius: 0;
+    background: var(--kafe-kagit);
+    border: 1px solid var(--kafe-kum);
+    box-shadow: none;
+}
+
+.kafe-footer {
+    background: #0e0a08;
+    border-top: 1px solid var(--kafe-pirinc);
+}
+
+.kafe-footer .kafe-marka {
+    color: var(--kafe-karamel-ac);
+}
+
+.admin-govde-panel {
+    background: #e6d9c4;
+}
+
+.admin-ust {
+    background: #f8f1e4;
+    border-bottom: 1px solid var(--kafe-pirinc);
+}
+
+.admin-ozet-kart {
+    border-radius: 0;
+    background: var(--kafe-kagit);
+    box-shadow: none;
+}
+
+.admin-giris-pano {
+    border-radius: 0;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background-image:
+        linear-gradient(160deg, rgba(20, 14, 12, .78), rgba(42, 22, 20, .72)),
+        url("../img/fincan.jpg");
+    background-size: cover;
+    background-position: center;
+    border: 1px solid rgba(198, 161, 91, .4);
+}
+
+.admin-giris-pano h1 {
+    font-family: var(--kafe-serif);
+    font-weight: 600;
+    font-size: clamp(2rem, 4vw, 2.6rem);
+}
+
+.kafe-alinti-karanlik {
+    color: var(--kafe-karamel-ac);
+    border: 0;
+    padding-left: 0;
+}
+
+@media (min-width: 992px) {
+    .admin-govde-panel .admin-yan {
+        background: linear-gradient(180deg, #120c0a 0%, #1a1010 100%);
+        border-right: 1px solid var(--kafe-pirinc);
+        width: 248px;
+    }
+
+    .admin-govde-panel .admin-cerceve {
+        margin-left: 248px;
+    }
+
+    .admin-yan-link {
+        border-radius: 0;
+        letter-spacing: .04em;
+    }
+
+    .admin-yan-link.active {
+        box-shadow: inset 2px 0 0 var(--kafe-pirinc);
+        background: rgba(198, 161, 91, .12);
+    }
+}
+
+.form-control,
+.form-select {
+    border-radius: 0;
+    background: #fcf7ee;
+}
+
+.table thead th {
+    background: #efe4d0;
+    font-family: var(--kafe-sans);
+}
+
+.kafe-foto-cerceve {
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid var(--kafe-kum);
+    background: var(--kafe-espresso);
+    height: 100%;
+}
+
+.kafe-foto-cerceve img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 260px;
+    object-fit: cover;
+}
+
+.kafe-foto-cerceve figcaption {
+    padding: .45rem .85rem .6rem;
+    font-size: .68rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--kafe-karamel-ac);
+    background: #110d0b;
+}
+
+.kafe-saat-liste {
+    margin: 0;
+}
+
+.kafe-saat-liste > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .85rem 0;
+    border-bottom: 1px dashed var(--kafe-kum);
+}
+
+.kafe-saat-liste dt {
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-size: .78rem;
+    color: var(--kafe-soluk);
+}
+
+.kafe-saat-liste dd {
+    margin: 0;
+    font-family: var(--kafe-serif);
+    font-size: 1.2rem;
+}
+
+.kafe-menu-kart {
+    padding-top: 1.7rem;
+}
+
+@media (max-width: 575.98px) {
+    .kafe-hero {
+        min-height: 0;
+        align-items: flex-end;
+    }
+}
+
+@media print {
+    .kafe-onay-sayfa::after {
+        border-left-style: dotted;
+    }
+
+    .kafe-hero::before,
+    .kafe-navbar::before,
+    .kafe-hero,
+    .kafe-foto-cerceve,
+    .kafe-imza-menu,
+    .kafe-adim-serit,
+    .kafe-rezervasyon-sahne {
+        display: none !important;
+    }
+}
+
+
+/* =====================================================================
+   16) BOUTIQUE — yerel fotoğraf, imza menü, rezervasyon sahnesi
+   ---------------------------------------------------------------------
+   Kahraman ve iç sayfalar artık CDN'e bağlı değil; JPEG'ler
+   assets/img/ altındadır (XAMPP / çevrimdışı teslim).
+   ===================================================================== */
+
+.kafe-hero {
+    min-height: min(82vh, 640px);
+}
+
+.kafe-hero-foto-cerceve {
+    margin: 0;
+    border: 1px solid rgba(198, 161, 91, .45);
+    background: #0a0706;
+    overflow: hidden;
+}
+
+.kafe-hero-foto-cerceve img {
+    display: block;
+    width: 100%;
+    height: min(42vh, 320px);
+    object-fit: cover;
+}
+
+.kafe-imza-menu {
+    background:
+        linear-gradient(180deg, #120c0a 0%, #1a1210 100%);
+    color: #f6ece2;
+    padding: 2.4rem 0 2.6rem;
+    border-bottom: 1px solid var(--kafe-pirinc);
+}
+
+.kafe-imza-menu .kafe-ust-etiket {
+    color: var(--kafe-karamel-ac);
+}
+
+.kafe-imza-menu h2 {
+    font-family: var(--kafe-serif);
+    font-weight: 600;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    margin-bottom: .35rem;
+}
+
+.kafe-imza-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: .9rem;
+    margin-top: 1.4rem;
+}
+
+.kafe-imza-kart {
+    background: #0e0a08;
+    border: 1px solid rgba(198, 161, 91, .28);
+    overflow: hidden;
+}
+
+.kafe-imza-kart img {
+    display: block;
+    width: 100%;
+    height: 168px;
+    object-fit: cover;
+}
+
+.kafe-imza-kart figcaption {
+    padding: .7rem .75rem .85rem;
+}
+
+.kafe-imza-kart strong {
+    display: block;
+    font-family: var(--kafe-serif);
+    font-size: 1.12rem;
+    font-weight: 600;
+}
+
+.kafe-imza-kart span {
+    display: block;
+    font-size: .78rem;
+    letter-spacing: .04em;
+    color: var(--kafe-karamel-ac);
+}
+
+.kafe-adim-serit {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: .75rem;
+    padding: 0;
+    margin: 0 0 1.5rem;
+}
+
+.kafe-adim-serit li {
+    border: 1px solid var(--kafe-kum);
+    background: var(--kafe-kagit);
+    padding: .85rem 1rem;
+    position: relative;
+}
+
+.kafe-adim-serit b {
+    display: block;
+    font-family: var(--kafe-serif);
+    font-size: 1.15rem;
+    color: var(--kafe-espresso);
+}
+
+.kafe-adim-serit small {
+    color: var(--kafe-soluk);
+}
+
+.kafe-adim-serit li::before {
+    content: attr(data-adim);
+    display: block;
+    font-size: .68rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--kafe-pirinc);
+    margin-bottom: .25rem;
+}
+
+.kafe-rezervasyon-sahne {
+    display: grid;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.kafe-rezervasyon-foto {
+    margin: 0;
+    min-height: 220px;
+    border: 1px solid var(--kafe-kum);
+    overflow: hidden;
+    background: #110d0b;
+}
+
+.kafe-rezervasyon-foto img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 220px;
+    object-fit: cover;
+}
+
+.kafe-rezervasyon-foto figcaption {
+    padding: .45rem .8rem .55rem;
+    font-size: .68rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--kafe-karamel-ac);
+    background: #110d0b;
+}
+
+@media (min-width: 992px) {
+    .kafe-rezervasyon-sahne {
+        grid-template-columns: 280px 1fr;
+        align-items: stretch;
+    }
+}
+
+.kafe-masa-karti {
+    padding-top: 0;
+}
+
+.kafe-masa-foto {
+    display: block;
+    height: 86px;
+    margin: 0 -1rem .85rem -1.1rem;
+    background-size: cover;
+    background-position: center;
+    border-bottom: 1px solid var(--kafe-kum);
+}
+
+.kafe-masa-ic .kafe-masa-foto {
+    background-image: url("../img/salon-vitrin.jpg");
+}
+
+.kafe-masa-bahce .kafe-masa-foto {
+    background-image: url("../img/salon-masa.jpg");
+}
+
+.kafe-masa-koltuk {
+    display: flex;
+    gap: .28rem;
+    margin: .65rem 0 .35rem;
+}
+
+.kafe-masa-koltuk i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 1px solid var(--kafe-pirinc);
+    background: transparent;
+}
+
+.kafe-masa-karti.secili .kafe-masa-koltuk i {
+    background: var(--kafe-pirinc);
+}
+
+.kafe-masa-ipucu {
+    display: block;
+    font-size: .75rem;
+    color: var(--kafe-soluk);
+}
+
+.admin-govde-giris {
+    background-image:
+        linear-gradient(180deg, rgba(14, 10, 8, .55), rgba(232, 220, 200, .92)),
+        url("../img/salon-hero.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+.kafe-onay-foto {
+    margin: 0 0 1rem;
+    overflow: hidden;
+    border: 1px solid var(--kafe-pirinc);
+}
+
+.kafe-onay-foto img {
+    display: block;
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+}
+
+@media (max-width: 575.98px) {
+    .kafe-adim-serit {
+        grid-template-columns: 1fr;
+    }
+
+    .kafe-imza-kart img {
+        height: 140px;
+    }
+}
