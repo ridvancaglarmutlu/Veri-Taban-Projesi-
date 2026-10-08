@@ -156,7 +156,8 @@
             // Kartin kendisi bir <label>: tiklaninca icindeki radio
             // secilir. Klavye ile de calisir, ekstra JS gerekmez.
             const kart = document.createElement('label');
-            kart.className = 'kafe-masa-karti';
+            const disMiKart = (masa.konum === 'dis');
+            kart.className = 'kafe-masa-karti ' + (disMiKart ? 'kafe-masa-bahce' : 'kafe-masa-ic');
 
             const radio = document.createElement('input');
             radio.type  = 'radio';

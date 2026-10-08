@@ -157,3 +157,7 @@ Kritik PDO ayarı: `PDO::ATTR_EMULATE_PREPARES => false` (gerçek prepared state
 - [x] **Adım 2** — PDO bağlantı sınıfı (`db.php`), yapılandırma ve yardımcı fonksiyonlar
 - [x] **Adım 3** — Müşteri arayüzü, müsait masa listeleme ve çakışma algoritması
 - [x] **Adım 4** — Admin paneli: kimlik doğrulama, kasa ofisi (sidebar), dashboard, masa ve rezervasyon yönetimi
+
+## Stok fotoğraflar
+
+Kahraman, hakkımızda ve personel girişi görselleri **Unsplash** stok fotoğraflarıdır (https bağlantısı; indirme yok). Gerçek işletme veya müşteri fotoğrafı değildir. Çevrimdışı ortamda görseller yüklenmez; metin ve rezervasyon akışı yine çalışır.

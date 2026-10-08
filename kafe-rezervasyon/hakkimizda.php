@@ -17,7 +17,7 @@ $aktifSayfa      = 'hakkimizda';
 require __DIR__ . '/partials/header.php';
 ?>
 
-<section class="kafe-hero kafe-hero-kisa">
+<section class="kafe-hero kafe-hero-kisa kafe-hero-hakkinda">
     <div class="container kafe-hero-ic">
         <span class="kafe-rozet mb-3">Salon defteri</span>
         <h1 class="kafe-hero-baslik">
@@ -32,8 +32,16 @@ require __DIR__ . '/partials/header.php';
 </section>
 
 <div class="container my-5">
-    <div class="row g-4">
-        <div class="col-lg-7">
+    <div class="row g-4 align-items-stretch">
+        <div class="col-lg-6">
+            <figure class="kafe-foto-cerceve mb-0 h-100">
+                <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&amp;fit=crop&amp;w=1200&amp;q=80"
+                     alt="Fincanlarda kahve, stok fotoğraf"
+                     width="1200" height="800" loading="lazy">
+                <figcaption>Stok fotoğraf · Unsplash</figcaption>
+            </figure>
+        </div>
+        <div class="col-lg-6">
             <article class="kafe-kart kafe-metin-kart h-100">
                 <p class="kafe-ust-etiket">Hikâye</p>
                 <blockquote class="kafe-alinti">
@@ -50,6 +58,26 @@ require __DIR__ . '/partials/header.php';
                     gerekirse aynı gün iptal edersiniz.
                 </p>
             </article>
+        </div>
+        <div class="col-lg-7">
+            <aside class="kafe-kart kafe-saat-cizelge h-100">
+                <p class="kafe-ust-etiket">Açılış saatleri</p>
+                <h2 class="h4 mb-3">Her gün aynı ritim</h2>
+                <dl class="kafe-saat-liste">
+                    <div>
+                        <dt>Hafta içi</dt>
+                        <dd><?= e(KAFE_ACILIS) ?> &ndash; <?= e(KAFE_KAPANIS) ?></dd>
+                    </div>
+                    <div>
+                        <dt>Hafta sonu</dt>
+                        <dd><?= e(KAFE_ACILIS) ?> &ndash; <?= e(KAFE_KAPANIS) ?></dd>
+                    </div>
+                    <div>
+                        <dt>Mutfak</dt>
+                        <dd>Kapanıştan yarım saat önce son sipariş</dd>
+                    </div>
+                </dl>
+            </aside>
         </div>
         <div class="col-lg-5">
             <aside class="kafe-kart kafe-iletisim-kart h-100">

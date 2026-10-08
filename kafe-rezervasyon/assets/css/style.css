@@ -1338,12 +1338,36 @@
 .kafe-hero {
     position: relative;
     overflow: hidden;
-    background:
-        radial-gradient(ellipse at 20% 80%, rgba(107, 45, 42, .45), transparent 50%),
-        radial-gradient(circle at 90% 10%, rgba(198, 161, 91, .22), transparent 36%),
-        linear-gradient(165deg, #1a100e 0%, #241614 42%, #0c0908 100%);
+    isolation: isolate;
+    min-height: min(76vh, 600px);
+    display: flex;
+    align-items: center;
+    background-color: #110d0b;
+    background-image:
+        linear-gradient(105deg, rgba(10, 7, 6, .88) 0%, rgba(18, 10, 8, .58) 48%, rgba(10, 7, 6, .28) 100%),
+        url("https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=1800&q=80");
+    background-size: cover;
+    background-position: center 40%;
     border-bottom: 0;
     padding: clamp(3rem, 8vw, 5.5rem) 0;
+}
+
+.kafe-hero-kisa {
+    min-height: 0;
+    align-items: flex-end;
+}
+
+.kafe-hero-hakkinda {
+    background-image:
+        linear-gradient(100deg, rgba(10, 7, 6, .86) 0%, rgba(18, 10, 8, .5) 100%),
+        url("https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=1600&q=80");
+    background-position: center;
+}
+
+.kafe-hero-sorgula {
+    background-image:
+        linear-gradient(100deg, rgba(10, 7, 6, .88) 0%, rgba(18, 10, 8, .55) 100%),
+        url("https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=1600&q=80");
 }
 
 .kafe-hero::before {
@@ -1447,15 +1471,20 @@
 }
 
 .kafe-adim-baslik span {
+    width: 2.2rem;
+    height: 2.2rem;
     border-radius: 0;
     background: transparent;
     color: var(--kafe-kahve);
     border: 1px solid var(--kafe-pirinc);
     font-family: var(--kafe-serif);
+    font-size: .78rem;
+    letter-spacing: .04em;
 }
 
 .kafe-masa-karti {
     border-radius: 0;
+    overflow: hidden;
     background:
         repeating-linear-gradient(
             -12deg,
@@ -1465,6 +1494,24 @@
             rgba(198, 161, 91, .04) 9px
         ),
         var(--kafe-kagit);
+}
+
+.kafe-masa-karti::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background: var(--kafe-pirinc);
+}
+
+.kafe-masa-bahce::before {
+    background: #5f7d4a;
+}
+
+.kafe-masa-ic::before {
+    background: var(--kafe-kahve);
 }
 
 .kafe-masa-karti.secili {
@@ -1579,9 +1626,15 @@
 
 .admin-giris-pano {
     border-radius: 0;
-    background:
-        radial-gradient(circle at 80% 20%, rgba(198, 161, 91, .28), transparent 42%),
-        linear-gradient(160deg, #140e0c, #2a1614);
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background-image:
+        linear-gradient(160deg, rgba(20, 14, 12, .78), rgba(42, 22, 20, .72)),
+        url("https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80");
+    background-size: cover;
+    background-position: center;
     border: 1px solid rgba(198, 161, 91, .4);
 }
 
@@ -1630,13 +1683,77 @@
     font-family: var(--kafe-sans);
 }
 
+.kafe-foto-cerceve {
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid var(--kafe-kum);
+    background: var(--kafe-espresso);
+    height: 100%;
+}
+
+.kafe-foto-cerceve img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 260px;
+    object-fit: cover;
+}
+
+.kafe-foto-cerceve figcaption {
+    padding: .45rem .85rem .6rem;
+    font-size: .68rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--kafe-karamel-ac);
+    background: #110d0b;
+}
+
+.kafe-saat-liste {
+    margin: 0;
+}
+
+.kafe-saat-liste > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .85rem 0;
+    border-bottom: 1px dashed var(--kafe-kum);
+}
+
+.kafe-saat-liste dt {
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-size: .78rem;
+    color: var(--kafe-soluk);
+}
+
+.kafe-saat-liste dd {
+    margin: 0;
+    font-family: var(--kafe-serif);
+    font-size: 1.2rem;
+}
+
+.kafe-menu-kart {
+    padding-top: 1.7rem;
+}
+
+@media (max-width: 575.98px) {
+    .kafe-hero {
+        min-height: 0;
+        align-items: flex-end;
+    }
+}
+
 @media print {
     .kafe-onay-sayfa::after {
         border-left-style: dotted;
     }
 
     .kafe-hero::before,
-    .kafe-navbar::before {
-        display: none;
+    .kafe-navbar::before,
+    .kafe-hero,
+    .kafe-foto-cerceve {
+        display: none !important;
     }
 }

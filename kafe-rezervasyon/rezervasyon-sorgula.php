@@ -167,11 +167,25 @@ $aktifSayfa   = 'sorgula';
 require __DIR__ . '/partials/header.php';
 ?>
 
+<section class="kafe-hero kafe-hero-kisa kafe-hero-sorgula">
+    <div class="container kafe-hero-ic">
+        <span class="kafe-rozet mb-3">Takip</span>
+        <h1 class="kafe-hero-baslik">
+            Defter kaydını<br>
+            <span class="kafe-italik">kodunuzla açın.</span>
+        </h1>
+        <p class="kafe-hero-metin mb-0">
+            Rezervasyon kodunuz ya da telefon numaranızla kaydınızı görüntüleyin;
+            gerekirse aynı gün iptal edin.
+        </p>
+    </div>
+</section>
+
 <div class="container my-4 my-lg-5">
 
     <header class="kafe-bolum-baslik">
         <p class="kafe-ust-etiket">Defter kaydı</p>
-        <h1 class="h3 mb-2">Rezervasyon sorgula</h1>
+        <h2 class="h3 mb-2">Kod veya telefon</h2>
         <p>Rezervasyon kodunuz ya da telefon numaranızla kaydınızı görüntüleyin.</p>
     </header>
 

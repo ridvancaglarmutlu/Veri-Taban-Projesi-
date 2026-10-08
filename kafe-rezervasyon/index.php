@@ -499,8 +499,8 @@ require __DIR__ . '/partials/header.php';
             <?= csrf_field() ?>
 
             <!-- ---------- 1. ADIM: ZAMAN VE KISI ---------- -->
-            <div class="kafe-kart mb-4">
-                <h3 class="kafe-adim-baslik"><span>1</span> Zaman ve kişi sayısı</h3>
+            <div class="kafe-kart kafe-menu-kart mb-4">
+                <h3 class="kafe-adim-baslik"><span>01</span> Zaman ve kişi sayısı</h3>
 
                 <div class="row g-3">
 
@@ -590,8 +590,8 @@ require __DIR__ . '/partials/header.php';
 
 
             <!-- ---------- 2. ADIM: MASA SECIMI ---------- -->
-            <div class="kafe-kart mb-4">
-                <h3 class="kafe-adim-baslik"><span>2</span> Müsait masayı seçin</h3>
+            <div class="kafe-kart kafe-menu-kart mb-4">
+                <h3 class="kafe-adim-baslik"><span>02</span> Müsait masayı seçin</h3>
 
                 <?php if (isset($hatalar['masa_id'])): ?>
                     <div class="alert alert-danger py-2 small" role="alert">
@@ -636,8 +636,8 @@ require __DIR__ . '/partials/header.php';
 
 
             <!-- ---------- 3. ADIM: ILETISIM ---------- -->
-            <div class="kafe-kart mb-4">
-                <h3 class="kafe-adim-baslik"><span>3</span> İletişim bilgileriniz</h3>
+            <div class="kafe-kart kafe-menu-kart mb-4">
+                <h3 class="kafe-adim-baslik"><span>03</span> İletişim bilgileriniz</h3>
 
                 <div class="row g-3">
 
