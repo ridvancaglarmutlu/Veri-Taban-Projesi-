@@ -7,16 +7,16 @@ from pptx.enum.shapes import MSO_SHAPE
 from pptx.enum.text import PP_ALIGN
 from pptx.util import Inches, Pt
 
-NAVY = RGBColor(0x16, 0x25, 0x44)
-NAVY2 = RGBColor(0x24, 0x3B, 0x6B)
-TERR = RGBColor(0xC4, 0x5C, 0x26)
-PAPER = RGBColor(0xF4, 0xEF, 0xE4)
+NAVY = RGBColor(0x0F, 0x2A, 0x3D)
+TERR = RGBColor(0x0B, 0x6E, 0x4F)
+PAPER = RGBColor(0xEE, 0xF3, 0xF1)
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)
-INK = RGBColor(0x1B, 0x24, 0x30)
-MUTED = RGBColor(0x5C, 0x55, 0x4C)
-OK = RGBColor(0x2F, 0x6B, 0x4F)
-BAD = RGBColor(0x8A, 0x1F, 0x1F)
-CODE_BG = RGBColor(0x1B, 0x24, 0x30)
+INK = RGBColor(0x12, 0x20, 0x2B)
+MUTED = RGBColor(0x4D, 0x5C, 0x58)
+OK = RGBColor(0x1F, 0x7A, 0x4D)
+BAD = RGBColor(0xA6, 0x1F, 0x2B)
+CODE = RGBColor(0x10, 0x20, 0x29)
+CREAM = RGBColor(0xE7, 0xF3, 0xEA)
 
 W = Inches(13.333)
 H = Inches(7.5)
@@ -25,24 +25,22 @@ SHOTS = HERE / "gorseller"
 OUT = HERE / "Kampus_Kirtasiye_Yazilim_Testi_Sunumu.pptx"
 
 
-def set_run(run, size=18, bold=False, color=INK, font="Calibri"):
-    run.font.size = Pt(size)
-    run.font.bold = bold
-    run.font.color.rgb = color
-    run.font.name = font
+def run(r, size=18, bold=False, color=INK, font="Calibri"):
+    r.font.size = Pt(size)
+    r.font.bold = bold
+    r.font.color.rgb = color
+    r.font.name = font
 
 
-def add_box(slide, l, t, w, h, fill, line=None):
+def box(slide, l, t, w, h, fill):
     sh = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, l, t, w, h)
     sh.line.fill.background()
-    if line is None:
-        sh.line.fill.background()
     sh.fill.solid()
     sh.fill.fore_color.rgb = fill
     return sh
 
 
-def add_round(slide, l, t, w, h, fill):
+def roundb(slide, l, t, w, h, fill):
     sh = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, l, t, w, h)
     sh.adjustments[0] = 0.08
     sh.line.fill.background()
@@ -51,78 +49,76 @@ def add_round(slide, l, t, w, h, fill):
     return sh
 
 
-def add_text(slide, l, t, w, h, text, size=18, bold=False, color=INK, align=PP_ALIGN.LEFT, font="Calibri"):
-    box = slide.shapes.add_textbox(l, t, w, h)
-    tf = box.text_frame
+def text(slide, l, t, w, h, s, size=18, bold=False, color=INK, align=PP_ALIGN.LEFT):
+    tb = slide.shapes.add_textbox(l, t, w, h)
+    tf = tb.text_frame
     tf.word_wrap = True
     p = tf.paragraphs[0]
     p.alignment = align
-    run = p.add_run()
-    run.text = text
-    set_run(run, size, bold, color, font)
-    return box
+    r = p.add_run()
+    r.text = s
+    run(r, size, bold, color)
+    return tb
 
 
 def footer(slide, no):
-    add_box(slide, 0, Inches(7.22), W, Inches(0.28), NAVY)
-    add_text(slide, Inches(0.4), Inches(7.22), Inches(10), Inches(0.28),
-             "Kampüs Kırtasiye  ·  Yazılım Testi  ·  Rıdvan Çağlar Mutlu", 11, False, PAPER)
-    add_text(slide, Inches(11.6), Inches(7.22), Inches(1.4), Inches(0.28),
-             f"{no:02d}", 11, True, TERR, PP_ALIGN.RIGHT)
+    box(slide, 0, Inches(7.22), W, Inches(0.28), NAVY)
+    text(slide, Inches(0.4), Inches(7.22), Inches(10.5), Inches(0.28),
+         "Kampüs Kırtasiye  ·  İTÜ BİDB + TechTarget  ·  Rıdvan Çağlar Mutlu", 11, False, CREAM)
+    text(slide, Inches(11.6), Inches(7.22), Inches(1.4), Inches(0.28), f"{no:02d}", 11, True, TERR, PP_ALIGN.RIGHT)
 
 
-def chrome(slide, no, title, kicker=None):
-    add_box(slide, 0, 0, W, H, PAPER)
-    add_box(slide, 0, 0, W, Inches(0.12), TERR)
-    add_box(slide, 0, Inches(0.12), W, Inches(0.92), NAVY)
-    add_text(slide, Inches(0.45), Inches(0.28), Inches(11), Inches(0.6), title, 26, True, WHITE)
+def chrome(slide, no, title):
+    box(slide, 0, 0, W, H, PAPER)
+    box(slide, 0, 0, W, Inches(0.12), TERR)
+    box(slide, 0, Inches(0.12), W, Inches(0.92), NAVY)
+    text(slide, Inches(0.45), Inches(0.28), Inches(12), Inches(0.6), title, 24, True, WHITE)
     footer(slide, no)
 
 
 def bullets(slide, l, t, w, items, size=18):
-    box = slide.shapes.add_textbox(l, t, w, Inches(5.4))
-    tf = box.text_frame
+    tb = slide.shapes.add_textbox(l, t, w, Inches(5.5))
+    tf = tb.text_frame
     tf.word_wrap = True
     for i, item in enumerate(items):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-        p.level = 0
-        p.space_after = Pt(10)
-        run = p.add_run()
-        run.text = "▸  " + item
-        set_run(run, size, False, INK)
+        p.space_after = Pt(9)
+        r = p.add_run()
+        r.text = "▸  " + item
+        run(r, size, False, INK)
 
 
-def table_slide(slide, rows, l=Inches(0.45), t=Inches(1.3), w=Inches(12.4), h=Inches(4.8)):
+def table_slide(slide, rows, l=Inches(0.4), t=Inches(1.25), w=Inches(12.5), h=Inches(4.6)):
     tbl = slide.shapes.add_table(len(rows), len(rows[0]), l, t, w, h).table
     for r, row in enumerate(rows):
         for c, val in enumerate(row):
             cell = tbl.cell(r, c)
             cell.text = ""
             p = cell.text_frame.paragraphs[0]
-            run = p.add_run()
-            run.text = val
+            run_ = p.add_run()
+            run_.text = val
             header = r == 0
-            set_run(run, 13 if not header else 13, header, WHITE if header else INK)
-            fill = NAVY if header else (WHITE if r % 2 else RGBColor(0xEB, 0xE4, 0xD6))
+            run(run_, 12, header, WHITE if header else INK)
             cell.fill.solid()
-            cell.fill.fore_color.rgb = fill
+            cell.fill.fore_color.rgb = NAVY if header else (WHITE if r % 2 else RGBColor(0xDC, 0xE8, 0xE3))
     return tbl
 
 
-def code_box(slide, l, t, w, h, text):
-    add_round(slide, l, t, w, h, CODE_BG)
-    box = slide.shapes.add_textbox(l + Inches(0.2), t + Inches(0.15), w - Inches(0.35), h - Inches(0.25))
-    tf = box.text_frame
+def code_box(slide, l, t, w, h, s):
+    roundb(slide, l, t, w, h, CODE)
+    tb = slide.shapes.add_textbox(l + Inches(0.2), t + Inches(0.14), w - Inches(0.35), h - Inches(0.24))
+    tf = tb.text_frame
     tf.word_wrap = True
     p = tf.paragraphs[0]
-    run = p.add_run()
-    run.text = text
-    set_run(run, 13, False, RGBColor(0xF4, 0xE8, 0xD0), "Consolas")
+    r = p.add_run()
+    r.text = s
+    run(r, 13, False, CREAM, "Consolas")
 
 
-def picture(slide, path, l, t, w, h):
-    if Path(path).exists():
-        slide.shapes.add_picture(str(path), l, t, w, h)
+def pic(slide, name, l, t, w, h):
+    p = SHOTS / name
+    if p.exists():
+        slide.shapes.add_picture(str(p), l, t, w, h)
 
 
 def build():
@@ -131,294 +127,240 @@ def build():
     prs.slide_height = H
     blank = prs.slide_layouts[6]
 
-    # 1 cover
     s = prs.slides.add_slide(blank)
-    add_box(s, 0, 0, W, H, NAVY)
-    add_box(s, 0, 0, Inches(0.22), H, TERR)
-    add_text(s, Inches(0.7), Inches(1.3), Inches(11), Inches(0.4),
-             "YEREL WEB SİTESİ TESTİ", 16, True, TERR)
-    add_text(s, Inches(0.7), Inches(1.8), Inches(12), Inches(1.4),
-             "Kampüs Kırtasiye", 54, True, WHITE)
-    add_text(s, Inches(0.7), Inches(3.3), Inches(11), Inches(0.8),
-             "XAMPP üzerinde PHP kırtasiye rafı  ·  Playwright ile 15 senaryo", 22, False, PAPER)
-    add_text(s, Inches(0.7), Inches(4.3), Inches(11), Inches(1.2),
-             "Hata ayıklama, düzeltme ve regresyon\nRıdvan Çağlar Mutlu  ·  2514216055\nBilgisayar Programcılığı 2. Sınıf  ·  Yazılım Testi  ·  18 Ekim 2026",
-             18, False, RGBColor(0xC9, 0xD0, 0xDC))
-    add_text(s, Inches(12.2), Inches(6.7), Inches(0.8), Inches(0.4), "01", 16, True, TERR, PP_ALIGN.RIGHT)
+    box(s, 0, 0, W, H, NAVY)
+    box(s, 0, 0, Inches(0.22), H, TERR)
+    text(s, Inches(0.7), Inches(1.15), Inches(12), Inches(0.4), "YAZILIM TESTİ DERSİ  ·  İKİ PARÇA TESLİM", 15, True, TERR)
+    text(s, Inches(0.7), Inches(1.65), Inches(12), Inches(1.3), "Önce web sitesi.\nSonra onu test eden uygulama.", 40, True, WHITE)
+    text(s, Inches(0.7), Inches(4.2), Inches(11.5), Inches(1.8),
+         "Kampüs Kırtasiye  +  Test uygulaması (Playwright)\n"
+         "Kuram: İTÜ BİDB Yazılım Testi ve Test Süreçleri  ·  TechTarget Software testing\n"
+         "Rıdvan Çağlar Mutlu  ·  2514216055  ·  18 Ekim 2026", 18, False, CREAM)
+    text(s, Inches(12.2), Inches(6.7), Inches(0.8), Inches(0.35), "01", 16, True, TERR, PP_ALIGN.RIGHT)
 
-    # 2 scope
     s = prs.slides.add_slide(blank)
-    chrome(s, 2, "Projenin teslim kapsamı")
-    bullets(s, Inches(0.55), Inches(1.4), Inches(12), [
-        "Kaynak kod: PHP, HTML ve CSS (Kampüs Kırtasiye)",
-        "Çalışan site: http://localhost/kampus-kirtasiye/v2/",
-        "Hatalı karşılaştırma sürümü: http://localhost/kampus-kirtasiye/v1/",
-        "Test uygulaması: Playwright (1 worker, 0 retry)",
-        "Teslim: site, test kodu, V1/V2 sonuçları ve bu sunum",
-    ], 20)
-
-    # 3 app
-    s = prs.slides.add_slide(blank)
-    chrome(s, 3, "Kampüs Kırtasiye uygulaması")
+    chrome(s, 2, "Teslim neyden oluşur?")
     cards = [
-        ("6 ürün", "Kırtasiye + küçük elektronik"),
-        ("Giriş ve sepet", "ridvan / Defter2026"),
-        ("Teslimat formu", "10 haneli telefon"),
-        ("Demo sipariş", "Gerçek ödeme yok"),
+        ("1. Web sitesi", "Kampüs Kırtasiye: giriş, 6 ürün, sepet, 10 haneli telefon, demo sipariş. V2 teslim, V1 hata kanıtı."),
+        ("2. Test uygulaması", "Hazırlık, 15 senaryo, V1/V2 sonuç, Playwright otomasyonu. Siteyi tarayıcıdan dener."),
+        ("3. Bu sunum", "İTÜ sürecini (hazırlık → dinamik test → sonlandırma) kendi sitemize bağlar."),
     ]
     for i, (a, b) in enumerate(cards):
-        x = Inches(0.45 + i * 3.2)
-        add_round(s, x, Inches(2.0), Inches(3.0), Inches(3.2), WHITE)
-        add_box(s, x, Inches(2.0), Inches(3.0), Inches(0.12), TERR)
-        add_text(s, x + Inches(0.2), Inches(2.4), Inches(2.6), Inches(1.2), a, 22, True, NAVY)
-        add_text(s, x + Inches(0.2), Inches(3.6), Inches(2.6), Inches(1.2), b, 16, False, MUTED)
+        y = Inches(1.3 + i * 1.8)
+        roundb(s, Inches(0.5), y, Inches(12.3), Inches(1.6), WHITE)
+        text(s, Inches(0.75), y + Inches(0.2), Inches(11.8), Inches(0.45), a, 22, True, NAVY)
+        text(s, Inches(0.75), y + Inches(0.7), Inches(11.8), Inches(0.7), b, 16, False, MUTED)
 
-    # 4 arch
     s = prs.slides.add_slide(blank)
-    chrome(s, 4, "XAMPP ve uygulama mimarisi")
-    bullets(s, Inches(0.55), Inches(1.4), Inches(12), [
-        "Kurulum: C:/xampp/htdocs/kampus-kirtasiye",
-        "Sunucu: Apache + PHP 8  (bu ortamda PHP 8.3 ile doğrulandı)",
-        "Veri: Ürünler PHP dizisinde, sepet $_SESSION içinde",
-        "Para: Fiyatlar kuruş (int). Teslimat her zaman 14,90 TL",
-        "Akış: Tarayıcı isteği → Apache/PHP → HTML yanıtı",
-    ], 20)
+    chrome(s, 3, "İTÜ BİDB: Test nedir?")
+    bullets(s, Inches(0.5), Inches(1.3), Inches(12.2), [
+        "Test: sistemi elle veya otomatik deneyerek gereksinimi doğrulamak, ya da beklenen ile gözlenen farkı bulmak.",
+        "Yazılım testi: sonsuz çalışma alanından sınırlı ve uygun senaryolar seçerek dinamik doğrulama yapmak.",
+        "Kaliteli yazılım: kabul edilebilir hatasız, bütçe ve zamanda biten, gereksinimi karşılayan, sürdürülebilir.",
+        "Bu derste beklenen: giriş kabul/ret, 4 ürün filtresi, 398,80 TL, 10 haneli telefon, boş sepet yasağı.",
+    ], 18)
 
-    # 5 rules
     s = prs.slides.add_slide(blank)
-    chrome(s, 5, "Test kuralları ve bitirme ölçütü")
-    bullets(s, Inches(0.55), Inches(1.4), Inches(12), [
-        "Giriş: Doğru bilgi kabul, hatalı / kilitli hesap ret",
-        "Sepet: Doğru ürün, adet, ara toplam ve teslimat",
-        "Form: Ad, soyad zorunlu; telefon tam 10 rakam",
-        "Sipariş: Boş sepet teslimata geçemez; ürünlü sepet geçer",
-        "Filtre: Kırtasiye kategorisi yalnızca 4 ürün göstermelidir",
-    ], 20)
+    chrome(s, 4, "İTÜ: Test neden yapılır?")
+    bullets(s, Inches(0.5), Inches(1.3), Inches(12.2), [
+        "Yazılımdaki hatalar kaçınılmazdır; sonuç para, zaman veya güven kaybı olabilir.",
+        "Müşteriye (burada öğretmene) vermeden kaliteden emin olmak.",
+        "Hatayı erken yakalamak: V1’de T04 ve T12 bulundu, V2’de kapatıldı.",
+        "Yeniden iş ve düzeltme maliyetini düşürmek.",
+        "TechTarget aynı gerekçeyi Starbucks kasa çökmesi ve Nissan hava yastığı örneğiyle anlatır.",
+    ], 18)
 
-    # 6 techniques
     s = prs.slides.add_slide(blank)
-    chrome(s, 6, "Test teknikleri ve test verileri")
+    chrome(s, 5, "İTÜ test süreci: üç aşama")
+    cols = [
+        ("Hazırlık", "Doküman, kapsam, risk, ortam, görev, bitirme ölçütü, test case, test planı."),
+        ("Dinamik test", "Kod çalışırken birim, tümleyim, regresyon, performans, kabul, kara/beyaz kutu."),
+        ("Sonlandırma", "Ölçüt sağlandı mı? Hatalar kapandı mı? Kabul testine açılır mı?"),
+    ]
+    for i, (a, b) in enumerate(cols):
+        x = Inches(0.4 + i * 4.25)
+        roundb(s, x, Inches(1.4), Inches(4.05), Inches(4.6), WHITE)
+        text(s, x + Inches(0.25), Inches(1.65), Inches(3.55), Inches(0.8), f"{i+1}. {a}", 22, True, TERR)
+        text(s, x + Inches(0.25), Inches(2.6), Inches(3.55), Inches(3.0), b, 16, False, INK)
+
+    s = prs.slides.add_slide(blank)
+    chrome(s, 6, "TechTarget: Yazılım testi nedir, neden önemli?")
+    bullets(s, Inches(0.5), Inches(1.3), Inches(12.2), [
+        "İşlevi değerlendirmek: hata, boşluk ve beklenen sonuç uyuşmazlığını aramak.",
+        "Canlıya çıkmadan hata düzeltmek: kalite, güven ve maliyet.",
+        "Erken hata = ucuz hata. Biz T04/T12’yi teslimden önce yakaladık.",
+        "Otomasyon: aynı senaryoyu tekrar tekrar koşmak (Playwright).",
+        "Regresyon atlanmamalı: düzeltme eski 13 senaryoyu bozmamalı.",
+    ], 18)
+
+    s = prs.slides.add_slide(blank)
+    chrome(s, 7, "Test türleri: kaynakta var, biz hangisini yaptık?")
     table_slide(s, [
-        ["Teknik", "Girdi", "Beklenti"],
-        ["Pozitif test", "ridvan / Defter2026", "Giriş kabul, 6 ürün"],
-        ["Negatif test", "Yanlış şifre / boş alan / mezun", "Uyarı ve giriş engeli"],
-        ["Sınır komşuları", "055512345 / 0555123456 / 05551234567", "Ret / kabul / ret"],
-        ["Regresyon", "Düzeltme sonrası aynı 15 test", "Eski işlevler korunur"],
-    ], h=Inches(4.2))
+        ["Tür (kaynak)", "Bu projede", "Kanıt"],
+        ["Kara kutu / fonksiyonel (İTÜ + TechTarget)", "Evet, asıl yöntem", "15 Playwright senaryosu"],
+        ["Beyaz kutu (İTÜ)", "Kısmen", "Bozuk option ve PHP if incelendi"],
+        ["Tümleyim (İTÜ / TechTarget)", "Evet", "Giriş + sepet + form birlikte"],
+        ["Regresyon", "Evet", "Aynı 15 test V2’de yeniden"],
+        ["Kabul (UAT)", "Ders ölçütü", "15/15 ve canlı gösterim"],
+        ["Birim / performans / güvenlik", "Hayır", "Kapsam dışı, slayt 22"],
+    ], h=Inches(5.2))
 
-    # 7-9 scenarios
     s = prs.slides.add_slide(blank)
-    chrome(s, 7, "Senaryolar: Giriş ve raf")
+    chrome(s, 8, "Hazırlık: ne test edilir, ne edilmez?")
+    bullets(s, Inches(0.5), Inches(1.25), Inches(6.0), [
+        "Edilecek: giriş, kilitli hesap, 6 ürün, kırtasiye filtresi.",
+        "Edilecek: sepet adedi, 14,90 TL kargo, 398,80 TL.",
+        "Edilecek: 9 / 10 / 11 haneli telefon.",
+        "Edilecek: boş sepet yasağı, çıkış sonrası koruma.",
+    ], 17)
+    bullets(s, Inches(6.7), Inches(1.25), Inches(6.0), [
+        "Edilmeyecek: yük / performans testi.",
+        "Edilmeyecek: sızma / XSS taraması.",
+        "Edilmeyecek: mobil ve gerçek ödeme.",
+        "Bitirme: V2’de 15/15, T04 ve T12 kapanmış.",
+    ], 17)
+
+    s = prs.slides.add_slide(blank)
+    chrome(s, 9, "Parça 1 — Web sitesi: Kampüs Kırtasiye")
+    pic(s, "teslim.png", Inches(0.4), Inches(1.2), Inches(7.3), Inches(4.8))
+    bullets(s, Inches(7.9), Inches(1.3), Inches(5.0), [
+        "Kapı sayfası iki parçayı ayırır.",
+        "Site: /v2/  (teslim)",
+        "Hatalı kanıt: /v1/",
+        "Giriş: ridvan / Defter2026",
+    ], 16)
+
+    s = prs.slides.add_slide(blank)
+    chrome(s, 10, "Sınanan uygulama: öğrenci rafı")
+    pic(s, "raf.png", Inches(0.35), Inches(1.15), Inches(12.6), Inches(5.8))
+
+    s = prs.slides.add_slide(blank)
+    chrome(s, 11, "Parça 2 — Test uygulaması")
+    pic(s, "test-surec.png", Inches(0.35), Inches(1.15), Inches(12.6), Inches(5.8))
+
+    s = prs.slides.add_slide(blank)
+    chrome(s, 12, "Test case: girdi verilince çıktı ne olmalı?")
     table_slide(s, [
-        ["ID", "Senaryo", "Beklenen", "V1", "V2"],
-        ["T01", "Boş giriş", "Kullanıcı adı uyarısı", "Geçti", "Geçti"],
-        ["T02", "Yanlış şifre", "Giriş reddi", "Geçti", "Geçti"],
-        ["T03", "Geçerli giriş", "6 ürün", "Geçti", "Geçti"],
-        ["T04", "Kırtasiye filtresi", "4 ürün", "Başarısız", "Geçti"],
-        ["T05", "Defter ekleme", "1 adet, 54,90 TL", "Geçti", "Geçti"],
-    ], h=Inches(4.2))
+        ["ID", "Girdi", "Beklenen çıktı"],
+        ["T02", "ridvan / yanlis123", "Şifre hatalı, sayfa=giris"],
+        ["T04", "Kategori = kirtasiye", "4 ürün listelenir"],
+        ["T10", "Defter + USB", "398,80 TL (383,90 + 14,90)"],
+        ["T11", "0555123456", "Sipariş tamamlanır"],
+        ["T12", "0 ürün + Teslimata geç", "Sepette kal, uyarı göster"],
+        ["T13 / T14", "9 veya 11 hane", "Telefon 10 rakam olmalıdır"],
+    ], h=Inches(5.0))
 
     s = prs.slides.add_slide(blank)
-    chrome(s, 8, "Senaryolar: Sepet ve form")
-    table_slide(s, [
-        ["ID", "Senaryo", "Beklenen", "V1", "V2"],
-        ["T06", "Defteri kaldır", "0 ürün, 0,00 TL", "Geçti", "Geçti"],
-        ["T07", "Boş teslimat formu", "Ad uyarısı", "Geçti", "Geçti"],
-        ["T08", "Kilitli hesap (mezun)", "Giriş reddi", "Geçti", "Geçti"],
-        ["T09", "Boş şifre", "Şifre uyarısı", "Geçti", "Geçti"],
-        ["T10", "Defter + USB + kargo", "398,80 TL", "Geçti", "Geçti"],
-    ], h=Inches(4.2))
-
-    s = prs.slides.add_slide(blank)
-    chrome(s, 9, "Senaryolar: Sipariş ve sınırlar")
-    table_slide(s, [
-        ["ID", "Senaryo", "Beklenen", "V1", "V2"],
-        ["T11", "10 haneli telefon", "Sipariş tamamlandı", "Geçti", "Geçti"],
-        ["T12", "Boş sepet", "Teslimat engeli", "Başarısız", "Geçti"],
-        ["T13", "9 haneli telefon", "Formda uyarı", "Geçti", "Geçti"],
-        ["T14", "11 haneli telefon", "Formda uyarı", "Geçti", "Geçti"],
-        ["T15", "Çıkış sonrası raf", "Giriş sayfası", "Geçti", "Geçti"],
-    ], h=Inches(4.2))
-
-    # 10 playwright config
-    s = prs.slides.add_slide(blank)
-    chrome(s, 10, "Playwright yerel siteye nasıl bağlanır?")
-    code_box(s, Inches(0.45), Inches(1.3), Inches(12.4), Inches(4.5),
+    chrome(s, 13, "Dinamik test: Playwright siteye nasıl bağlanır?")
+    code_box(s, Inches(0.45), Inches(1.25), Inches(12.4), Inches(4.6),
              "use: {\n"
              "  baseURL: 'http://localhost/kampus-kirtasiye/v2/',\n"
-             "  channel: 'chrome',\n"
              "  viewport: { width: 1366, height: 900 },\n"
              "  screenshot: 'only-on-failure',\n"
              "  trace: 'retain-on-failure'\n"
-             "}\n\n"
+             "}\n"
              "test.beforeEach(async ({ page }) => {\n"
              "  await page.goto('index.php?sayfa=giris');\n"
              "});")
-    add_text(s, Inches(0.5), Inches(6.0), Inches(12), Inches(0.6),
-             "Aynı 15 test V1 ve V2 üzerinde, 1 worker ve 0 retry ile çalıştı.", 16, False, MUTED)
+    text(s, Inches(0.5), Inches(6.05), Inches(12), Inches(0.7),
+         "Aynı 15 test V1 ve V2’ye, 1 worker ve 0 retry ile koşuldu.", 16, False, MUTED)
 
-    # 11 login test
     s = prs.slides.add_slide(blank)
-    chrome(s, 11, "Giriş testi ve doğrulama")
-    code_box(s, Inches(0.45), Inches(1.3), Inches(12.4), Inches(3.6),
+    chrome(s, 14, "Kara kutu örneği: tıkla, sonra expect et")
+    code_box(s, Inches(0.45), Inches(1.25), Inches(12.4), Inches(4.3),
              "test('T02 Yanlis sifre reddedilir', async ({ page }) => {\n"
              "  await giris(page, 'ridvan', 'yanlis123');\n"
              "  await expect(page.getByTestId('error'))\n"
              "    .toHaveText('Kullanıcı adı veya şifre hatalı.');\n"
              "  await expect(page).toHaveURL(/sayfa=giris/);\n"
              "});")
-    add_text(s, Inches(0.5), Inches(5.2), Inches(12), Inches(1.2),
-             "Tıklama işlemdir. expect, işlemin doğru sonuç verdiğini kontrol eder.", 18, False, INK)
+    text(s, Inches(0.5), Inches(5.75), Inches(12), Inches(0.9),
+         "İşlem tıklamaktır. Doğrulama expect’tir. Kodun içini okumadan dışarıdan sınarız.", 16, False, INK)
 
-    # 12 filter
     s = prs.slides.add_slide(blank)
-    chrome(s, 12, "Kategori filtresini kodla kontrol etme")
-    code_box(s, Inches(0.45), Inches(1.3), Inches(12.4), Inches(3.8),
-             "await page.getByLabel('Kategori').selectOption('kirtasiye');\n"
-             "await expect(page).toHaveURL(/kategori=kirtasiye/);\n"
-             "await expect(page.getByTestId('product')).toHaveCount(4);\n"
-             "await expect(page.getByTestId('product-count'))\n"
-             "  .toHaveText('4 ürün listeleniyor');\n")
-    add_text(s, Inches(0.5), Inches(5.4), Inches(12), Inches(1.2),
-             "Filtre menüsünün durması yetmez; listelenen ürün sayısı da 4 olmalıdır.", 18, False, INK)
+    chrome(s, 15, "V1 dinamik test: beklenen ≠ gözlenen")
+    roundb(s, Inches(0.45), Inches(1.4), Inches(3.9), Inches(2.4), WHITE)
+    text(s, Inches(0.7), Inches(1.6), Inches(3.5), Inches(0.9), "13 geçti / 2 kaldı", 22, True, BAD)
+    text(s, Inches(0.7), Inches(2.5), Inches(3.5), Inches(1.0), "T04 ve T12.\nSüre 33,9 sn.", 15, False, MUTED)
+    bullets(s, Inches(4.7), Inches(1.4), Inches(8), [
+        "T04: kirtasiye seçeneği DOM’da yok (bozuk option).",
+        "T12: boş sepet teslimat sayfasını açtı.",
+        "İTÜ tanımı burada somut: fark bulundu, test durmadı.",
+        "Kanıt: hata metni, ekran görüntüsü, trace.",
+    ], 17)
 
-    # 13 phone
     s = prs.slides.add_slide(blank)
-    chrome(s, 13, "Telefon: PHP kuralı ve sınır testi")
-    code_box(s, Inches(0.45), Inches(1.3), Inches(12.4), Inches(4.0),
-             "// PHP: teslimat formu\n"
-             "if (!preg_match('/^[0-9]{10}$/D', $telefon)) {\n"
-             "    $error = 'Telefon numarası 10 rakamdan oluşmalıdır.';\n"
-             "}\n\n"
-             "// Playwright: üst sınırın komşusu\n"
-             "await bilgileriGir(page, '05551234567');\n"
-             "await expect(page.getByTestId('error'))\n"
-             "  .toHaveText('Telefon numarası 10 rakamdan oluşmalıdır.');")
-    add_text(s, Inches(0.5), Inches(5.6), Inches(12), Inches(0.8),
-             "9 hane: ret  /  10 hane: kabul  /  11 hane: ret", 18, True, TERR)
-
-    # 14 money
-    s = prs.slides.add_slide(blank)
-    chrome(s, 14, "Para hesabı: Tam sayı kuruş + teslimat")
-    code_box(s, Inches(0.45), Inches(1.3), Inches(12.4), Inches(4.2),
-             "// PHP ürün kataloğu\n"
-             "1 => ['ad' => 'A4 Spiralli Defter', 'fiyat' => 5490],\n"
-             "4 => ['ad' => '64GB USB Bellek', 'fiyat' => 32900],\n"
-             "// teslimat_ucreti_kurus() = 1490\n\n"
-             "// Playwright: T10\n"
-             "expect(araToplam).toBe(5490 + 32900);   // 38390\n"
-             "expect(teslimat).toBe(1490);\n"
-             "expect(toplam).toBe(39880);\n"
-             "await expect(page.getByTestId('total')).toHaveText('398,80 TL');")
-    add_text(s, Inches(0.5), Inches(5.7), Inches(12), Inches(0.7),
-             "5490 + 32900 + 1490 = 39880 kuruş = 398,80 TL", 18, True, TERR)
-
-    # 15 V1 results
-    s = prs.slides.add_slide(blank)
-    chrome(s, 15, "V1 sonuçları: İki başarısız test")
-    add_round(s, Inches(0.45), Inches(1.4), Inches(3.8), Inches(2.2), WHITE)
-    add_text(s, Inches(0.7), Inches(1.6), Inches(3.4), Inches(0.8), "13 geçti / 2 başarısız", 22, True, BAD)
-    add_text(s, Inches(0.7), Inches(2.4), Inches(3.4), Inches(0.9), "T04 ve T12 düştü.\nDiğer 13 senaryo yeşil.", 15, False, MUTED)
-    bullets(s, Inches(4.6), Inches(1.4), Inches(8), [
-        "T04: kirtasiye seçeneği tarayıcıda oluşmadı (bozuk option).",
-        "T12: 0 ürünle teslimat formu açıldı.",
-        "Kanıt: hata metni, ekran görüntüsü ve trace.",
-        "Süre ~34 sn; bunun bir bölümü T04’ün seçenek beklemesi.",
-    ], 18)
-
-    # 16 H01
-    s = prs.slides.add_slide(blank)
-    chrome(s, 16, "H01: Yanlış kapanan option etiketi")
-    code_box(s, Inches(0.45), Inches(1.3), Inches(12.4), Inches(4.0),
-             "<!-- V1: kırtasiye seçeneği açılmıyor -->\n"
+    chrome(s, 16, "H01: HTML option (beyaz kutu inceleme)")
+    code_box(s, Inches(0.45), Inches(1.25), Inches(12.4), Inches(4.4),
+             "<!-- V1 -->\n"
              "</option value=\"kirtasiye\">Yalnız kırtasiye\n\n"
-             "<!-- V2: önceki seçenek kapanır, yenisi açılır -->\n"
+             "<!-- V2 -->\n"
              "<option value=\"kirtasiye\">Yalnız kırtasiye</option>\n\n"
-             "// Değişmeyen test adımı\n"
-             "await page.getByLabel('Kategori').selectOption('kirtasiye');")
-    add_text(s, Inches(0.5), Inches(5.6), Inches(12), Inches(0.8),
-             "V1: T04 başarısız  /  HTML düzeltmesinden sonra V2: T04 geçti", 18, True, NAVY)
+             "await page.getByLabel('Kategori').selectOption('kirtasiye');\n"
+             "await expect(page.getByTestId('product')).toHaveCount(4);")
+    text(s, Inches(0.5), Inches(5.9), Inches(12), Inches(0.8),
+         "Kara kutu T04 düştü. Nedeni için HTML’e bakıldı. Düzeltme site kodunda.", 16, False, INK)
 
-    # 17 H02 screens
     s = prs.slides.add_slide(blank)
-    chrome(s, 17, "H02: Boş sepetle teslimat formuna geçiş")
-    picture(s, SHOTS / "v1-bos-teslimat.png", Inches(0.4), Inches(1.25), Inches(6.2), Inches(4.1))
-    picture(s, SHOTS / "sepet-bos-v2.png", Inches(6.75), Inches(1.25), Inches(6.2), Inches(4.1))
-    add_text(s, Inches(0.4), Inches(5.45), Inches(6.2), Inches(0.5), "V1: Teslimat formu açıldı", 16, True, BAD)
-    add_text(s, Inches(6.75), Inches(5.45), Inches(6.2), Inches(0.5), "V2: Sepette kalınır, uyarı çıkar", 16, True, OK)
+    chrome(s, 17, "H02: Boş sepet — beklenen uyarı, gözlenen form")
+    pic(s, "v1-bos-teslimat.png", Inches(0.35), Inches(1.2), Inches(6.3), Inches(4.15))
+    pic(s, "sepet-bos-v2.png", Inches(6.75), Inches(1.2), Inches(6.2), Inches(4.15))
+    text(s, Inches(0.4), Inches(5.5), Inches(6.2), Inches(0.5), "V1 gözlenen: teslimat açıldı", 16, True, BAD)
+    text(s, Inches(6.75), Inches(5.5), Inches(6.2), Inches(0.5), "V2 gözlenen: sepet + uyarı", 16, True, OK)
 
-    # 18 H02 fix
     s = prs.slides.add_slide(blank)
-    chrome(s, 18, "H02 düzeltmesi: PHP tarafında kontrol")
-    code_box(s, Inches(0.45), Inches(1.3), Inches(12.4), Inches(4.2),
+    chrome(s, 18, "Düzeltme sunucuda: kontrolü düğmeye bırakma")
+    code_box(s, Inches(0.45), Inches(1.25), Inches(12.4), Inches(4.4),
              "if (in_array($sayfa, ['teslimat', 'onay'], true)\n"
              "    && sepet_adet() === 0) {\n"
              "    flash('Sepetiniz boş. Teslimata geçmeden önce bir ürün ekleyin.');\n"
              "    git('sepet');\n"
-             "}\n\n"
-             "// Aynı kontrol teslimata_gec ve siparis POST işlemine de eklendi.\n"
-             "// Kontrol yalnızca tarayıcı düğmesine bırakılmadı.")
-    add_text(s, Inches(0.5), Inches(5.7), Inches(12), Inches(0.8),
-             "Düzeltme site kodunda yapıldı; testin beklediği sonuç korunarak yeniden çalıştırıldı.", 16, False, INK)
+             "}\n"
+             "// teslimata_gec ve siparis POST’una da aynı kural eklendi.")
+    text(s, Inches(0.5), Inches(5.9), Inches(12), Inches(0.8),
+         "TechTarget: hatayı teslimden önce kapat. İTÜ: dinamik test, hatalar çözülmeden bitmez.", 16, False, INK)
 
-    # 19 T12
     s = prs.slides.add_slide(blank)
-    chrome(s, 19, "T12: Düzeltmeyi aynı testle doğrulama")
-    code_box(s, Inches(0.45), Inches(1.3), Inches(12.4), Inches(4.3),
-             "await giris(page);\n"
-             "await page.getByTestId('cart-link').click();\n"
-             "await expect(page.getByTestId('cart-item')).toHaveCount(0);\n"
-             "await page.getByTestId('checkout').click();\n"
-             "await expect(page).toHaveURL(/sayfa=sepet/);\n"
-             "await expect(page.getByTestId('error'))\n"
-             "  .toHaveText('Sepetiniz boş. Teslimata geçmeden önce bir ürün ekleyin.');")
-    add_text(s, Inches(0.5), Inches(5.8), Inches(12), Inches(0.7),
-             "Aynı adımlar + aynı beklenti + düzeltilmiş site = başarılı yeniden test", 16, True, NAVY)
-
-    # 20 V2 regression
-    s = prs.slides.add_slide(blank)
-    chrome(s, 20, "V2 ve regresyon sonuçları")
+    chrome(s, 19, "Regresyon: aynı 15 test, düzeltilmiş site")
     table_slide(s, [
-        ["Koşu", "Geçti", "Başarısız", "Süre"],
-        ["V1 ilk sürüm", "13", "2", "33,9 sn"],
-        ["V2 düzeltilmiş sürüm", "15", "0", "7,8 sn"],
-        ["Aynı paket, ayrı koşu", "15", "0", "Tekrar yeşil"],
-    ], h=Inches(3.2))
-    add_text(s, Inches(0.5), Inches(5.0), Inches(12), Inches(1.2),
-             "Süre farkı performans testi sonucu değildir; V1, T04’te seçeneği beklerken zaman kaybeder.", 16, False, MUTED)
+        ["Koşu", "Geçti", "Kaldı", "Süre"],
+        ["V1 dinamik test", "13", "2", "33,9 sn"],
+        ["V2 regresyon", "15", "0", "7,8 sn"],
+        ["Sonlandırma ölçütü", "15/15", "sağlandı", "V2 teslim"],
+    ], h=Inches(3.1))
+    text(s, Inches(0.5), Inches(4.7), Inches(12.3), Inches(1.8),
+         "Süre farkı performans testi değildir. V1, T04’te olmayan seçeneği bekler.\n"
+         "Regresyonun anlamı: T04 ve T12 kapandı, diğer 13 senaryo bozulmadı.", 16, False, MUTED)
 
-    # 21 screenshots
     s = prs.slides.add_slide(blank)
-    chrome(s, 21, "Uygulama kanıtı: raf ve teslimat")
-    picture(s, SHOTS / "raf.png", Inches(0.35), Inches(1.2), Inches(8.3), Inches(5.5))
-    picture(s, SHOTS / "teslimat.png", Inches(8.8), Inches(1.2), Inches(4.2), Inches(2.75))
-    picture(s, SHOTS / "sepet-urun.png", Inches(8.8), Inches(4.05), Inches(4.2), Inches(2.65))
+    chrome(s, 20, "Test uygulamasındaki sonuç ekranı")
+    pic(s, "test-sonuc.png", Inches(0.35), Inches(1.15), Inches(12.6), Inches(5.8))
 
-    # 22 live demo
     s = prs.slides.add_slide(blank)
-    chrome(s, 22, "Derste canlı gösterim sırası")
+    chrome(s, 21, "Derste canlı sıra")
     steps = [
-        "1. XAMPP: Apache açık, V1 ve V2 adreslerine giriş",
-        "2. PLAYWRIGHT_AC.cmd: testleri V2 üzerinde başlat",
-        "3. İlk rapor (V1): T04 ve T12 başarısızlığını göster",
-        "4. Son rapor ve kod: HTML option + PHP sepet kontrolünü karşılaştır",
+        "1. http://localhost/kampus-kirtasiye/  → iki parçayı göster",
+        "2. Web sitesi V2: giriş, defter ekle, 398,80 TL, 10 haneli telefon",
+        "3. Test uygulaması: süreç, senaryo tablosu, V1/V2 sonuç",
+        "4. PLAYWRIGHT_AC.cmd: V1’de T04/T12, V2’de 15/15",
     ]
     for i, st in enumerate(steps):
-        add_round(s, Inches(0.5), Inches(1.4 + i * 1.2), Inches(12.3), Inches(1.05), WHITE)
-        add_text(s, Inches(0.75), Inches(1.55 + i * 1.2), Inches(11.8), Inches(0.75), st, 20, False, INK)
+        roundb(s, Inches(0.5), Inches(1.35 + i * 1.3), Inches(12.3), Inches(1.1), WHITE)
+        text(s, Inches(0.75), Inches(1.55 + i * 1.3), Inches(11.8), Inches(0.7), st, 20, False, INK)
 
-    # 23 close
     s = prs.slides.add_slide(blank)
-    chrome(s, 23, "Kapsam, sınırlamalar ve kaynaklar")
-    bullets(s, Inches(0.55), Inches(1.4), Inches(12), [
-        "15/15 sonuç yalnızca seçilen test kapsamını gösterir.",
-        "Yük, kapsamlı güvenlik ve mobil testleri yapılmadı.",
-        "Kampüs Sepeti’nden fark: kırtasiye rafı, kategori filtresi, 10 haneli telefon, 14,90 TL kargo.",
-        "Teori: Dersin verdiği yazılım testi kaynakları",
-        "Teknik: Playwright, PHP ve XAMPP resmî belgeleri",
+    chrome(s, 22, "Sonlandırma, sınır ve kaynaklar")
+    bullets(s, Inches(0.5), Inches(1.3), Inches(12.2), [
+        "Ölçüt sağlandı: V2 15/15, T04 ve T12 kapandı, regresyon yeşil.",
+        "15/15 yalnızca seçilen kapsamı gösterir; ürünün ‘hatasız’ olduğu anlamına gelmez.",
+        "Yük, güvenlik ve mobil test yapılmadı (İTÜ / TechTarget’de var, biz seçmedik).",
+        "İTÜ BİDB: Yazılım Testi ve Test Süreçleri (2013).",
+        "TechTarget: Software testing — definition, types and importance.",
     ], 18)
 
     prs.save(OUT)
+    root = Path("/workspace") / OUT.name
+    root.write_bytes(OUT.read_bytes())
     print("saved", OUT, OUT.stat().st_size)
 
 

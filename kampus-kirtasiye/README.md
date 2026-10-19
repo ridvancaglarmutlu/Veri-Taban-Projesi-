@@ -1,60 +1,35 @@
 # Kampüs Kırtasiye — Yazılım Testi ders projesi
 
-Rıdvan Çağlar Mutlu · 2514216055 · Bilgisayar Programcılığı 2. sınıf
+Rıdvan Çağlar Mutlu · 2514216055
 
-Kampüs Sepeti’nden farklı bir uygulama: öğrenci kırtasiye rafı. PHP + oturum sepeti, XAMPP üzerinde çalışır. Playwright ile 15 senaryo V1 (hatalı) ve V2 (düzeltilmiş) sürümlerinde koşulur.
+Teslim **iki parçadır**:
 
-## XAMPP kurulumu
+1. **Web sitesi** — Kampüs Kırtasiye (öğrenci rafı)
+2. **Test uygulaması** — bu siteyi İTÜ BİDB + TechTarget sürecine göre sınar
 
-1. Klasörü `C:\\xampp\\htdocs\\kampus-kirtasiye` altına kopyalayın.
-2. Apache’yi başlatın.
-3. V1: `http://localhost/kampus-kirtasiye/v1/`
-4. V2: `http://localhost/kampus-kirtasiye/v2/`
+Kaynaklar:
 
-## Demo hesaplar
+- https://bidb.itu.edu.tr/seyir-defteri/blog/2013/09/08/yazılım-testi-ve-test-süreçleri
+- https://www.techtarget.com/whatis/definition/software-testing
 
-| Kullanıcı | Şifre | Durum |
-| --- | --- | --- |
-| `ridvan` | `Defter2026` | Aktif |
-| `mezun` | `Mezun2026` | Kilitli |
+## XAMPP
 
-## Ürünler (kuruş)
+Klasör: `C:\xampp\htdocs\kampus-kirtasiye`
 
-| Ürün | Kategori | Fiyat |
-| --- | --- | --- |
-| A4 Spiralli Defter | kırtasiye | 54,90 TL |
-| Uçlu Kalem 0.7 | kırtasiye | 29,90 TL |
-| 24’lü Fosforlu Set | kırtasiye | 119,50 TL |
-| 64GB USB Bellek | elektronik | 329,00 TL |
-| Bilimsel Hesap Makinesi | elektronik | 459,90 TL |
-| Klasör + Ayraç Seti | kırtasiye | 84,90 TL |
+- Kapı: http://localhost/kampus-kirtasiye/
+- Site V2: http://localhost/kampus-kirtasiye/v2/
+- Site V1: http://localhost/kampus-kirtasiye/v1/
+- Test uygulaması: http://localhost/kampus-kirtasiye/test-uygulamasi/
 
-Kampüs içi teslimat: **14,90 TL**. Örnek: defter + USB = 383,90 + 14,90 = **398,80 TL**.
+Giriş: `ridvan` / `Defter2026`
 
-## V1’de bilinen hatalar
+## Otomasyon
 
-- **H01:** `kirtasiye` seçeneği bozuk `option` etiketi yüzünden listede oluşmaz (T04).
-- **H02:** Boş sepetle teslimat formu açılır (T12). Sunucu tarafı kontrolü yoktur.
-
-V2 bu iki hatayı kapatır. Diğer 13 senaryo her iki sürümde de geçer.
-
-## Playwright
-
-```bat
-kampus-kirtasiye\\PLAYWRIGHT_AC.cmd
-```
-
-veya `tests` klasöründe:
+`PLAYWRIGHT_AC.cmd` veya `tests` klasöründe:
 
 ```bat
 set BASE_URL=http://localhost/kampus-kirtasiye/v2/
-npx playwright test
+npx playwright test --ui
 ```
 
-Yerel PHP sunucusu (XAMPP yoksa):
-
-```bat
-php -S 127.0.0.1:8080 -t .
-```
-
-Sonra V2: `http://127.0.0.1:8080/v2/`
+V2: 15/15 geçer. V1: T04 ve T12 kalır.
