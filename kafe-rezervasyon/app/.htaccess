@@ -1,0 +1,14 @@
+# -------------------------------------------------------------------
+# app/ klasoru sistemin "cekirdegi"dir: veritabani sifreleri, PDO
+# baglantisi ve is mantigi burada durur. Tarayicidan dogrudan
+# http://localhost/kafe-rezervasyon/app/config.php gibi bir adresle
+# erisilmesini engelliyoruz.
+#
+# Apache 2.4 (XAMPP'in guncel surumu) soz dizimi:
+Require all denied
+
+# Apache 2.2 ile calisan eski kurulumlar icin geriye donuk uyumluluk:
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>
