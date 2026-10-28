@@ -164,6 +164,7 @@ require APP_KOK . '/partials/admin-header.php';
         <h1 class="h3 mb-1">Rezervasyonlar</h1>
         <p class="text-muted mb-0">Tarih, durum ve masaya göre süzün. İptal öncesi onay istenir.</p>
     </div>
+    <p class="kafe-tablo-sayac mb-0"><?= e(count($kayitlar)) ?> kayıt</p>
 </div>
 
 <form method="get" action="rezervasyonlar.php" class="kafe-kart mb-4">
@@ -203,8 +204,54 @@ require APP_KOK . '/partials/admin-header.php';
     </div>
 </form>
 
-<div class="table-responsive kafe-kart p-0">
-    <table class="table table-hover align-middle mb-0">
+<?php
+$filtreAktif = $filtre['tarih'] !== '' || $filtre['durum'] !== '' || $filtre['masa_id'] !== '';
+?>
+<?php if ($filtreAktif): ?>
+    <p class="kafe-filtre-ozet">
+        Aktif süzgeç:
+        <?php if ($filtre['tarih'] !== ''): ?>
+            <span class="kafe-filtre-rozet"><?= e(tarih_goster($filtre['tarih'])) ?></span>
+        <?php endif; ?>
+        <?php if ($filtre['durum'] !== ''): ?>
+            <span class="kafe-filtre-rozet"><?= e(durum_etiketi($filtre['durum'])) ?></span>
+        <?php endif; ?>
+        <?php if ($filtre['masa_id'] !== ''): ?>
+            <?php
+            $filtreMasaAdi = '';
+            foreach ($masalar as $masa) {
+                if ((string) $masa['id'] === $filtre['masa_id']) {
+                    $filtreMasaAdi = (string) $masa['masa_adi'];
+                    break;
+                }
+            }
+            ?>
+            <span class="kafe-filtre-rozet"><?= e($filtreMasaAdi !== '' ? $filtreMasaAdi : 'Masa #' . $filtre['masa_id']) ?></span>
+        <?php endif; ?>
+        <a href="rezervasyonlar.php">Tümünü göster</a>
+    </p>
+<?php endif; ?>
+
+<?php if ($kayitlar === []): ?>
+    <div class="kafe-kart">
+        <div class="kafe-bos-durum">
+            <span class="kafe-bos-ikon" aria-hidden="true"></span>
+            <strong><?= $filtreAktif ? 'Bu süzgece uyan kayıt yok' : 'Henüz rezervasyon yok' ?></strong>
+            <p class="mb-2">
+                <?= $filtreAktif
+                    ? 'Tarih, durum veya masa süzgecini gevşetin.'
+                    : 'Müşteri sitesinden ilk kayıt geldiğinde burada listelenir.' ?>
+            </p>
+            <?php if ($filtreAktif): ?>
+                <a class="btn btn-sm btn-kafe-cizgi" href="rezervasyonlar.php">Süzgeci temizle</a>
+            <?php else: ?>
+                <a class="btn btn-sm btn-kafe-cizgi" href="../index.php">Müşteri formuna git</a>
+            <?php endif; ?>
+        </div>
+    </div>
+<?php else: ?>
+<div class="table-responsive kafe-kart p-0 kafe-tablo-sar">
+    <table class="table table-hover align-middle mb-0 kafe-tablo">
         <thead>
             <tr>
                 <th>Kod</th>
@@ -217,11 +264,6 @@ require APP_KOK . '/partials/admin-header.php';
             </tr>
         </thead>
         <tbody>
-        <?php if ($kayitlar === []): ?>
-            <tr>
-                <td colspan="7" class="text-center text-muted py-4">Bu filtreye uyan rezervasyon yok.</td>
-            </tr>
-        <?php else: ?>
             <?php foreach ($kayitlar as $r): ?>
                 <?php
                 $rid = (int) $r['id'];
@@ -246,11 +288,14 @@ require APP_KOK . '/partials/admin-header.php';
                     <td>
                         <?= e($r['musteri_adi']) ?><br>
                         <span class="small text-muted"><?= e(telefon_goster((string) $r['musteri_telefon'])) ?></span>
+                        <?php if (!empty($r['musteri_notu'])): ?>
+                            <span class="kafe-not-rozet" title="<?= e((string) $r['musteri_notu']) ?>">Not</span>
+                        <?php endif; ?>
                     </td>
                     <td><?= e($r['kisi_sayisi']) ?></td>
                     <td><?= durum_rozeti($mevcut) ?></td>
                     <td class="text-end">
-                        <div class="d-inline-flex flex-wrap gap-1 justify-content-end">
+                        <div class="kafe-islem-grup d-inline-flex flex-wrap gap-1 justify-content-end">
                             <?php if ($mevcut !== 'onaylandi'): ?>
                                 <form method="post" action="rezervasyonlar.php" class="d-inline">
                                     <?= csrf_field() ?>
@@ -291,9 +336,9 @@ require APP_KOK . '/partials/admin-header.php';
                     </td>
                 </tr>
             <?php endforeach; ?>
-        <?php endif; ?>
         </tbody>
     </table>
 </div>
+<?php endif; ?>
 
 <?php require APP_KOK . '/partials/admin-footer.php'; ?>

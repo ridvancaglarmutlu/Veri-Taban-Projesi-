@@ -1994,3 +1994,128 @@
         height: 140px;
     }
 }
+
+
+/* =====================================================================
+   17) Panel tablolari, bos durum, yazdirma fisi
+   ===================================================================== */
+
+.kafe-tablo-sayac {
+    font-size: .72rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--kafe-soluk);
+}
+
+.kafe-tablo-sar {
+    max-height: min(68vh, 640px);
+    overflow: auto;
+}
+
+.kafe-tablo thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    box-shadow: 0 1px 0 var(--kafe-kum);
+}
+
+.kafe-tablo tbody tr:nth-child(even) {
+    background: rgba(248, 241, 228, .55);
+}
+
+.kafe-filtre-ozet {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .45rem;
+    margin: 0 0 1rem;
+    font-size: .88rem;
+    color: var(--kafe-soluk);
+}
+
+.kafe-filtre-rozet {
+    display: inline-block;
+    padding: .15rem .55rem;
+    border: 1px solid var(--kafe-kum);
+    background: var(--kafe-kagit);
+    color: var(--kafe-espresso);
+    font-size: .78rem;
+    letter-spacing: .04em;
+}
+
+.kafe-not-rozet {
+    display: inline-block;
+    margin-left: .35rem;
+    padding: .05rem .4rem;
+    font-size: .68rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    border: 1px solid var(--kafe-pirinc);
+    color: var(--kafe-kahve);
+    cursor: help;
+}
+
+.kafe-islem-grup .btn {
+    white-space: nowrap;
+}
+
+.admin-ozet-bos {
+    border-top: 4px solid #2f7d4f;
+}
+
+.kafe-fis-ust {
+    margin-bottom: 1.25rem;
+    padding-bottom: .85rem;
+    border-bottom: 1px dashed var(--kafe-kum);
+}
+
+.kafe-fis-adres {
+    color: var(--kafe-soluk);
+    font-size: .9rem;
+}
+
+.kafe-fis-dip {
+    margin-top: 1.25rem;
+    padding-top: .75rem;
+    border-top: 1px dashed var(--kafe-kum);
+    font-size: .85rem;
+    color: var(--kafe-soluk);
+}
+
+@media print {
+    @page {
+        margin: 14mm;
+    }
+
+    .kafe-hero,
+    .kafe-hero-kisa,
+    .kafe-foto-cerceve,
+    .kafe-bolum-baslik,
+    .kafe-onay-foto,
+    .admin-yan,
+    .admin-ust {
+        display: none !important;
+    }
+
+    .kafe-fis,
+    .kafe-kayit-karti {
+        box-shadow: none !important;
+        border: 1px solid #222 !important;
+        break-inside: avoid;
+    }
+
+    .kafe-fis-ust {
+        border-bottom: 2px solid #222;
+    }
+
+    .kafe-kod {
+        border: 2px solid #222;
+        background: #fff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .kafe-fis-dip {
+        display: block !important;
+    }
+}

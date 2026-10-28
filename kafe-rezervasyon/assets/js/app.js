@@ -372,8 +372,8 @@
                 // ve ne yapmasi gerektigini soyluyoruz.
                 if (masalar.length === 0) {
                     durumGoster(
-                        '<strong>Bu saat aralığında müsait masa yok.</strong><br>' +
-                        'Farklı bir saat, daha kısa bir süre veya başka bir tarih deneyebilirsiniz.',
+                        '<strong>Bu saat aralığında müsait masa yok.</strong>' +
+                        '<p class="mb-0">Farklı bir saat, daha kısa bir süre veya başka bir tarih deneyin.</p>',
                         false
                     );
                     masaIdEl.value = '';
@@ -399,7 +399,7 @@
                 }
 
                 durumGoster(
-                    '<strong>Baglanti hatasi.</strong><br>' +
+                    '<strong>Bağlantı hatası.</strong><br>' +
                     'Masa listesi alınamadı. İnternet bağlantınızı kontrol edip tekrar deneyin.',
                     true
                 );

@@ -53,6 +53,7 @@ kafe-rezervasyon/
 ├── hakkimizda.php              # Kısa hikâye + yer tutucu iletişim
 ├── rezervasyon-onay.php        # Başarılı rezervasyon (kod + yazdır)
 ├── rezervasyon-sorgula.php     # Kod/telefon ile sorgulama ve iptal
+├── RAPOR.md                    # Ders raporu (amaç, şema, güvenlik, kurulum)
 └── database.sql                # Veritabanı şeması + örnek veriler
 ```
 

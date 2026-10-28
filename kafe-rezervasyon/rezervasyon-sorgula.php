@@ -203,7 +203,7 @@ require __DIR__ . '/partials/header.php';
          sayfasi yer imine eklenebilir. Okuma isleminde CSRF token'a
          gerek yoktur: token, DEGISIKLIK yapan istekleri korur.
          ============================================================= -->
-    <div class="kafe-kart mb-4">
+    <div class="kafe-kart mb-4 no-print">
         <form method="get" action="rezervasyon-sorgula.php" class="row g-3 align-items-end">
 
             <div class="col-md-5">
@@ -237,7 +237,14 @@ require __DIR__ . '/partials/header.php';
 
 
     <?php if ($aramaHata !== ''): ?>
-        <div class="alert alert-warning" role="alert"><?= e($aramaHata) ?></div>
+        <div class="kafe-kart mb-4">
+            <div class="kafe-bos-durum">
+                <span class="kafe-bos-ikon" aria-hidden="true"></span>
+                <strong>Kayıt bulunamadı</strong>
+                <p class="mb-2"><?= e($aramaHata) ?></p>
+                <a class="btn btn-sm btn-kafe-cizgi" href="index.php#rezervasyon-formu">Yeni rezervasyon</a>
+            </div>
+        </div>
     <?php endif; ?>
 
 
@@ -307,8 +314,12 @@ require __DIR__ . '/partials/header.php';
                 <?php endif; ?>
             </dl>
 
+            <div class="d-flex flex-wrap gap-2 mt-3 no-print">
+                <button type="button" class="btn btn-kafe" onclick="window.print()">Kaydı yazdır</button>
+            </div>
+
             <?php if ($iptalEdilebilir($kayit)): ?>
-                <hr class="my-4">
+                <hr class="my-4 no-print">
 
                 <!--
                     IPTAL BUTONU

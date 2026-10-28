@@ -144,6 +144,7 @@ require APP_KOK . '/partials/admin-header.php';
         <h1 class="h3 mb-1">Masalar</h1>
         <p class="text-muted mb-0">Kapasite 1–30. Üzerinde rezervasyon olan masa silinemez; pasif yapılır.</p>
     </div>
+    <p class="kafe-tablo-sayac mb-0"><?= e(count($masalar)) ?> masa</p>
 </div>
 
 <div class="row g-4">
@@ -206,8 +207,17 @@ require APP_KOK . '/partials/admin-header.php';
     </div>
 
     <div class="col-lg-8">
-        <div class="table-responsive kafe-kart p-0">
-            <table class="table table-hover align-middle mb-0">
+        <?php if ($masalar === []): ?>
+            <div class="kafe-kart">
+                <div class="kafe-bos-durum">
+                    <span class="kafe-bos-ikon" aria-hidden="true"></span>
+                    <strong>Henüz masa yok</strong>
+                    <p class="mb-0">Soldaki formdan ilk masayı ekleyin; müşteri listesinde yalnızca aktif masalar çıkar.</p>
+                </div>
+            </div>
+        <?php else: ?>
+        <div class="table-responsive kafe-kart p-0 kafe-tablo-sar">
+            <table class="table table-hover align-middle mb-0 kafe-tablo">
                 <thead>
                     <tr>
                         <th>Ad</th>
@@ -219,11 +229,6 @@ require APP_KOK . '/partials/admin-header.php';
                     </tr>
                 </thead>
                 <tbody>
-                <?php if ($masalar === []): ?>
-                    <tr>
-                        <td colspan="6" class="text-center text-muted py-4">Henüz masa yok.</td>
-                    </tr>
-                <?php else: ?>
                     <?php foreach ($masalar as $masa): ?>
                         <?php
                         $masaId = (int) $masa['id'];
@@ -231,7 +236,7 @@ require APP_KOK . '/partials/admin-header.php';
                         ?>
                         <tr>
                             <td><?= e($masa['masa_adi']) ?></td>
-                            <td><?= e($masa['kapasite']) ?></td>
+                            <td><?= e($masa['kapasite']) ?> kişilik</td>
                             <td><?= e($konumEtiket[$masa['konum']] ?? $masa['konum']) ?></td>
                             <td>
                                 <?php if ($masa['durum'] === 'aktif'): ?>
@@ -242,7 +247,7 @@ require APP_KOK . '/partials/admin-header.php';
                             </td>
                             <td><?= e($rezSayisi) ?></td>
                             <td class="text-end">
-                                <div class="d-inline-flex flex-wrap gap-1 justify-content-end">
+                                <div class="kafe-islem-grup d-inline-flex flex-wrap gap-1 justify-content-end">
                                     <a class="btn btn-sm btn-outline-secondary"
                                        href="masalar.php?duzenle=<?= e($masaId) ?>">Düzenle</a>
 
@@ -271,10 +276,10 @@ require APP_KOK . '/partials/admin-header.php';
                             </td>
                         </tr>
                     <?php endforeach; ?>
-                <?php endif; ?>
                 </tbody>
             </table>
         </div>
+        <?php endif; ?>
     </div>
 
 </div>

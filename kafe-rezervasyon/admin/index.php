@@ -105,6 +105,35 @@ $kalanBugun = (int) Database::fetchValue(
     [':t3' => $bugun, ':saat2' => $simdi]
 );
 
+$simdiBosMasa = max(0, $aktifMasa - $simdiDoluMasa);
+
+// Akşam penceresi varsayılan rezervasyon süresiyle aynı (19:00–21:00).
+// Yüzde DEĞİL: çakışma formülünün kendisi — o aralıkta kaç masa dolu.
+$aksamBas = '19:00:00';
+$aksamBit = '21:00:00';
+$aksamDoluMasa = (int) Database::fetchValue(
+    "SELECT COUNT(DISTINCT masa_id)
+       FROM rezervasyonlar
+      WHERE tarih = :t6
+        AND durum = 'onaylandi'
+        AND baslangic_saati < :aksam_bit
+        AND bitis_saati     > :aksam_bas",
+    [
+        ':t6'        => $bugun,
+        ':aksam_bit' => $aksamBit,
+        ':aksam_bas' => $aksamBas,
+    ]
+);
+
+$haftaSon = date('Y-m-d', strtotime('+6 days'));
+$yediGunOnay = (int) Database::fetchValue(
+    "SELECT COUNT(*)
+       FROM rezervasyonlar
+      WHERE durum = 'onaylandi'
+        AND tarih BETWEEN :g1 AND :g2",
+    [':g1' => $bugun, ':g2' => $haftaSon]
+);
+
 $yaklasanlar = Database::fetchAll(
     "SELECT r.rezervasyon_kodu, r.musteri_adi, r.tarih, r.baslangic_saati,
             r.bitis_saati, r.kisi_sayisi, m.masa_adi
@@ -215,6 +244,32 @@ require __DIR__ . '/../partials/admin-header.php';
     </div>
 
     <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="admin-ozet-kart admin-ozet-bos">
+                <p class="admin-ozet-etiket">Şu an boş masa</p>
+                <p class="admin-ozet-sayi"><?= e($simdiBosMasa) ?></p>
+                <p class="small text-muted mb-0">Aktif <?= e($aktifMasa) ?> masadan, bu saatte onaylı kaydı olmayanlar.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="admin-ozet-kart">
+                <p class="admin-ozet-etiket">Akşam 19:00–21:00</p>
+                <p class="admin-ozet-sayi"><?= e($aksamDoluMasa) ?></p>
+                <p class="small text-muted mb-0">
+                    Bugün 19:00–21:00 penceresiyle çakışan onaylı masa (yüzde değil).
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="admin-ozet-kart admin-ozet-onay">
+                <p class="admin-ozet-etiket">7 gün onaylı</p>
+                <p class="admin-ozet-sayi"><?= e($yediGunOnay) ?></p>
+                <p class="small text-muted mb-0">Bugün dahil önümüzdeki 7 günde onaylı kayıt (yüzde değil, ham sayı).</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
         <div class="col-lg-5">
             <div class="kafe-kart h-100">
                 <h2 class="h5 mb-3">Yaklaşan onaylılar</h2>
@@ -248,11 +303,12 @@ require __DIR__ . '/../partials/admin-header.php';
             <div class="kafe-bos-durum">
                 <span class="kafe-bos-ikon" aria-hidden="true"></span>
                 <strong>Bugün henüz kayıt yok</strong>
-                <p class="mb-0">Yeni rezervasyonlar burada listelenir.</p>
+                <p class="mb-0">Müşteri formundan gelen onaylı rezervasyonlar bu listede görünür.</p>
             </div>
         <?php else: ?>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+            <p class="kafe-tablo-sayac mb-2"><?= e(count($bugununKayitlari)) ?> kayıt</p>
+            <div class="table-responsive kafe-tablo-sar">
+                <table class="table table-hover align-middle mb-0 kafe-tablo">
                     <thead>
                         <tr>
                             <th>Kod</th>
